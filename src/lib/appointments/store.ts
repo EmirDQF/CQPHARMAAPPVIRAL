@@ -1,17 +1,8 @@
 import { createPersistentStore } from "../storage/persistentStore";
+import { generateAppointmentCode } from "./generateCode";
 import type { Appointment } from "./types";
 
 const store = createPersistentStore<Appointment[]>("artikare_appointments_v1", []);
-
-const CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-
-function generateAppointmentCode(): string {
-  let code = "ART-";
-  for (let i = 0; i < 6; i += 1) {
-    code += CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)];
-  }
-  return code;
-}
 
 export function bookAppointment(
   input: Omit<Appointment, "code" | "createdAt">

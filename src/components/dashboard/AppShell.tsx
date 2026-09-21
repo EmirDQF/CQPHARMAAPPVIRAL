@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useSyncExternalStore } from "react";
 import { NextAppointmentCard } from "@/components/appointments/NextAppointmentCard";
+import { usePillboxReminders } from "@/hooks/usePillboxReminders";
 import { appointmentsStore, getNextUpcomingAppointment } from "@/lib/appointments/store";
 import { calculateStreakDays, pillboxStore } from "@/lib/dashboard/pillbox";
 import type { BoneScanSummary } from "@/lib/dashboard/types";
@@ -13,6 +14,7 @@ import { DexaVaultSection } from "./DexaVaultSection";
 import { InstallPwaBanner } from "./InstallPwaBanner";
 import { PainCheckIn } from "./PainCheckIn";
 import { PainTrendChart } from "./PainTrendChart";
+import { PatientProfileLauncher } from "./PatientProfileLauncher";
 import { RestockAlert } from "./RestockAlert";
 import { SmartPillbox } from "./SmartPillbox";
 import { TreatmentTracker } from "./TreatmentTracker";
@@ -38,6 +40,7 @@ interface AppShellProps {
 
 export function AppShell({ fallbackScan }: AppShellProps) {
   const [activeTab, setActiveTab] = useState<TabId>("hoy");
+  usePillboxReminders();
 
   const pillboxState = useSyncExternalStore(
     pillboxStore.subscribe,
@@ -64,16 +67,19 @@ export function AppShell({ fallbackScan }: AppShellProps) {
             </p>
             <p className="text-sm text-neutral-500">Tu salud ósea, en un solo lugar.</p>
           </div>
-          <div
-            className="flex items-center gap-1.5 rounded-full bg-brand-light dark:bg-brand-dark/30 px-3 py-2"
-            aria-label={`Racha activa: ${streakDays} días`}
-          >
-            <span className="text-xl animate-pulse" aria-hidden="true">
-              🔥
-            </span>
-            <span className="font-bold text-brand-dark dark:text-brand-light">
-              {streakDays}
-            </span>
+          <div className="flex items-center gap-2">
+            <div
+              className="flex items-center gap-1.5 rounded-full bg-brand-light dark:bg-brand-dark/30 px-3 py-2"
+              aria-label={`Racha activa: ${streakDays} días`}
+            >
+              <span className="text-xl animate-pulse" aria-hidden="true">
+                🔥
+              </span>
+              <span className="font-bold text-brand-dark dark:text-brand-light">
+                {streakDays}
+              </span>
+            </div>
+            <PatientProfileLauncher />
           </div>
         </div>
         <InstallPwaBanner />
@@ -111,6 +117,12 @@ export function AppShell({ fallbackScan }: AppShellProps) {
               </Link>
             )}
             <ClinicalReportExport />
+            <Link
+              href="/app/reporte-medico"
+              className="min-h-12 flex items-center justify-center rounded-xl bg-neutral-100 dark:bg-neutral-800 font-semibold px-5 transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-700"
+            >
+              🖨️ Ver Ficha Imprimible para tu Médico
+            </Link>
           </>
         )}
       </main>

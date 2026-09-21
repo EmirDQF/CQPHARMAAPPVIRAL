@@ -5,6 +5,7 @@ import { ProgressBar } from "./ProgressBar";
 import { QuestionStep } from "./QuestionStep";
 import { ResultCard } from "./ResultCard";
 import { calculateRisk } from "@/lib/calculateRisk";
+import { registerLeadForAnalytics } from "@/lib/api/registerLead";
 import { scoredQuestions, TOTAL_STEPS } from "@/lib/questions";
 import type { AgeSexValue, RiskResult, ScoredAnswers, Sex } from "@/lib/types";
 
@@ -36,7 +37,9 @@ export function ArticularTest() {
     const isLastQuestion = step === scoredQuestions.length;
     if (isLastQuestion) {
       const ageSex: AgeSexValue = { age: Number(ageInput), sex: sex as Sex };
-      setResult(calculateRisk(ageSex, nextAnswers));
+      const riskResult = calculateRisk(ageSex, nextAnswers);
+      registerLeadForAnalytics(riskResult);
+      setResult(riskResult);
       setPhase("result");
       return;
     }

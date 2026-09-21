@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { buildAvailableDays } from "@/lib/appointments/availability";
 import { bookAppointment } from "@/lib/appointments/store";
+import { registerAppointmentForAnalytics } from "@/lib/api/registerAppointment";
 import type {
   Appointment,
   AppointmentBookedBy,
@@ -61,6 +62,7 @@ export function BookingWizard() {
   }) {
     if (!serviceId || !date || !slot) return;
     const appointment = bookAppointment({ serviceId, date, slot, patient });
+    registerAppointmentForAnalytics(appointment);
     setConfirmedAppointment(appointment);
   }
 

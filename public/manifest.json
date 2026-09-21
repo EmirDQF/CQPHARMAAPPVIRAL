@@ -1,20 +1,35 @@
 {
+  "id": "/",
   "name": "Artikare — Salud Osteoarticular",
   "short_name": "Artikare",
   "description": "Tu libertad de movimiento empieza en tus huesos. Test de Edad Articular, Semáforo Óseo y suplementación clínica CQ Pharma.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#0f766e",
   "lang": "es",
+  "categories": ["health", "medical", "lifestyle"],
   "icons": [
     {
       "src": "/icons/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Hacer el Test de Edad Articular",
+      "url": "/",
+      "description": "Test de Edad Articular y Salud Ósea"
+    },
+    {
+      "name": "Mi Panel de Salud",
+      "url": "/app",
+      "description": "Semáforo Óseo, check-in de dolor y pastillero"
     }
   ]
 }

@@ -1,3 +1,4 @@
+import type { ProductPack } from "./products";
 import type { RiskResult } from "./types";
 
 const FALLBACK_WHATSAPP_NUMBER = "51999999999";
@@ -18,5 +19,16 @@ export function buildDensitometriaWhatsAppLink(result: RiskResult): string {
 
 export function buildSupplementWhatsAppLink(result: RiskResult): string {
   const message = `Hola, hice el Test de Edad Articular de Artikare. Mi resultado fue ${result.label} (edad articular ${result.articularAge} años). Quisiera información sobre el ${result.supplementProtocol}.`;
+  return buildWhatsAppLink(message);
+}
+
+export function buildProductPackWhatsAppLink(pack: ProductPack): string {
+  const message = `Hola, quiero reservar el ${pack.name} de CQ Pharma (${pack.tagline}). ¿Me pueden dar disponibilidad y precio?`;
+  return buildWhatsAppLink(message);
+}
+
+export function buildGeneralInquiryWhatsAppLink(): string {
+  const message =
+    "Hola, quisiera hablar con un asesor médico de Artikare sobre mis articulaciones y huesos.";
   return buildWhatsAppLink(message);
 }

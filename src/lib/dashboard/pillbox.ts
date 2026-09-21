@@ -24,7 +24,7 @@ export function markDoseTaken(doseId: string): void {
   });
 }
 
-function isDoseComplete(state: PillboxState, date: string): boolean {
+export function isDoseComplete(state: PillboxState, date: string): boolean {
   const taken = new Set(state.takenDoseIdsByDate[date] ?? []);
   return doseSchedule.every((dose) => taken.has(dose.id));
 }

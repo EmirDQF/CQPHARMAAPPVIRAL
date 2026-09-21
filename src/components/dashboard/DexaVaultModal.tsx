@@ -5,34 +5,12 @@ import {
   addDexaScanEntry,
   buildBoneScanSummaryFromEntries,
   dexaVaultStore,
-  type DexaScanEntry,
 } from "@/lib/dashboard/dexaVault";
+import { DexaTrendChart } from "./DexaTrendChart";
 
 interface DexaVaultModalProps {
   isOpen: boolean;
   onClose: () => void;
-}
-
-const CHART_WIDTH = 280;
-const CHART_HEIGHT = 100;
-const MIN_T_SCORE = -4;
-const MAX_T_SCORE = 1;
-
-function scoreToY(score: number): number {
-  const clamped = Math.min(MAX_T_SCORE, Math.max(MIN_T_SCORE, score));
-  const ratio = (clamped - MIN_T_SCORE) / (MAX_T_SCORE - MIN_T_SCORE);
-  return CHART_HEIGHT - ratio * CHART_HEIGHT;
-}
-
-function buildPolylinePoints(
-  entries: DexaScanEntry[],
-  selector: (entry: DexaScanEntry) => number
-): string {
-  if (entries.length === 0) return "";
-  const stepX = entries.length > 1 ? CHART_WIDTH / (entries.length - 1) : 0;
-  return entries
-    .map((entry, index) => `${index * stepX},${scoreToY(selector(entry))}`)
-    .join(" ");
 }
 
 export function DexaVaultModal({ isOpen, onClose }: DexaVaultModalProps) {
@@ -48,14 +26,6 @@ export function DexaVaultModal({ isOpen, onClose }: DexaVaultModalProps) {
   const [radiologyCenter, setRadiologyCenter] = useState("");
 
   const summary = useMemo(() => buildBoneScanSummaryFromEntries(entries), [entries]);
-  const lumbarPoints = useMemo(
-    () => buildPolylinePoints(entries, (entry) => entry.lumbarTScore),
-    [entries]
-  );
-  const femoralPoints = useMemo(
-    () => buildPolylinePoints(entries, (entry) => entry.femoralNeckTScore),
-    [entries]
-  );
 
   if (!isOpen) return null;
 
@@ -115,30 +85,7 @@ export function DexaVaultModal({ isOpen, onClose }: DexaVaultModalProps) {
           </div>
         )}
 
-        {entries.length > 0 && (
-          <div>
-            <p className="text-sm font-medium mb-2">Evolución del T-Score</p>
-            <svg
-              viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`}
-              className="w-full h-28"
-              role="img"
-              aria-label="Evolución del T-Score lumbar y femoral en el tiempo"
-              preserveAspectRatio="none"
-            >
-              <polyline points={lumbarPoints} fill="none" stroke="var(--color-brand)" strokeWidth={2} />
-              <polyline
-                points={femoralPoints}
-                fill="none"
-                stroke="var(--color-risk-moderate)"
-                strokeWidth={2}
-              />
-            </svg>
-            <div className="flex gap-4 text-xs text-neutral-500 mt-1">
-              <span>— Columna Lumbar</span>
-              <span className="text-risk-moderate">— Cuello Femoral</span>
-            </div>
-          </div>
-        )}
+        <DexaTrendChart entries={entries} />
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <p className="text-sm font-medium">Registrar nuevo estudio</p>

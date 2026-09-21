@@ -1,7 +1,13 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import { buildGeneralInquiryWhatsAppLink } from "@/lib/whatsapp";
 
 export function WhatsAppFloatingButton() {
+  const pathname = usePathname();
   const whatsAppLink = buildGeneralInquiryWhatsAppLink();
+
+  if (pathname?.startsWith("/app")) return null;
 
   return (
     <a

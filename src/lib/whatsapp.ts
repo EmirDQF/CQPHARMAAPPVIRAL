@@ -1,3 +1,5 @@
+import { getServiceById } from "./appointments/catalog";
+import type { Appointment } from "./appointments/types";
 import type { ProductPack } from "./products";
 import type { RiskResult } from "./types";
 
@@ -31,4 +33,17 @@ export function buildGeneralInquiryWhatsAppLink(): string {
   const message =
     "Hola, quisiera hablar con un asesor médico de Artikare sobre mis articulaciones y huesos.";
   return buildWhatsAppLink(message);
+}
+
+export function buildAppointmentConfirmationWhatsAppLink(
+  appointment: Appointment
+): string {
+  const service = getServiceById(appointment.serviceId);
+  const slotLabel = appointment.slot === "manana" ? "mañana" : "tarde";
+  const message = `Hola, quiero confirmar mi cita de ${service?.name ?? "Artikare"} (código ${appointment.code}) para el ${appointment.date} en el turno de ${slotLabel}.`;
+  return buildWhatsAppLink(message);
+}
+
+export function buildClinicalReportWhatsAppLink(reportText: string): string {
+  return buildWhatsAppLink(reportText);
 }

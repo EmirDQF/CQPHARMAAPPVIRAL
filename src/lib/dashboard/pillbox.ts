@@ -1,57 +1,27 @@
-import { createListenerSet } from "../createListenerSet";
+import { createPersistentStore } from "../storage/persistentStore";
 import { doseSchedule } from "./mockData";
 import type { PillboxState } from "./types";
 
-const STORAGE_KEY = "artikare_pillbox_v1";
-const { subscribe, notify } = createListenerSet();
-const EMPTY_STATE: PillboxState = { takenDoseIdsByDate: {} };
+const store = createPersistentStore<PillboxState>("artikare_pillbox_v1", {
+  takenDoseIdsByDate: {},
+});
 
 function todayIsoDate(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-function readFromStorage(): PillboxState {
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as PillboxState) : EMPTY_STATE;
-  } catch {
-    return EMPTY_STATE;
-  }
-}
-
-let cachedSnapshot: PillboxState | null = null;
-
-function getSnapshot(): PillboxState {
-  if (!cachedSnapshot) cachedSnapshot = readFromStorage();
-  return cachedSnapshot;
-}
-
-function getServerSnapshot(): PillboxState {
-  return EMPTY_STATE;
-}
-
 export function markDoseTaken(doseId: string): void {
-  const current = readFromStorage();
+  const current = store.getSnapshot();
   const date = todayIsoDate();
   const takenToday = current.takenDoseIdsByDate[date] ?? [];
   if (takenToday.includes(doseId)) return;
 
-  const updated: PillboxState = {
+  store.write({
     takenDoseIdsByDate: {
       ...current.takenDoseIdsByDate,
       [date]: [...takenToday, doseId],
     },
-  };
-
-  try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-  } catch {
-    // Sin almacenamiento persistente disponible; la toma queda registrada
-    // solo para la sesión actual.
-  }
-
-  cachedSnapshot = updated;
-  notify();
+  });
 }
 
 function isDoseComplete(state: PillboxState, date: string): boolean {
@@ -79,4 +49,4 @@ export function calculateStreakDays(
   return streak;
 }
 
-export const pillboxStore = { subscribe, getSnapshot, getServerSnapshot };
+export const pillboxStore = store;

@@ -1,8 +1,12 @@
-import type { RiskLevel } from "@/lib/types";
+"use client";
+
+import { useSyncExternalStore } from "react";
+import { buildBoneScanSummaryFromEntries, dexaVaultStore } from "@/lib/dashboard/dexaVault";
 import type { BoneScanSummary } from "@/lib/dashboard/types";
+import type { RiskLevel } from "@/lib/types";
 
 interface BoneSemaphoreWidgetProps {
-  scan: BoneScanSummary;
+  fallbackScan: BoneScanSummary;
 }
 
 const semaphoreStyles: Record<RiskLevel, string> = {
@@ -24,7 +28,14 @@ function formatScanDate(isoDate: string): string {
   });
 }
 
-export function BoneSemaphoreWidget({ scan }: BoneSemaphoreWidgetProps) {
+export function BoneSemaphoreWidget({ fallbackScan }: BoneSemaphoreWidgetProps) {
+  const entries = useSyncExternalStore(
+    dexaVaultStore.subscribe,
+    dexaVaultStore.getSnapshot,
+    dexaVaultStore.getServerSnapshot
+  );
+  const scan = buildBoneScanSummaryFromEntries(entries) ?? fallbackScan;
+
   return (
     <section
       aria-labelledby="semaforo-oseo-heading"

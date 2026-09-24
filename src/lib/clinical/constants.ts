@@ -20,6 +20,17 @@ export const WHO_T_SCORE_OSTEOPOROSIS_MAX = -2.5;
 export const T_SCORE_INPUT_MIN = -6.0;
 export const T_SCORE_INPUT_MAX = 4.0;
 
+/**
+ * El semáforo OMS por T-score aplica a mujeres posmenopáusicas y a hombres
+ * desde esta edad; en el resto se requiere interpretación médica con Z-score.
+ */
+export const T_SCORE_ELIGIBILITY_MIN_AGE = 50;
+
+/** Bandera roja: dolor ≥ 8 durante 3+ días consecutivos dentro de los últimos 14 días de Lima. */
+export const SEVERE_PAIN_MIN_LEVEL = 8;
+export const SEVERE_PAIN_MIN_CONSECUTIVE_DAYS = 3;
+export const SEVERE_PAIN_WINDOW_DAYS = 14;
+
 /** Meses hasta la próxima densitometría de control según la clasificación. */
 export const CONTROL_MONTHS_OSTEOPOROSIS = 6;
 export const CONTROL_MONTHS_DEFAULT = 12;

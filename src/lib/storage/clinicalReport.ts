@@ -1,6 +1,6 @@
 import { isDoseComplete } from "../dashboard/pillbox";
 import { stiffnessToMinutes } from "../dashboard/painLog";
-import type { PainLogEntry, PillboxState } from "../dashboard/types";
+import type { BoneScanSummary, PainLogEntry, PillboxState } from "../dashboard/types";
 import { lastNIsoDates, toLimaIsoDate } from "../utils/date";
 
 const REPORT_WINDOW_DAYS = 30;
@@ -76,23 +76,37 @@ export function describeStiffnessChange(reductionPercent: number): string {
   return "se mantuvo sin cambios";
 }
 
-export interface ClinicalReportBoneScan {
-  worstTScore: number;
-  diagnosisLabel: string;
-  scanDate: string;
+export type ClinicalReportBoneScan = Pick<
+  BoneScanSummary,
+  "worstTScore" | "diagnosisLabel" | "scanDate" | "interpretation" | "profileNote"
+>;
+
+function describeBoneScan(boneScan: ClinicalReportBoneScan | null): string[] {
+  if (!boneScan) return ["Densitometría: Sin densitometría registrada"];
+  const tScore = boneScan.worstTScore.toFixed(1);
+  const mainLine =
+    boneScan.interpretation === "z-score-required"
+      ? `Densitometría: Peor T-score registrado ${tScore} · ${boneScan.scanDate} · Interpretación: ${boneScan.diagnosisLabel}`
+      : `Densitometría: Peor T-score ${tScore} (${boneScan.diagnosisLabel}) · ${boneScan.scanDate}`;
+  return boneScan.profileNote ? [mainLine, `Nota: ${boneScan.profileNote}`] : [mainLine];
+}
+
+function describeFractureHistory(hasFractureHistory: boolean | null): string {
+  if (hasFractureHistory === null) return "No registrado";
+  return hasFractureHistory ? "Sí" : "No";
 }
 
 export function formatClinicalReportText(
   summary: ClinicalReportSummary,
   boneScan: ClinicalReportBoneScan | null = null,
-  hasFractureHistory = false
+  hasFractureHistory: boolean | null = null,
+  redFlagDescriptions: readonly string[] = []
 ): string {
   const lines = [
     "📋 Informe Artikare — Seguimiento Clínico",
-    boneScan
-      ? `Densitometría: Peor T-score ${boneScan.worstTScore.toFixed(1)} (${boneScan.diagnosisLabel}) · ${boneScan.scanDate}`
-      : "Densitometría: Sin densitometría registrada",
-    `Antecedente de fractura: ${hasFractureHistory ? "Sí" : "No"}`,
+    ...describeBoneScan(boneScan),
+    `Antecedente de fractura: ${describeFractureHistory(hasFractureHistory)}`,
+    `Banderas rojas: ${redFlagDescriptions.length > 0 ? redFlagDescriptions.join(" · ") : "Ninguna activa"}`,
     summary.averagePainLevel !== null
       ? `Dolor promedio (${summary.daysTracked} días registrados): ${summary.averagePainLevel}/10`
       : "Dolor promedio: Sin registros de dolor en los últimos 30 días",

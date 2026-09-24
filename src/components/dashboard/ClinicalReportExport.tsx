@@ -1,9 +1,8 @@
 "use client";
 
 import { useMemo, useSyncExternalStore } from "react";
-import { buildBoneScanSummaryFromEntries, dexaVaultStore } from "@/lib/dashboard/dexaVault";
+import { RED_FLAG_DESCRIPTION } from "@/lib/clinical/redFlags";
 import { painLogStore } from "@/lib/dashboard/painLog";
-import { patientProfileStore } from "@/lib/dashboard/patientProfile";
 import { pillboxStore } from "@/lib/dashboard/pillbox";
 import {
   buildClinicalReportSummary,
@@ -12,6 +11,7 @@ import {
 } from "@/lib/storage/clinicalReport";
 import { toLimaIsoDate } from "@/lib/utils/date";
 import { buildClinicalReportWhatsAppLink } from "@/lib/whatsapp";
+import { useClinicalStatus } from "./useActiveRedFlags";
 
 export function ClinicalReportExport() {
   const painEntries = useSyncExternalStore(
@@ -25,25 +25,18 @@ export function ClinicalReportExport() {
     pillboxStore.getServerSnapshot
   );
 
-  const dexaEntries = useSyncExternalStore(
-    dexaVaultStore.subscribe,
-    dexaVaultStore.getSnapshot,
-    dexaVaultStore.getServerSnapshot
-  );
-  const profile = useSyncExternalStore(
-    patientProfileStore.subscribe,
-    patientProfileStore.getSnapshot,
-    patientProfileStore.getServerSnapshot
-  );
+  // El texto descargado usa el mismo estado clínico que la app (perfil, Z-score, banderas rojas).
+  const { profile, boneScan, redFlags } = useClinicalStatus();
 
   const summary = useMemo(
     () => buildClinicalReportSummary(painEntries, pillboxState),
     [painEntries, pillboxState]
   );
-  const boneScan = useMemo(() => buildBoneScanSummaryFromEntries(dexaEntries), [dexaEntries]);
-  const reportText = useMemo(
-    () => formatClinicalReportText(summary, boneScan, profile.hasFractureHistory),
-    [summary, boneScan, profile.hasFractureHistory]
+  const reportText = formatClinicalReportText(
+    summary,
+    boneScan,
+    profile.hasFractureHistory,
+    redFlags.map((flag) => RED_FLAG_DESCRIPTION[flag])
   );
   const whatsAppLink = buildClinicalReportWhatsAppLink();
 

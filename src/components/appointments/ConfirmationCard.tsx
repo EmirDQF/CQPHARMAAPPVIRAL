@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { getServiceById } from "@/lib/appointments/catalog";
 import { DENSITOMETRY_UPSELL_DISCOUNT_PERCENT } from "@/lib/clinical/constants";
 import type { Appointment } from "@/lib/appointments/types";
@@ -8,6 +9,7 @@ import {
   buildAppointmentConfirmationWhatsAppLink,
   buildProductPackWhatsAppLink,
 } from "@/lib/whatsapp";
+import { useActiveRedFlags } from "@/components/dashboard/useActiveRedFlags";
 
 interface ConfirmationCardProps {
   appointment: Appointment;
@@ -27,10 +29,13 @@ export function ConfirmationCard({ appointment }: ConfirmationCardProps) {
   const service = getServiceById(appointment.serviceId);
   const whatsAppLink = buildAppointmentConfirmationWhatsAppLink(appointment);
 
+  // Con bandera roja no se ofrece ningún suplemento: primero el reumatólogo.
+  const hasRedFlag = useActiveRedFlags().length > 0;
   const crossSellPackId =
     appointment.serviceId === "densitometria" ? "hueso-fuerte-360" : "movilidad-total";
   const crossSellPack = productPacks.find((pack) => pack.id === crossSellPackId);
-  const crossSellLink = crossSellPack ? buildProductPackWhatsAppLink(crossSellPack) : null;
+  const crossSellLink =
+    crossSellPack && !hasRedFlag ? buildProductPackWhatsAppLink(crossSellPack) : null;
 
   return (
     <section className="rounded-2xl border-2 border-risk-low bg-risk-low-bg px-6 py-6 flex flex-col gap-4">
@@ -49,7 +54,8 @@ export function ConfirmationCard({ appointment }: ConfirmationCardProps) {
 
       {service?.prepInstructions && (
         <p className="text-sm font-medium text-neutral-900">
-          ⚠️ {service.prepInstructions}
+          <span aria-hidden="true">⚠️ </span>
+          {service.prepInstructions}
         </p>
       )}
 
@@ -61,6 +67,23 @@ export function ConfirmationCard({ appointment }: ConfirmationCardProps) {
       >
         Confirmar por WhatsApp
       </a>
+
+      {hasRedFlag && (
+        <div className="rounded-xl border-2 border-risk-high bg-white/70 px-4 py-3 flex flex-col gap-2 text-neutral-900">
+          <p className="font-semibold">
+            Por tus registros, prioriza tu evaluación reumatológica antes de iniciar cualquier
+            suplemento.
+          </p>
+          {appointment.serviceId !== "consulta-reumatologia" && (
+            <Link
+              href="/citas"
+              className="min-h-12 flex items-center justify-center rounded-xl bg-risk-high text-white font-semibold px-4"
+            >
+              Agendar evaluación reumatológica
+            </Link>
+          )}
+        </div>
+      )}
 
       {crossSellLink && crossSellPack && (
         <div className="rounded-xl border-2 border-dashed border-brand/40 px-4 py-3">

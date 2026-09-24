@@ -2,16 +2,101 @@
 
 import { useState, useSyncExternalStore, type FormEvent } from "react";
 import { ConsentCheckbox } from "@/components/privacy/ConsentCheckbox";
-import { patientProfileStore } from "@/lib/dashboard/patientProfile";
+import { ModalDialog } from "@/components/ui/ModalDialog";
+import { parseProfileAgeInput, patientProfileStore } from "@/lib/dashboard/patientProfile";
 import { createConsentRecord, isConsentCurrent } from "@/lib/privacy/consent";
+import type { MenopausalStatus } from "@/lib/clinical/tScoreEligibility";
 import type { Sex } from "@/lib/types";
 
+type FractureAnswer = "si" | "no";
+
+interface ChoiceOption<T extends string> {
+  value: T;
+  label: string;
+}
+
+const SEX_OPTIONS: ChoiceOption<Sex>[] = [
+  { value: "femenino", label: "Femenino" },
+  { value: "masculino", label: "Masculino" },
+];
+
+const FRACTURE_OPTIONS: ChoiceOption<FractureAnswer>[] = [
+  { value: "si", label: "Sí" },
+  { value: "no", label: "No" },
+];
+
+const MENOPAUSAL_OPTIONS: ChoiceOption<MenopausalStatus>[] = [
+  { value: "premenopausica", label: "Premenopáusica" },
+  { value: "posmenopausica", label: "Posmenopáusica" },
+  { value: "no-aplica", label: "No aplica / No sé" },
+];
+
+interface ChoiceGroupProps<T extends string> {
+  legend: string;
+  name: string;
+  options: ChoiceOption<T>[];
+  value: T | null;
+  onChange: (value: T) => void;
+  stacked?: boolean;
+  hint?: string;
+}
+
+/** Radios nativos: nombre accesible (legend) y navegación con flechas sin código extra. */
+function ChoiceGroup<T extends string>({
+  legend,
+  name,
+  options,
+  value,
+  onChange,
+  stacked = false,
+  hint,
+}: ChoiceGroupProps<T>) {
+  const hintId = hint ? `${name}-hint` : undefined;
+  return (
+    <fieldset aria-describedby={hintId}>
+      <legend className="text-sm font-medium">{legend}</legend>
+      {hint && (
+        <p id={hintId} className="text-sm text-neutral-600 dark:text-neutral-300">
+          {hint}
+        </p>
+      )}
+      <div className={`mt-1 flex gap-3 ${stacked ? "flex-col" : ""}`}>
+        {options.map((option) => (
+          <label
+            key={option.value}
+            className={`flex-1 min-h-12 flex items-center justify-center rounded-xl border-2 px-4 font-semibold cursor-pointer transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand ${
+              value === option.value
+                ? "border-brand bg-brand-light text-brand-dark"
+                : "border-neutral-200 dark:border-neutral-700"
+            }`}
+          >
+            <input
+              type="radio"
+              name={name}
+              value={option.value}
+              checked={value === option.value}
+              onChange={() => onChange(option.value)}
+              className="sr-only"
+            />
+            {option.label}
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  );
+}
+
+function toFractureAnswer(hasFractureHistory: boolean | null): FractureAnswer | null {
+  if (hasFractureHistory === null) return null;
+  return hasFractureHistory ? "si" : "no";
+}
+
 interface PatientProfileModalProps {
-  isOpen: boolean;
   onClose: () => void;
 }
 
-export function PatientProfileModal({ isOpen, onClose }: PatientProfileModalProps) {
+/** Se monta solo al abrirse: el formulario siempre parte del perfil guardado actual. */
+export function PatientProfileModal({ onClose }: PatientProfileModalProps) {
   const profile = useSyncExternalStore(
     patientProfileStore.subscribe,
     patientProfileStore.getSnapshot,
@@ -22,26 +107,33 @@ export function PatientProfileModal({ isOpen, onClose }: PatientProfileModalProp
   const [age, setAge] = useState(profile.age?.toString() ?? "");
   const [sex, setSex] = useState<Sex | null>(profile.sex);
   const [weightKg, setWeightKg] = useState(profile.weightKg?.toString() ?? "");
-  const [hasFractureHistory, setHasFractureHistory] = useState(profile.hasFractureHistory);
+  const [fractureAnswer, setFractureAnswer] = useState(toFractureAnswer(profile.hasFractureHistory));
+  const [menopausalStatus, setMenopausalStatus] = useState(profile.menopausalStatus);
   const [allergies, setAllergies] = useState(profile.allergies);
   const [phone, setPhone] = useState(profile.phone);
   const [hasConsented, setHasConsented] = useState(false);
+  const [isAgeTouched, setIsAgeTouched] = useState(false);
   const needsConsent = !isConsentCurrent(profile.consent);
-
-  if (!isOpen) return null;
+  const ageResult = parseProfileAgeInput(age);
+  const ageError = isAgeTouched && !ageResult.ok ? ageResult.error : null;
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
     if (needsConsent && !hasConsented) return;
-    const parsedAge = Number(age);
+    if (!ageResult.ok) {
+      setIsAgeTouched(true);
+      return;
+    }
     const parsedWeight = Number(weightKg);
 
     patientProfileStore.write({
       name: name.trim(),
-      age: age.trim() !== "" && !Number.isNaN(parsedAge) ? parsedAge : null,
+      age: ageResult.value,
       sex,
       weightKg: weightKg.trim() !== "" && !Number.isNaN(parsedWeight) ? parsedWeight : null,
-      hasFractureHistory,
+      hasFractureHistory: fractureAnswer === null ? null : fractureAnswer === "si",
+      // El estado menopáusico solo aplica a mujeres.
+      menopausalStatus: sex === "femenino" ? menopausalStatus : null,
       allergies: allergies.trim(),
       phone: phone.trim(),
       consent: needsConsent ? createConsentRecord() : profile.consent,
@@ -50,13 +142,7 @@ export function PatientProfileModal({ isOpen, onClose }: PatientProfileModalProp
   }
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="patient-profile-heading"
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 px-4 py-6"
-    >
-      <div className="w-full max-w-lg max-h-full overflow-y-auto rounded-2xl bg-background border-2 border-neutral-200 dark:border-neutral-800 px-6 py-6 flex flex-col gap-5">
+    <ModalDialog labelledBy="patient-profile-heading" onClose={onClose}>
         <div className="flex items-center justify-between">
           <h2 id="patient-profile-heading" className="text-xl font-bold">
             Mi Perfil Médico
@@ -88,7 +174,10 @@ export function PatientProfileModal({ isOpen, onClose }: PatientProfileModalProp
               <input
                 value={age}
                 onChange={(e) => setAge(e.target.value)}
+                onBlur={() => setIsAgeTouched(true)}
                 inputMode="numeric"
+                aria-invalid={ageError !== null}
+                aria-describedby={ageError ? "profile-age-error" : undefined}
                 className="min-h-12 rounded-xl border-2 border-neutral-200 dark:border-neutral-700 px-3 bg-transparent"
                 placeholder="Ej. 58"
               />
@@ -104,58 +193,41 @@ export function PatientProfileModal({ isOpen, onClose }: PatientProfileModalProp
               />
             </label>
           </div>
+          <p
+            id="profile-age-error"
+            aria-live="polite"
+            className="text-risk-high dark:text-red-300 empty:hidden"
+          >
+            {ageError}
+          </p>
 
-          <div>
-            <span className="text-sm font-medium">Sexo biológico</span>
-            <div className="flex gap-3 mt-1" role="radiogroup">
-              {(["femenino", "masculino"] as const).map((option) => (
-                <button
-                  key={option}
-                  type="button"
-                  role="radio"
-                  aria-checked={sex === option}
-                  onClick={() => setSex(option)}
-                  className={`flex-1 min-h-12 rounded-xl border-2 px-4 capitalize font-semibold transition-colors ${
-                    sex === option
-                      ? "border-brand bg-brand-light text-brand-dark"
-                      : "border-neutral-200 dark:border-neutral-700"
-                  }`}
-                >
-                  {option}
-                </button>
-              ))}
-            </div>
-          </div>
+          <ChoiceGroup
+            legend="Sexo biológico"
+            name="profile-sex"
+            options={SEX_OPTIONS}
+            value={sex}
+            onChange={setSex}
+            hint="Si eliges Femenino, te preguntaremos tu estado menopáusico."
+          />
 
-          <div>
-            <span className="text-sm font-medium">¿Antecedente de fractura?</span>
-            <div className="flex gap-3 mt-1">
-              <button
-                type="button"
-                aria-pressed={hasFractureHistory}
-                onClick={() => setHasFractureHistory(true)}
-                className={`flex-1 min-h-12 rounded-xl border-2 font-semibold transition-colors ${
-                  hasFractureHistory
-                    ? "border-brand bg-brand-light text-brand-dark"
-                    : "border-neutral-200 dark:border-neutral-700"
-                }`}
-              >
-                Sí
-              </button>
-              <button
-                type="button"
-                aria-pressed={!hasFractureHistory}
-                onClick={() => setHasFractureHistory(false)}
-                className={`flex-1 min-h-12 rounded-xl border-2 font-semibold transition-colors ${
-                  !hasFractureHistory
-                    ? "border-brand bg-brand-light text-brand-dark"
-                    : "border-neutral-200 dark:border-neutral-700"
-                }`}
-              >
-                No
-              </button>
-            </div>
-          </div>
+          {sex === "femenino" && (
+            <ChoiceGroup
+              legend="Estado menopáusico (define cómo se interpreta tu densitometría)"
+              name="profile-menopausal-status"
+              options={MENOPAUSAL_OPTIONS}
+              value={menopausalStatus}
+              onChange={setMenopausalStatus}
+              stacked
+            />
+          )}
+
+          <ChoiceGroup
+            legend="¿Antecedente de fractura?"
+            name="profile-fracture-history"
+            options={FRACTURE_OPTIONS}
+            value={fractureAnswer}
+            onChange={setFractureAnswer}
+          />
 
           <label className="flex flex-col gap-1">
             <span className="text-sm font-medium">Alergias conocidas</span>
@@ -190,7 +262,6 @@ export function PatientProfileModal({ isOpen, onClose }: PatientProfileModalProp
             Guardar Perfil
           </button>
         </form>
-      </div>
-    </div>
+    </ModalDialog>
   );
 }

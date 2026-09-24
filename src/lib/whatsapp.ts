@@ -1,4 +1,3 @@
-import { getServiceById } from "./appointments/catalog";
 import type { Appointment } from "./appointments/types";
 import type { ProductPack } from "./products";
 
@@ -37,13 +36,11 @@ export function buildGeneralInquiryWhatsAppLink(): string {
   return buildWhatsAppLink(message);
 }
 
+/** Solo el código: el servicio (dato de salud) y la fecha los consulta el consultorio por código. */
 export function buildAppointmentConfirmationWhatsAppLink(
-  appointment: Appointment
+  appointment: Pick<Appointment, "code">
 ): string {
-  const service = getServiceById(appointment.serviceId);
-  const slotLabel = appointment.slot === "manana" ? "mañana" : "tarde";
-  const message = `Hola, quiero confirmar mi cita de ${service?.name ?? "Artikare"} (código ${appointment.code}) para el ${appointment.date} en el turno de ${slotLabel}.`;
-  return buildWhatsAppLink(message);
+  return buildWhatsAppLink(`Hola, quiero confirmar mi cita Artikare con código ${appointment.code}.`);
 }
 
 /** Solo abre la conversación: el informe se adjunta como archivo descargado, nunca en la URL. */

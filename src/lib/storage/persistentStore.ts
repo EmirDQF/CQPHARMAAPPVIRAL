@@ -11,10 +11,14 @@ export interface PersistentStore<T> {
  * Fábrica de stores respaldados por localStorage, compatibles con
  * useSyncExternalStore. Centraliza el patrón de lectura cacheada +
  * notificación que antes se repetía en cada módulo de dashboard/.
+ *
+ * `parse` valida/migra lo leído de localStorage. Si devuelve null, se usa
+ * `emptyValue` sin sobrescribir el dato guardado (para no perderlo).
  */
 export function createPersistentStore<T>(
   storageKey: string,
-  emptyValue: T
+  emptyValue: T,
+  parse?: (raw: unknown) => T | null
 ): PersistentStore<T> {
   const { subscribe, notify } = createListenerSet();
 
@@ -24,8 +28,18 @@ export function createPersistentStore<T>(
   function readFromStorage(): T {
     try {
       const raw = window.localStorage.getItem(storageKey);
-      return raw ? (JSON.parse(raw) as T) : emptyValue;
-    } catch {
+      if (!raw) return emptyValue;
+      const stored: unknown = JSON.parse(raw);
+      if (!parse) return stored as T;
+      const parsed = parse(stored);
+      if (parsed === null) {
+        console.error(`[storage] ${storageKey} tiene un formato inválido; se usa el valor vacío`);
+        return emptyValue;
+      }
+      return parsed;
+    } catch (error) {
+      // JSON corrupto o localStorage no disponible (modo privado).
+      console.error(`[storage] no se pudo leer ${storageKey}`, error);
       return emptyValue;
     }
   }

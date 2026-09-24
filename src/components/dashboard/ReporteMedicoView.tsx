@@ -3,15 +3,23 @@
 import Link from "next/link";
 import { useMemo, useState, useSyncExternalStore } from "react";
 import { appointmentsStore, getNextUpcomingAppointment } from "@/lib/appointments/store";
-import { buildBoneScanSummaryFromEntries, dexaVaultStore } from "@/lib/dashboard/dexaVault";
-import { patientProfileStore } from "@/lib/dashboard/patientProfile";
 import { painLogStore } from "@/lib/dashboard/painLog";
 import { pillboxStore } from "@/lib/dashboard/pillbox";
 import { CLINIC_TIME_ZONE } from "@/lib/clinical/constants";
+import { RED_FLAG_DESCRIPTION } from "@/lib/clinical/redFlags";
+import type { MenopausalStatus } from "@/lib/clinical/tScoreEligibility";
 import { buildClinicalReportSummary, describeStiffnessChange } from "@/lib/storage/clinicalReport";
+import type { BoneScanSummary } from "@/lib/dashboard/types";
 import type { RiskLevel } from "@/lib/types";
 import { DexaVaultModal } from "./DexaVaultModal";
 import { PainTrendChart } from "./PainTrendChart";
+import { useClinicalStatus } from "./useActiveRedFlags";
+
+const MENOPAUSAL_STATUS_LABEL: Record<MenopausalStatus, string> = {
+  premenopausica: "Premenopáusica",
+  posmenopausica: "Posmenopáusica",
+  "no-aplica": "No aplica / No sabe",
+};
 
 const semaphoreEmoji: Record<RiskLevel, string> = {
   bajo: "🟢",
@@ -27,6 +35,19 @@ function formatScanDate(isoDate: string): string {
   });
 }
 
+function describeScanObservation(scan: BoneScanSummary | null): string {
+  if (!scan) return "Sin densitometría registrada por el paciente.";
+  if (scan.interpretation === "z-score-required") {
+    return "Semáforo OMS por T-score no aplicable (mujer premenopáusica u hombre < 50 años): requiere interpretación médica con Z-score.";
+  }
+  return `Clasificación OMS por peor T-score: ${scan.diagnosisLabel}.`;
+}
+
+function describeFractureHistory(hasFractureHistory: boolean | null): string {
+  if (hasFractureHistory === null) return "No registrado";
+  return hasFractureHistory ? "Sí" : "No";
+}
+
 function formatGeneratedDate(): string {
   return new Date().toLocaleDateString("es-PE", {
     day: "numeric",
@@ -39,19 +60,7 @@ function formatGeneratedDate(): string {
 export function ReporteMedicoView() {
   const [isDexaModalOpen, setIsDexaModalOpen] = useState(false);
 
-  const dexaEntries = useSyncExternalStore(
-    dexaVaultStore.subscribe,
-    dexaVaultStore.getSnapshot,
-    dexaVaultStore.getServerSnapshot
-  );
-  const profile = useSyncExternalStore(
-    patientProfileStore.subscribe,
-    patientProfileStore.getSnapshot,
-    patientProfileStore.getServerSnapshot
-  );
-  const scan = buildBoneScanSummaryFromEntries(dexaEntries, {
-    hasFractureHistory: profile.hasFractureHistory,
-  });
+  const { profile, boneScan: scan, redFlags } = useClinicalStatus();
 
   const appointments = useSyncExternalStore(
     appointmentsStore.subscribe,
@@ -80,16 +89,20 @@ export function ReporteMedicoView() {
   const patientPhone = profile.phone || nextAppointment?.patient.phone || null;
 
   const observations: string[] = [
-    scan
-      ? `Clasificación OMS por peor T-score: ${scan.diagnosisLabel}.`
-      : "Sin densitometría registrada por el paciente.",
+    describeScanObservation(scan),
     summary.stiffnessReductionPercent !== null
       ? `La rigidez matutina reportada ${describeStiffnessChange(summary.stiffnessReductionPercent)} en el periodo evaluado.`
       : "Aún no hay suficientes días de registro para calcular la variación de rigidez matutina.",
     `Adherencia a la suplementación CQ Pharma en los últimos 30 días: ${summary.adherencePercent}%.`,
   ];
-  if (profile.hasFractureHistory) {
+  for (const flag of redFlags) {
+    observations.push(`Bandera roja: ${RED_FLAG_DESCRIPTION[flag]}`);
+  }
+  if (scan?.profileNote) observations.push(scan.profileNote);
+  if (profile.hasFractureHistory === true) {
     observations.push("Paciente con antecedente de fractura: seguimiento reumatológico prioritario.");
+  } else if (profile.hasFractureHistory === null) {
+    observations.push("Antecedente de fractura: no registrado por el paciente.");
   }
   if (profile.allergies.trim().length > 0) {
     observations.push(`Alergias conocidas: ${profile.allergies}.`);
@@ -107,7 +120,7 @@ export function ReporteMedicoView() {
             onClick={() => window.print()}
             className="min-h-12 rounded-xl bg-brand hover:bg-brand-dark text-white font-semibold px-5 transition-colors"
           >
-            🖨️ Imprimir / Guardar en PDF
+            <span aria-hidden="true">🖨️ </span>Imprimir / Guardar en PDF
           </button>
         </div>
 
@@ -138,9 +151,17 @@ export function ReporteMedicoView() {
             <span className="font-semibold">Peso aproximado: </span>
             {profile.weightKg !== null ? `${profile.weightKg} kg` : "No registrado"}
           </p>
+          {profile.sex === "femenino" && (
+            <p>
+              <span className="font-semibold">Estado menopáusico: </span>
+              {profile.menopausalStatus
+                ? MENOPAUSAL_STATUS_LABEL[profile.menopausalStatus]
+                : "No registrado"}
+            </p>
+          )}
           <p>
             <span className="font-semibold">Antecedente de fractura: </span>
-            {profile.hasFractureHistory ? "Sí" : "No"}
+            {describeFractureHistory(profile.hasFractureHistory)}
           </p>
           <p>
             <span className="font-semibold">Teléfono de contacto: </span>
@@ -159,7 +180,7 @@ export function ReporteMedicoView() {
                 Densitometría más reciente: {formatScanDate(scan.scanDate)}
               </p>
               <span className="text-2xl" aria-hidden="true">
-                {semaphoreEmoji[scan.riskLevel]}
+                {scan.riskLevel ? semaphoreEmoji[scan.riskLevel] : "🩺"}
               </span>
             </div>
             <p className="text-xs font-medium uppercase tracking-wide">
@@ -168,6 +189,13 @@ export function ReporteMedicoView() {
             <p className="text-4xl font-extrabold">{scan.worstTScore.toFixed(1)}</p>
             <p className="font-semibold uppercase">{scan.diagnosisLabel}</p>
             <p className="text-sm">{scan.diagnosisMessage}</p>
+            {scan.profileNote && (
+              <p role="note" className="text-sm font-semibold">
+                <span aria-hidden="true">⚠️ </span>
+                <span className="sr-only">Aviso: </span>
+                {scan.profileNote}
+              </p>
+            )}
           </section>
         ) : (
           <section className="rounded-2xl border-2 border-dashed border-neutral-300 dark:border-neutral-700 print:border-black px-6 py-5 flex flex-col gap-3">

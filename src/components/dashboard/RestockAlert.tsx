@@ -7,6 +7,7 @@ import { pillboxStore } from "@/lib/dashboard/pillbox";
 import type { DosePeriod } from "@/lib/dashboard/types";
 import { productPacks } from "@/lib/products";
 import { buildProductPackWhatsAppLink } from "@/lib/whatsapp";
+import { useActiveRedFlags } from "./useActiveRedFlags";
 
 const RESTOCK_PACK_ID_BY_PERIOD: Record<DosePeriod, string> = {
   morning: "movilidad-total",
@@ -20,7 +21,11 @@ export function RestockAlert() {
     pillboxStore.getSnapshot,
     pillboxStore.getServerSnapshot
   );
+  const hasRedFlag = useActiveRedFlags().length > 0;
   const bottlesToRestock = buildBottleStatuses(state).filter((bottle) => bottle.needsRestock);
+
+  // Con bandera roja no se ofrece reposición con descuento: primero el reumatólogo.
+  if (hasRedFlag) return null;
 
   return (
     <>

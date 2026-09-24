@@ -1,16 +1,11 @@
 "use client";
 
-import { useMemo, useState, useSyncExternalStore, type FormEvent } from "react";
-import {
-  addDexaScanEntry,
-  buildBoneScanSummaryFromEntries,
-  dexaVaultStore,
-  parseTScoreInput,
-  validateScanDate,
-} from "@/lib/dashboard/dexaVault";
-import { patientProfileStore } from "@/lib/dashboard/patientProfile";
+import { useState, type FormEvent } from "react";
+import { ModalDialog } from "@/components/ui/ModalDialog";
+import { addDexaScanEntry, parseTScoreInput, validateScanDate } from "@/lib/dashboard/dexaVault";
 import { toLimaIsoDate } from "@/lib/utils/date";
 import { DexaTrendChart } from "./DexaTrendChart";
+import { useClinicalStatus } from "./useActiveRedFlags";
 
 type DexaField = "lumbar" | "femoral" | "date" | "center";
 
@@ -34,28 +29,13 @@ interface DexaVaultModalProps {
 }
 
 export function DexaVaultModal({ isOpen, onClose }: DexaVaultModalProps) {
-  const entries = useSyncExternalStore(
-    dexaVaultStore.subscribe,
-    dexaVaultStore.getSnapshot,
-    dexaVaultStore.getServerSnapshot
-  );
+  const { dexaEntries: entries, boneScan: summary } = useClinicalStatus();
 
   const [lumbarTScore, setLumbarTScore] = useState("");
   const [femoralNeckTScore, setFemoralNeckTScore] = useState("");
   const [scanDate, setScanDate] = useState("");
   const [radiologyCenter, setRadiologyCenter] = useState("");
   const [touched, setTouched] = useState<Record<DexaField, boolean>>(NONE_TOUCHED);
-
-  const hasFractureHistory = useSyncExternalStore(
-    patientProfileStore.subscribe,
-    () => patientProfileStore.getSnapshot().hasFractureHistory,
-    () => patientProfileStore.getServerSnapshot().hasFractureHistory
-  );
-
-  const summary = useMemo(
-    () => buildBoneScanSummaryFromEntries(entries, { hasFractureHistory }),
-    [entries, hasFractureHistory]
-  );
 
   if (!isOpen) return null;
 
@@ -100,13 +80,7 @@ export function DexaVaultModal({ isOpen, onClose }: DexaVaultModalProps) {
   }
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="dexa-vault-heading"
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 px-4 py-6"
-    >
-      <div className="w-full max-w-lg max-h-full overflow-y-auto rounded-2xl bg-background border-2 border-neutral-200 dark:border-neutral-800 px-6 py-6 flex flex-col gap-5">
+    <ModalDialog labelledBy="dexa-vault-heading" onClose={onClose}>
         <div className="flex items-center justify-between">
           <h2 id="dexa-vault-heading" className="text-xl font-bold">
             Bóveda Densitométrica DEXA
@@ -127,6 +101,13 @@ export function DexaVaultModal({ isOpen, onClose }: DexaVaultModalProps) {
               {summary.diagnosisLabel} · Peor T-Score: {summary.worstTScore.toFixed(1)}
             </p>
             <p className="text-sm">{summary.diagnosisMessage}</p>
+            {summary.profileNote && (
+              <p role="note" className="text-sm font-semibold">
+                <span aria-hidden="true">⚠️ </span>
+                <span className="sr-only">Aviso: </span>
+                {summary.profileNote}
+              </p>
+            )}
           </div>
         )}
 
@@ -164,17 +145,17 @@ export function DexaVaultModal({ isOpen, onClose }: DexaVaultModalProps) {
           </div>
           <div aria-live="polite" className="flex flex-col gap-1">
             {lumbarError && (
-              <p id="dexa-lumbar-error" className="text-risk-high">
+              <p id="dexa-lumbar-error" className="text-risk-high dark:text-red-300">
                 Lumbar: {lumbarError}
               </p>
             )}
             {femoralError && (
-              <p id="dexa-femoral-error" className="text-risk-high">
+              <p id="dexa-femoral-error" className="text-risk-high dark:text-red-300">
                 Cuello femoral: {femoralError}
               </p>
             )}
             {hasPositiveTScore && (
-              <p className="text-risk-moderate">
+              <p className="text-risk-moderate dark:text-amber-300">
                 Ingresaste un T-score positivo. Verifica en tu informe que no falte el signo
                 menos (-).
               </p>
@@ -193,7 +174,7 @@ export function DexaVaultModal({ isOpen, onClose }: DexaVaultModalProps) {
               className="min-h-12 rounded-xl border-2 border-neutral-200 dark:border-neutral-700 px-3 bg-transparent"
             />
           </label>
-          <p id="dexa-date-error" aria-live="polite" className="text-risk-high empty:hidden">
+          <p id="dexa-date-error" aria-live="polite" className="text-risk-high dark:text-red-300 empty:hidden">
             {dateError}
           </p>
           <label className="flex flex-col gap-1">
@@ -208,7 +189,7 @@ export function DexaVaultModal({ isOpen, onClose }: DexaVaultModalProps) {
               placeholder="Ej. Clínica San Pablo"
             />
           </label>
-          <p id="dexa-center-error" aria-live="polite" className="text-risk-high empty:hidden">
+          <p id="dexa-center-error" aria-live="polite" className="text-risk-high dark:text-red-300 empty:hidden">
             {centerError}
           </p>
           <button
@@ -218,7 +199,6 @@ export function DexaVaultModal({ isOpen, onClose }: DexaVaultModalProps) {
             Guardar Estudio
           </button>
         </form>
-      </div>
-    </div>
+    </ModalDialog>
   );
 }

@@ -19,6 +19,10 @@ const semaphoreEmoji: Record<RiskLevel, string> = {
   alto: "🔴",
 };
 
+// Sin T-score aplicable no hay color OMS: tarjeta neutra con derivación médica.
+const Z_SCORE_STYLE = "bg-background text-foreground border-neutral-300 dark:border-neutral-700";
+const Z_SCORE_EMOJI = "🩺";
+
 function formatScanDate(isoDate: string): string {
   return new Date(`${isoDate}T00:00:00`).toLocaleDateString("es-PE", {
     day: "numeric",
@@ -71,20 +75,20 @@ export function BoneSemaphoreWidget({ scan, onUploadClick }: BoneSemaphoreWidget
   return (
     <section
       aria-labelledby="semaforo-oseo-heading"
-      className={`rounded-2xl border-2 px-6 py-6 flex flex-col gap-4 ${semaphoreStyles[scan.riskLevel]}`}
+      className={`rounded-2xl border-2 px-6 py-6 flex flex-col gap-4 ${scan.riskLevel ? semaphoreStyles[scan.riskLevel] : Z_SCORE_STYLE}`}
     >
       <div className="flex items-center justify-between gap-4">
-        <p className="text-sm font-semibold opacity-80">
+        <p className="text-sm font-semibold">
           Tu última densitometría: {formatScanDate(scan.scanDate)}
         </p>
         <span className="text-2xl" aria-hidden="true">
-          {semaphoreEmoji[scan.riskLevel]}
+          {scan.riskLevel ? semaphoreEmoji[scan.riskLevel] : Z_SCORE_EMOJI}
         </span>
       </div>
 
       <div className="flex items-end gap-4">
         <div>
-          <p className="text-xs font-medium uppercase tracking-wide opacity-70">
+          <p className="text-xs font-semibold uppercase tracking-wide">
             Peor T-Score (lumbar / cuello femoral)
           </p>
           <p id="semaforo-oseo-heading" className="text-6xl font-extrabold leading-none">
@@ -95,6 +99,17 @@ export function BoneSemaphoreWidget({ scan, onUploadClick }: BoneSemaphoreWidget
       </div>
 
       <p className="text-base font-medium">{scan.diagnosisMessage}</p>
+
+      {scan.profileNote && (
+        <p
+          role="note"
+          className="rounded-xl border-2 border-current bg-white/80 dark:bg-black/30 px-4 py-3 font-semibold"
+        >
+          <span aria-hidden="true">⚠️ </span>
+          <span className="sr-only">Aviso: </span>
+          {scan.profileNote}
+        </p>
+      )}
 
       {scan.riskLevel === "alto" && (
         <Link
@@ -112,12 +127,12 @@ export function BoneSemaphoreWidget({ scan, onUploadClick }: BoneSemaphoreWidget
         >
           Ver Gráfico Comparativo
         </a>
-        <span className="min-h-12 flex items-center justify-center rounded-xl px-4 text-sm font-semibold opacity-80">
+        <span className="min-h-12 flex items-center justify-center rounded-xl px-4 text-sm font-semibold">
           Próximo control: {scan.nextControlMonths} meses
         </span>
       </div>
 
-      <p className="text-xs opacity-70">
+      <p className="text-sm">
         Resultado informativo. La interpretación y el tratamiento los define tu médico.
       </p>
     </section>

@@ -76,7 +76,13 @@ describe("formatClinicalReportText bone data", () => {
   it("includes worst T-score, classification, date and fracture history", () => {
     const text = formatClinicalReportText(
       summary,
-      { worstTScore: -2.6, diagnosisLabel: "Osteoporosis", scanDate: "2026-08-15" },
+      {
+        worstTScore: -2.6,
+        diagnosisLabel: "Osteoporosis",
+        scanDate: "2026-08-15",
+        interpretation: "t-score",
+        profileNote: null,
+      },
       true
     );
     expect(text).toContain("Peor T-score -2.6 (Osteoporosis) · 2026-08-15");
@@ -88,5 +94,74 @@ describe("formatClinicalReportText bone data", () => {
     const text = formatClinicalReportText(summary, null, false);
     expect(text).toContain("Densitometría: Sin densitometría registrada");
     expect(text).toContain("Antecedente de fractura: No");
+  });
+});
+
+describe("formatClinicalReportText interpretation (B2)", () => {
+  const summary = {
+    averagePainLevel: null,
+    stiffnessReductionPercent: null,
+    adherencePercent: 0,
+    daysTracked: 0,
+  };
+
+  it("prints the Z-score referral instead of a WHO label", () => {
+    const text = formatClinicalReportText(
+      summary,
+      {
+        worstTScore: -2.8,
+        diagnosisLabel: "Consulte a su médico (Z-score)",
+        scanDate: "2026-08-15",
+        interpretation: "z-score-required",
+        profileNote: null,
+      },
+      false
+    );
+    expect(text).toContain("Consulte a su médico (Z-score)");
+    expect(text).not.toMatch(/Osteoporosis|Osteopenia|Normal/);
+  });
+
+  it("adds the profile note to a preliminary classification", () => {
+    const text = formatClinicalReportText(
+      summary,
+      {
+        worstTScore: -2.6,
+        diagnosisLabel: "Osteoporosis",
+        scanDate: "2026-08-15",
+        interpretation: "incomplete-profile",
+        profileNote: "Completa tu perfil para una evaluación exacta.",
+      },
+      false
+    );
+    expect(text).toContain("Completa tu perfil para una evaluación exacta.");
+  });
+
+  it("says the fracture question was not answered", () => {
+    expect(formatClinicalReportText(summary, null, null)).toContain(
+      "Antecedente de fractura: No registrado"
+    );
+  });
+});
+
+describe("formatClinicalReportText red flags", () => {
+  const summary = {
+    averagePainLevel: 8.5,
+    stiffnessReductionPercent: null,
+    adherencePercent: 0,
+    daysTracked: 5,
+  };
+
+  it("lists every active red flag for the specialist", () => {
+    const text = formatClinicalReportText(summary, null, true, [
+      "Registraste antecedente de fractura.",
+      "Registraste dolor de 8 o más durante 3 días seguidos en las últimas 2 semanas.",
+    ]);
+    expect(text).toContain("Banderas rojas: Registraste antecedente de fractura. · Registraste dolor");
+  });
+
+  it("states when there are no red flags", () => {
+    expect(formatClinicalReportText(summary, null, false, [])).toContain(
+      "Banderas rojas: Ninguna activa"
+    );
   });
 });

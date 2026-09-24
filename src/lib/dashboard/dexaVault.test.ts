@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   buildBoneScanSummaryFromEntries,
+  parseStoredDexaEntries,
   classifyTScore,
   parseTScoreInput,
   validateScanDate,
@@ -126,7 +127,7 @@ describe("buildBoneScanSummaryFromEntries with corrupted storage", () => {
   });
 });
 
-describe("buildBoneScanSummaryFromEntries with fracture history", () => {
+describe("buildBoneScanSummaryFromEntries with an active red flag", () => {
   const osteopeniaEntry: DexaScanEntry = {
     id: "dexa-1",
     date: "2026-01-10",
@@ -136,16 +137,79 @@ describe("buildBoneScanSummaryFromEntries with fracture history", () => {
   };
 
   it("replaces the supplement message with rheumatology-first guidance", () => {
-    const summary = buildBoneScanSummaryFromEntries([osteopeniaEntry], {
-      hasFractureHistory: true,
-    });
+    const summary = buildBoneScanSummaryFromEntries([osteopeniaEntry], { hasRedFlag: true });
     expect(summary?.diagnosisLabel).toBe("Osteopenia");
     expect(summary?.diagnosisMessage).not.toMatch(/Magnesio|suplemento puede/i);
     expect(summary?.diagnosisMessage).toMatch(/reumatólogo/);
   });
 
-  it("keeps the osteopenia message without fracture history", () => {
+  it("keeps the osteopenia message without red flags", () => {
     const summary = buildBoneScanSummaryFromEntries([osteopeniaEntry]);
     expect(summary?.diagnosisMessage).toMatch(/complementar tu tratamiento/);
+  });
+});
+
+describe("buildBoneScanSummaryFromEntries interpretation (B2)", () => {
+  const osteoporosisScan = scan({ lumbarTScore: -2.8, femoralNeckTScore: -2.1 });
+
+  it("replaces the WHO traffic light with a Z-score referral for a premenopausal woman", () => {
+    const summary = buildBoneScanSummaryFromEntries([osteoporosisScan], {
+      patient: { age: 42, sex: "femenino", menopausalStatus: "premenopausica" },
+    });
+    expect(summary?.interpretation).toBe("z-score-required");
+    expect(summary?.riskLevel).toBeNull();
+    expect(summary?.diagnosisLabel).toBe("Consulte a su médico (Z-score)");
+    expect(`${summary?.diagnosisLabel} ${summary?.diagnosisMessage}`).not.toMatch(
+      /Osteoporosis|Osteopenia|Normal|Magnesio/
+    );
+  });
+
+  it("keeps the WHO classification for a postmenopausal woman of any age", () => {
+    const summary = buildBoneScanSummaryFromEntries([osteoporosisScan], {
+      patient: { age: 45, sex: "femenino", menopausalStatus: "posmenopausica" },
+    });
+    expect(summary?.interpretation).toBe("t-score");
+    expect(summary?.riskLevel).toBe("alto");
+    expect(summary?.diagnosisLabel).toBe("Osteoporosis");
+    expect(summary?.profileNote).toBeNull();
+  });
+
+  it("shows a preliminary classification with a note when the profile is incomplete", () => {
+    const summary = buildBoneScanSummaryFromEntries([osteoporosisScan]);
+    expect(summary?.interpretation).toBe("incomplete-profile");
+    expect(summary?.riskLevel).toBe("alto");
+    expect(summary?.diagnosisLabel).toBe("Osteoporosis");
+    expect(summary?.profileNote).toBe("Completa tu perfil para una evaluación exacta.");
+  });
+
+  it("assumes the WHO classification with a precaution for a woman ≥ 50 without menopausal status", () => {
+    const summary = buildBoneScanSummaryFromEntries([osteoporosisScan], {
+      patient: { age: 58, sex: "femenino", menopausalStatus: "no-aplica" },
+    });
+    expect(summary?.interpretation).toBe("t-score-assumed");
+    expect(summary?.riskLevel).toBe("alto");
+    expect(summary?.profileNote).toMatch(/estado menopáusico/);
+  });
+});
+
+describe("low bone density in a Z-score patient", () => {
+  it("shortens the next control like osteoporosis without using the WHO label", () => {
+    const summary = buildBoneScanSummaryFromEntries(
+      [scan({ lumbarTScore: -2.6, femoralNeckTScore: -1.9 })],
+      { patient: { age: 38, sex: "masculino", menopausalStatus: null } }
+    );
+    expect(summary?.interpretation).toBe("z-score-required");
+    expect(summary?.nextControlMonths).toBe(6);
+  });
+});
+
+describe("parseStoredDexaEntries (artikare_dexa_vault_v1)", () => {
+  it("keeps a stored array untouched", () => {
+    const stored = [scan({ id: "a" })];
+    expect(parseStoredDexaEntries(stored)).toEqual(stored);
+  });
+
+  it.each([null, "texto", { id: "a" }])("rejects a non-array value %j", (raw) => {
+    expect(parseStoredDexaEntries(raw)).toBeNull();
   });
 });

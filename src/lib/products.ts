@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export type ProductBadge = "Salud Articular" | "Salud Ósea" | "Flexibilidad";
 
 export interface ProductPack {
@@ -68,3 +70,23 @@ export const productPacks: ProductPack[] = [
     priceNote: "Mayor retención y valor a largo plazo (LTV)",
   },
 ];
+
+/**
+ * Suplemento individual del catálogo CQ Pharma. Todos los campos regulatorios
+ * son obligatorios: ningún producto (p. ej. Kolflex) se publica sin su
+ * registro sanitario DIGEMID, composición, presentación, tomas y precio.
+ */
+export const supplementProductSchema = z.object({
+  id: z.string().trim().min(1),
+  name: z.string().trim().min(1),
+  composition: z.array(z.string().trim().min(1)).min(1),
+  digemidRegistration: z.string().trim().min(1),
+  presentation: z.string().trim().min(1),
+  dosesPerBottle: z.number().int().positive(),
+  pricePen: z.number().positive(),
+});
+
+export type SupplementProduct = z.infer<typeof supplementProductSchema>;
+
+/** Vacío hasta recibir los datos regulatorios de cada producto (Hito F). */
+export const supplementProducts: SupplementProduct[] = [];

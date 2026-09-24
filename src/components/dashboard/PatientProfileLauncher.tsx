@@ -16,7 +16,8 @@ export function PatientProfileLauncher() {
       >
         👤
       </button>
-      <PatientProfileModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      {/* Montaje condicional: al abrir, el formulario lee el perfil guardado (no el del SSR). */}
+      {isOpen && <PatientProfileModal onClose={() => setIsOpen(false)} />}
     </>
   );
 }

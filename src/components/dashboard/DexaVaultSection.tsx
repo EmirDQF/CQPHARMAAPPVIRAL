@@ -1,27 +1,14 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
-import { buildBoneScanSummaryFromEntries, dexaVaultStore } from "@/lib/dashboard/dexaVault";
-import { patientProfileStore } from "@/lib/dashboard/patientProfile";
+import { useState } from "react";
 import { BoneSemaphoreWidget } from "./BoneSemaphoreWidget";
 import { DexaTrendChart } from "./DexaTrendChart";
 import { DexaVaultModal } from "./DexaVaultModal";
+import { useClinicalStatus } from "./useActiveRedFlags";
 
 export function DexaVaultSection() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const entries = useSyncExternalStore(
-    dexaVaultStore.subscribe,
-    dexaVaultStore.getSnapshot,
-    dexaVaultStore.getServerSnapshot
-  );
-  const profile = useSyncExternalStore(
-    patientProfileStore.subscribe,
-    patientProfileStore.getSnapshot,
-    patientProfileStore.getServerSnapshot
-  );
-  const scan = buildBoneScanSummaryFromEntries(entries, {
-    hasFractureHistory: profile.hasFractureHistory,
-  });
+  const { dexaEntries: entries, boneScan: scan } = useClinicalStatus();
 
   return (
     <div className="flex flex-col gap-6">
@@ -40,7 +27,7 @@ export function DexaVaultSection() {
             onClick={() => setIsModalOpen(true)}
             className="min-h-12 self-start rounded-xl border-2 border-brand text-brand font-semibold px-4 hover:bg-brand-light dark:hover:bg-brand-dark/30 transition-colors"
           >
-            📋 Actualizar mi Bóveda DEXA
+            <span aria-hidden="true">📋 </span>Actualizar mi Bóveda DEXA
           </button>
         </>
       )}

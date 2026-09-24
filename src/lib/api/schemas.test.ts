@@ -5,7 +5,7 @@ import { createAppointmentBodySchema, createLeadBodySchema } from "./schemas";
 const consent = createConsentRecord(new Date("2026-09-24T15:00:00Z"));
 
 const validAppointment = {
-  code: "ART-ABC123",
+  code: "ART-ABC234",
   serviceId: "densitometria",
   date: "2026-09-25",
   slot: "manana",
@@ -35,6 +35,12 @@ describe("createAppointmentBodySchema", () => {
     expect(
       createAppointmentBodySchema.safeParse({ ...validAppointment, date: "25/09/2026" }).success
     ).toBe(false);
+  });
+
+  it("rejects codes outside the generator alphabet", () => {
+    for (const code of ["ART-ABC1O0", "ART-abc234", "ART-ABC23"]) {
+      expect(createAppointmentBodySchema.safeParse({ ...validAppointment, code }).success).toBe(false);
+    }
   });
 });
 

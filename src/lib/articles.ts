@@ -27,17 +27,17 @@ export const articles: Article[] = [
   },
   {
     slug: "peligro-de-tomar-calcio-solo",
-    title: "El peligro de tomar calcio solo: lo que nadie te dice",
+    title: "Tomar calcio por tu cuenta: lo que debes saber",
     excerpt:
-      "Tomar calcio sin Citrato de Magnesio ni Vitamina D3 puede terminar calcificando arterias o formando cálculos, en lugar de fortalecer tus huesos.",
+      "El calcio en suplementos, tomado sin indicación médica, se ha asociado a cálculos renales y su efecto cardiovascular sigue en debate. Esto es lo que debes saber.",
     tag: "Mito vs. Evidencia",
     readTimeMinutes: 2,
     publishedAt: "2026-08-11",
     content: [
       "Cuando se detecta baja densidad ósea, el primer reflejo suele ser \"voy a tomar calcio\". Pero el calcio, tomado de forma aislada, no necesariamente termina donde debería: en el hueso.",
-      "El calcio necesita transporte y dirección. La Vitamina D3 es la que permite que el intestino absorba el calcio de forma eficiente, y el Magnesio (idealmente en forma de Citrato, de mejor biodisponibilidad) participa activamente en el metabolismo óseo y ayuda a que ese calcio se fije en la matriz ósea.",
-      "Sin ese equilibrio, parte del calcio circulante puede depositarse en tejidos blandos: paredes arteriales o riñones, en vez de integrarse al hueso. Esta es una de las razones por las que la suplementación de calcio aislado, sin acompañamiento, genera debate en la literatura médica.",
-      "Por eso un protocolo clínico de nutrición celular ósea combina Citrato de Magnesio de alta pureza, Vitamina D3 y, cuando corresponde, Zinc quelado, en lugar de indicar calcio como única variable.",
+      "El calcio necesita transporte y dirección. La Vitamina D3 es la que permite que el intestino absorba el calcio de forma eficiente, y el Magnesio (idealmente en forma de Citrato, de mejor biodisponibilidad) participa en el metabolismo óseo y contribuye al mantenimiento normal de los huesos.",
+      "Algunos estudios han asociado la suplementación de calcio aislado con cálculos renales, y su posible efecto cardiovascular sigue en debate en la literatura médica. Ningún suplemento elimina ese riesgo: la dosis adecuada de calcio la define tu médico.",
+      "Por eso, cuando tu médico lo indica, un protocolo de nutrición ósea puede combinar Citrato de Magnesio, Vitamina D3 y Zinc como complemento de tu tratamiento, en lugar de tomar calcio por tu cuenta.",
       "Este contenido es informativo. La indicación de cualquier suplemento debe estar respaldada por evaluación médica y, cuando sea posible, por una densitometría ósea.",
     ],
   },

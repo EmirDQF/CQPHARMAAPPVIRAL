@@ -8,7 +8,7 @@ import { patientProfileStore } from "@/lib/dashboard/patientProfile";
 import { painLogStore } from "@/lib/dashboard/painLog";
 import { pillboxStore } from "@/lib/dashboard/pillbox";
 import { CLINIC_TIME_ZONE } from "@/lib/clinical/constants";
-import { buildClinicalReportSummary } from "@/lib/storage/clinicalReport";
+import { buildClinicalReportSummary, describeStiffnessChange } from "@/lib/storage/clinicalReport";
 import type { RiskLevel } from "@/lib/types";
 import { DexaVaultModal } from "./DexaVaultModal";
 import { PainTrendChart } from "./PainTrendChart";
@@ -44,13 +44,14 @@ export function ReporteMedicoView() {
     dexaVaultStore.getSnapshot,
     dexaVaultStore.getServerSnapshot
   );
-  const scan = buildBoneScanSummaryFromEntries(dexaEntries);
-
   const profile = useSyncExternalStore(
     patientProfileStore.subscribe,
     patientProfileStore.getSnapshot,
     patientProfileStore.getServerSnapshot
   );
+  const scan = buildBoneScanSummaryFromEntries(dexaEntries, {
+    hasFractureHistory: profile.hasFractureHistory,
+  });
 
   const appointments = useSyncExternalStore(
     appointmentsStore.subscribe,
@@ -83,7 +84,7 @@ export function ReporteMedicoView() {
       ? `Clasificación OMS por peor T-score: ${scan.diagnosisLabel}.`
       : "Sin densitometría registrada por el paciente.",
     summary.stiffnessReductionPercent !== null
-      ? `La rigidez matutina reportada cambió ${summary.stiffnessReductionPercent}% en el periodo evaluado.`
+      ? `La rigidez matutina reportada ${describeStiffnessChange(summary.stiffnessReductionPercent)} en el periodo evaluado.`
       : "Aún no hay suficientes días de registro para calcular la variación de rigidez matutina.",
     `Adherencia a la suplementación CQ Pharma en los últimos 30 días: ${summary.adherencePercent}%.`,
   ];

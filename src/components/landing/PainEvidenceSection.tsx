@@ -24,11 +24,10 @@ export function PainEvidenceSection() {
           La trampa del colágeno común
         </p>
         <p className="text-sm text-neutral-700 dark:text-neutral-800">
-          Tomar colágeno sin Magnesio ni Vitamina C es incompleto: la Vitamina
-          C es indispensable para que el cuerpo sintetice colágeno de forma
-          estable, y el Citrato de Magnesio participa directamente en la
-          fijación mineral del hueso. Sin ese acompañamiento, gran parte del
-          efecto esperado simplemente no ocurre.
+          La Vitamina C contribuye a la formación normal de colágeno y el
+          Magnesio contribuye al mantenimiento normal de los huesos. Por eso
+          nuestros packs combinan estos nutrientes, siempre como complemento
+          de las indicaciones de tu médico.
         </p>
       </div>
     </section>

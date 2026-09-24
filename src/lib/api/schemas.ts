@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { APPOINTMENT_CODE_PATTERN } from "../appointments/generateCode";
 import type { AppointmentBookedBy, AppointmentSlot, ClinicalServiceId } from "../appointments/types";
 import { consentRecordSchema } from "../privacy/consent";
 import type { RiskLevel } from "../types";
@@ -23,10 +24,7 @@ const phoneSchema = z
   .regex(/^[+\d\s-]+$/);
 
 export const createAppointmentBodySchema = z.object({
-  code: z
-    .string()
-    .regex(/^ART-[A-Z0-9]{6}$/)
-    .optional(),
+  code: z.string().regex(APPOINTMENT_CODE_PATTERN).optional(),
   serviceId: z.enum(CLINICAL_SERVICE_IDS),
   date: z.iso.date(),
   slot: z.enum(APPOINTMENT_SLOTS),

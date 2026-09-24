@@ -16,6 +16,11 @@ export const consentRecordSchema = z.object({
 
 export type ConsentRecord = z.infer<typeof consentRecordSchema>;
 
+/** Un consentimiento de una versión anterior de la política no vale: hay que pedirlo de nuevo. */
+export function isConsentCurrent(consent: ConsentRecord | undefined): boolean {
+  return consent?.consentVersion === CONSENT_VERSION;
+}
+
 export function createConsentRecord(now: Date = new Date()): ConsentRecord {
   return { consentAt: now.toISOString(), consentVersion: CONSENT_VERSION };
 }

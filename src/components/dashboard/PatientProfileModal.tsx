@@ -3,7 +3,7 @@
 import { useState, useSyncExternalStore, type FormEvent } from "react";
 import { ConsentCheckbox } from "@/components/privacy/ConsentCheckbox";
 import { patientProfileStore } from "@/lib/dashboard/patientProfile";
-import { createConsentRecord } from "@/lib/privacy/consent";
+import { createConsentRecord, isConsentCurrent } from "@/lib/privacy/consent";
 import type { Sex } from "@/lib/types";
 
 interface PatientProfileModalProps {
@@ -26,7 +26,7 @@ export function PatientProfileModal({ isOpen, onClose }: PatientProfileModalProp
   const [allergies, setAllergies] = useState(profile.allergies);
   const [phone, setPhone] = useState(profile.phone);
   const [hasConsented, setHasConsented] = useState(false);
-  const needsConsent = profile.consent === undefined;
+  const needsConsent = !isConsentCurrent(profile.consent);
 
   if (!isOpen) return null;
 
@@ -44,7 +44,7 @@ export function PatientProfileModal({ isOpen, onClose }: PatientProfileModalProp
       hasFractureHistory,
       allergies: allergies.trim(),
       phone: phone.trim(),
-      consent: profile.consent ?? createConsentRecord(),
+      consent: needsConsent ? createConsentRecord() : profile.consent,
     });
     onClose();
   }

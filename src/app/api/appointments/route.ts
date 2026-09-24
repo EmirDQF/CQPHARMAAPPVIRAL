@@ -24,6 +24,9 @@ export async function POST(request: NextRequest) {
   }
 
   const { code, ...input } = parsed.data;
+  if (code && registeredAppointments.some((item) => item.code === code)) {
+    return apiError("Ya existe una cita con ese código", 409);
+  }
   const appointment: Appointment = {
     ...input,
     code: code ?? generateAppointmentCode(),
@@ -35,22 +38,8 @@ export async function POST(request: NextRequest) {
   return apiSuccess({ code: appointment.code }, 201);
 }
 
-export async function GET(request: NextRequest) {
-  const code = request.nextUrl.searchParams.get("code");
-
-  if (code) {
-    const appointment = registeredAppointments.find((item) => item.code === code);
-    if (!appointment) {
-      return apiError("No se encontró ninguna cita con ese código", 404);
-    }
-    // El código viaja en la URL: la respuesta nunca incluye datos personales.
-    return apiSuccess({
-      code: appointment.code,
-      serviceId: appointment.serviceId,
-      date: appointment.date,
-      slot: appointment.slot,
-    });
-  }
-
+// Sin búsqueda por código: un código adivinable no debe revelar datos de la cita.
+// La consulta autenticada llega con Supabase (Fase 1).
+export async function GET() {
   return apiSuccess({ availableDays: buildAvailableDays() });
 }

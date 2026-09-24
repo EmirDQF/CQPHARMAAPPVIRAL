@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   buildClinicalReportSummary,
+  describeStiffnessChange,
   formatClinicalReportText,
   selectLast30DaysEntries,
 } from "./clinicalReport";
@@ -51,5 +52,41 @@ describe("buildClinicalReportSummary", () => {
   it("formats an explicit 'no data' line when nothing was registered", () => {
     const summary = buildClinicalReportSummary([], { takenDoseIdsByDate: {} }, NOON_IN_LIMA_SEP_30);
     expect(formatClinicalReportText(summary)).toContain("Sin registros de dolor");
+  });
+});
+
+describe("describeStiffnessChange", () => {
+  it.each([
+    [30, "disminuyó 30%"],
+    [-20, "aumentó 20%"],
+    [0, "se mantuvo sin cambios"],
+  ] as const)("%s → %s", (percent, expected) => {
+    expect(describeStiffnessChange(percent)).toBe(expected);
+  });
+});
+
+describe("formatClinicalReportText bone data", () => {
+  const summary = {
+    averagePainLevel: 4,
+    stiffnessReductionPercent: 30,
+    adherencePercent: 80,
+    daysTracked: 10,
+  };
+
+  it("includes worst T-score, classification, date and fracture history", () => {
+    const text = formatClinicalReportText(
+      summary,
+      { worstTScore: -2.6, diagnosisLabel: "Osteoporosis", scanDate: "2026-08-15" },
+      true
+    );
+    expect(text).toContain("Peor T-score -2.6 (Osteoporosis) · 2026-08-15");
+    expect(text).toContain("Antecedente de fractura: Sí");
+    expect(text).toContain("disminuyó 30%");
+  });
+
+  it("never invents a T-score when there is no scan", () => {
+    const text = formatClinicalReportText(summary, null, false);
+    expect(text).toContain("Densitometría: Sin densitometría registrada");
+    expect(text).toContain("Antecedente de fractura: No");
   });
 });

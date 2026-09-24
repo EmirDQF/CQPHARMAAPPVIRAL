@@ -1,4 +1,4 @@
-export type ProductBadge = "Alivio de Dolor" | "Densidad Ósea" | "Flexibilidad";
+export type ProductBadge = "Salud Articular" | "Salud Ósea" | "Flexibilidad";
 
 export interface ProductPack {
   id: string;
@@ -15,7 +15,7 @@ export const productPacks: ProductPack[] = [
     id: "diagnostico-oseo",
     name: "Pack Diagnóstico Óseo",
     tagline: "Densitometría + lectura de T-Score + asesoría nutricional inicial",
-    badges: ["Densidad Ósea"],
+    badges: ["Salud Ósea"],
     formula: [
       "Densitometría ósea computarizada",
       "Lectura médica de T-Score",
@@ -29,35 +29,35 @@ export const productPacks: ProductPack[] = [
     id: "movilidad-total",
     name: "Pack Movilidad Total",
     tagline: "Colágeno hidrolizado + Citrato de Magnesio + Vitamina C pura",
-    badges: ["Alivio de Dolor", "Flexibilidad"],
+    badges: ["Salud Articular", "Flexibilidad"],
     formula: [
       "Colágeno hidrolizado bioasimilable",
       "Citrato de Magnesio de alta pureza",
       "Vitamina C pura",
     ],
     indication:
-      "Artrosis, rigidez matutina y desgaste de cartílago en rodillas o manos.",
+      "Acompaña el cuidado articular indicado por tu médico si tienes rigidez matutina o molestias en rodillas o manos.",
     priceNote: "Consumo diario, producto de alta rotación",
   },
   {
     id: "hueso-fuerte-360",
     name: "Pack Hueso Fuerte 360",
     tagline: "Citrato de Magnesio + Vitamina D3 + Zinc quelado",
-    badges: ["Densidad Ósea"],
+    badges: ["Salud Ósea"],
     formula: [
       "Citrato de Magnesio de alta pureza",
       "Vitamina D3",
       "Zinc quelado",
     ],
     indication:
-      "Osteopenia, prevención de osteoporosis y fijación de calcio en el hueso.",
-    priceNote: "Complemento obligatorio post-densitometría",
+      "Apoya tu salud ósea como complemento del tratamiento que indique tu médico tras tu densitometría.",
+    priceNote: "Complemento sugerido tras la densitometría",
   },
   {
     id: "artikare-365",
     name: "Suscripción Artikare 365",
     tagline: "Entrega bimestral a domicilio + densitometría de control anual",
-    badges: ["Densidad Ósea", "Alivio de Dolor", "Flexibilidad"],
+    badges: ["Salud Ósea", "Salud Articular", "Flexibilidad"],
     formula: [
       "Reabastecimiento bimestral de tu protocolo",
       "Densitometría de control incluida cada 12 meses",

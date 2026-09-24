@@ -54,7 +54,7 @@ export function calculateRisk(
       label: "RIESGO MODERADO",
       emoji: "🟨",
       message:
-        "Detectamos señales de desmineralización y rigidez matutina. Recuerda: la pérdida ósea no avisa con dolor, avisa con fracturas.",
+        "Tus respuestas sugieren factores de riesgo óseo y rigidez matutina. Recuerda: la pérdida ósea no avisa con dolor, avisa con fracturas.",
       diagnosticSuggestion: "Densitometría Ósea Preventiva",
       supplementProtocol: "Nutrición Celular: Protocolo Citrato de Magnesio + D3",
     };
@@ -70,6 +70,7 @@ export function calculateRisk(
     message:
       "Tus respuestas indican señales importantes de desgaste articular y riesgo óseo. Te recomendamos una evaluación médica cuanto antes.",
     diagnosticSuggestion: "Densitometría Ósea + Lectura Médica Preventiva",
-    supplementProtocol: "Pack Hueso Fuerte 360: Citrato de Magnesio + D3 + Zinc",
+    supplementProtocol:
+      "Primero tu evaluación médica. Si tu médico lo indica, el Pack Hueso Fuerte 360 puede complementar tu tratamiento.",
   };
 }

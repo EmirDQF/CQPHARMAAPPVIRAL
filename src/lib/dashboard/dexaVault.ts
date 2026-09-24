@@ -1,6 +1,8 @@
 import {
   CONTROL_MONTHS_DEFAULT,
   CONTROL_MONTHS_OSTEOPOROSIS,
+  T_SCORE_INPUT_MAX,
+  T_SCORE_INPUT_MIN,
   WHO_T_SCORE_NORMAL_MIN,
   WHO_T_SCORE_OSTEOPOROSIS_MAX,
 } from "../clinical/constants";
@@ -38,6 +40,59 @@ const DIAGNOSIS_MESSAGE: Record<RiskLevel, string> = {
   alto: "Requiere seguimiento reumatológico. Consulta con tu reumatólogo antes de iniciar o cambiar cualquier suplemento.",
 };
 
+// Con antecedente de fractura, cualquier resultado se maneja como bandera roja: primero el reumatólogo.
+const RED_FLAG_DIAGNOSIS_MESSAGE = DIAGNOSIS_MESSAGE.alto;
+
+const T_SCORE_INPUT_PATTERN = /^[-+]?\d{1,2}(\.\d{1,2})?$/;
+// Signo menos Unicode (U+2212) y guiones en/em que aparecen al copiar desde un PDF.
+const MINUS_LIKE_CHARACTERS = /[−–—]/g;
+
+export type TScoreInputResult = { ok: true; value: number } | { ok: false; error: string };
+
+/** Valida un T-score tecleado por el paciente (acepta coma decimal, rechaza valores imposibles). */
+export function parseTScoreInput(raw: string): TScoreInputResult {
+  const normalized = raw.trim().replace(MINUS_LIKE_CHARACTERS, "-").replace(",", ".");
+  if (!T_SCORE_INPUT_PATTERN.test(normalized)) {
+    return { ok: false, error: "Ingresa un número como -1.6" };
+  }
+  const value = Number(normalized);
+  if (value < T_SCORE_INPUT_MIN || value > T_SCORE_INPUT_MAX) {
+    return {
+      ok: false,
+      error: `El T-score debe estar entre ${T_SCORE_INPUT_MIN.toFixed(1)} y +${T_SCORE_INPUT_MAX.toFixed(1)}. Revisa tu informe.`,
+    };
+  }
+  return { ok: true, value };
+}
+
+const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+
+/** Devuelve un mensaje de error o null. `todayIso` es la fecha de hoy en Lima. */
+export function validateScanDate(scanDate: string, todayIso: string): string | null {
+  if (!ISO_DATE_PATTERN.test(scanDate)) return "Ingresa la fecha del estudio";
+  if (scanDate > todayIso) return "La fecha del estudio no puede ser futura";
+  return null;
+}
+
+function isPlausibleTScore(value: unknown): value is number {
+  return (
+    typeof value === "number" &&
+    Number.isFinite(value) &&
+    value >= T_SCORE_INPUT_MIN &&
+    value <= T_SCORE_INPUT_MAX
+  );
+}
+
+/** Descarta entradas corruptas de localStorage: un NaN mostraría "Osteoporosis" sin bandera roja. */
+function isValidDexaEntry(entry: DexaScanEntry): boolean {
+  return (
+    typeof entry.date === "string" &&
+    ISO_DATE_PATTERN.test(entry.date) &&
+    isPlausibleTScore(entry.lumbarTScore) &&
+    isPlausibleTScore(entry.femoralNeckTScore)
+  );
+}
+
 function worstTScoreOf(entry: DexaScanEntry): number {
   return Math.min(entry.lumbarTScore, entry.femoralNeckTScore);
 }
@@ -54,14 +109,18 @@ export function addDexaScanEntry(entry: Omit<DexaScanEntry, "id">): void {
  * Deriva el resumen del semáforo óseo a partir del estudio DEXA más
  * reciente, usando siempre el peor de los dos T-Score (lumbar / cuello
  * femoral). Devuelve null si el paciente no registró ningún estudio: nunca
- * se muestra un T-score que el paciente no haya cargado.
+ * se muestra un T-score que el paciente no haya cargado. Con antecedente de
+ * fractura, el mensaje prioriza la evaluación reumatológica sobre cualquier
+ * suplemento.
  */
 export function buildBoneScanSummaryFromEntries(
-  entries: DexaScanEntry[]
+  entries: DexaScanEntry[],
+  { hasFractureHistory = false }: { hasFractureHistory?: boolean } = {}
 ): BoneScanSummary | null {
-  if (entries.length === 0) return null;
+  const validEntries = entries.filter(isValidDexaEntry);
+  if (validEntries.length === 0) return null;
 
-  const latest = entries[entries.length - 1];
+  const latest = validEntries[validEntries.length - 1];
   const worst = worstTScoreOf(latest);
   const riskLevel = classifyTScore(worst);
 
@@ -70,7 +129,7 @@ export function buildBoneScanSummaryFromEntries(
     worstTScore: worst,
     riskLevel,
     diagnosisLabel: DIAGNOSIS_LABEL[riskLevel],
-    diagnosisMessage: DIAGNOSIS_MESSAGE[riskLevel],
+    diagnosisMessage: hasFractureHistory ? RED_FLAG_DIAGNOSIS_MESSAGE : DIAGNOSIS_MESSAGE[riskLevel],
     nextControlMonths:
       riskLevel === "alto" ? CONTROL_MONTHS_OSTEOPOROSIS : CONTROL_MONTHS_DEFAULT,
   };

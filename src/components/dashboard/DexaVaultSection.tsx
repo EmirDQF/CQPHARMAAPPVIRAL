@@ -2,6 +2,7 @@
 
 import { useState, useSyncExternalStore } from "react";
 import { buildBoneScanSummaryFromEntries, dexaVaultStore } from "@/lib/dashboard/dexaVault";
+import { patientProfileStore } from "@/lib/dashboard/patientProfile";
 import { BoneSemaphoreWidget } from "./BoneSemaphoreWidget";
 import { DexaTrendChart } from "./DexaTrendChart";
 import { DexaVaultModal } from "./DexaVaultModal";
@@ -13,7 +14,14 @@ export function DexaVaultSection() {
     dexaVaultStore.getSnapshot,
     dexaVaultStore.getServerSnapshot
   );
-  const scan = buildBoneScanSummaryFromEntries(entries);
+  const profile = useSyncExternalStore(
+    patientProfileStore.subscribe,
+    patientProfileStore.getSnapshot,
+    patientProfileStore.getServerSnapshot
+  );
+  const scan = buildBoneScanSummaryFromEntries(entries, {
+    hasFractureHistory: profile.hasFractureHistory,
+  });
 
   return (
     <div className="flex flex-col gap-6">

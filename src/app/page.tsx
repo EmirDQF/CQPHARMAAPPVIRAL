@@ -23,7 +23,7 @@ export default function Home() {
               que el dolor limite tu vida.
             </h1>
             <p className="text-neutral-600 dark:text-neutral-300 text-balance">
-              Evaluación médica interactiva en 2 minutos, densitometría ósea
+              Test orientativo interactivo en 2 minutos, densitometría ósea
               precisa y nutrición celular clínica.
             </p>
           </div>

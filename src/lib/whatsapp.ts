@@ -1,7 +1,6 @@
 import { getServiceById } from "./appointments/catalog";
 import type { Appointment } from "./appointments/types";
 import type { ProductPack } from "./products";
-import type { RiskResult } from "./types";
 
 const FALLBACK_WHATSAPP_NUMBER = "51999999999";
 
@@ -14,14 +13,17 @@ function buildWhatsAppLink(message: string): string {
   return `https://wa.me/${digitsOnly}?text=${encodeURIComponent(message)}`;
 }
 
-export function buildDensitometriaWhatsAppLink(result: RiskResult): string {
-  const message = `Hola, hice el Test de Edad Articular de Artikare. Mi edad articular estimada es ${result.articularAge} años (${result.label}). Quisiera agendar mi ${result.diagnosticSuggestion}.`;
-  return buildWhatsAppLink(message);
+// Los mensajes prellenados nunca llevan datos de salud: viajan en la URL (?text=).
+export function buildDensitometriaWhatsAppLink(): string {
+  return buildWhatsAppLink(
+    "Hola, hice el Test de Edad Articular de Artikare y quisiera agendar una densitometría ósea."
+  );
 }
 
-export function buildSupplementWhatsAppLink(result: RiskResult): string {
-  const message = `Hola, hice el Test de Edad Articular de Artikare. Mi resultado fue ${result.label} (edad articular ${result.articularAge} años). Quisiera información sobre el ${result.supplementProtocol}.`;
-  return buildWhatsAppLink(message);
+export function buildSupplementWhatsAppLink(): string {
+  return buildWhatsAppLink(
+    "Hola, hice el Test de Edad Articular de Artikare y quisiera información sobre los packs CQ Pharma."
+  );
 }
 
 export function buildProductPackWhatsAppLink(pack: ProductPack): string {
@@ -44,6 +46,9 @@ export function buildAppointmentConfirmationWhatsAppLink(
   return buildWhatsAppLink(message);
 }
 
-export function buildClinicalReportWhatsAppLink(reportText: string): string {
-  return buildWhatsAppLink(reportText);
+/** Solo abre la conversación: el informe se adjunta como archivo descargado, nunca en la URL. */
+export function buildClinicalReportWhatsAppLink(): string {
+  return buildWhatsAppLink(
+    "Hola, quiero compartir mi informe de seguimiento Artikare. Te lo envío como archivo adjunto."
+  );
 }

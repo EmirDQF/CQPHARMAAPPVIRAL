@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { RiskResult } from "@/lib/types";
 import {
   buildDensitometriaWhatsAppLink,
@@ -16,8 +17,9 @@ const riskStyles: Record<RiskResult["riskLevel"], string> = {
 };
 
 export function ResultCard({ result, onRestart }: ResultCardProps) {
-  const densitometriaLink = buildDensitometriaWhatsAppLink(result);
-  const supplementLink = buildSupplementWhatsAppLink(result);
+  const densitometriaLink = buildDensitometriaWhatsAppLink();
+  const supplementLink = buildSupplementWhatsAppLink();
+  const needsRheumatologyReview = result.riskLevel === "alto";
 
   return (
     <div className="w-full max-w-md mx-auto rounded-2xl border border-neutral-200 dark:border-neutral-800 overflow-hidden shadow-sm">
@@ -57,7 +59,7 @@ export function ResultCard({ result, onRestart }: ResultCardProps) {
 
         <div className="flex flex-col gap-2 text-sm">
           <div className="rounded-lg bg-neutral-100 dark:bg-neutral-900 px-4 py-3">
-            <p className="font-medium">Diagnóstico sugerido</p>
+            <p className="font-medium">Estudio recomendado</p>
             <p className="text-neutral-600 dark:text-neutral-400">
               {result.diagnosticSuggestion}
             </p>
@@ -70,7 +72,20 @@ export function ResultCard({ result, onRestart }: ResultCardProps) {
           </div>
         </div>
 
+        <p className="text-xs text-neutral-500">
+          Este test es orientativo y no reemplaza un diagnóstico médico
+          profesional. Consulta a tu especialista en reumatología.
+        </p>
+
         <div className="flex flex-col gap-3 pt-2">
+          {needsRheumatologyReview && (
+            <Link
+              href="/citas"
+              className="w-full text-center rounded-xl bg-risk-high text-white font-semibold px-4 py-3"
+            >
+              Agendar evaluación reumatológica
+            </Link>
+          )}
           <a
             href={densitometriaLink}
             target="_blank"
@@ -95,11 +110,6 @@ export function ResultCard({ result, onRestart }: ResultCardProps) {
             Volver a hacer el test
           </button>
         </div>
-
-        <p className="text-xs text-neutral-400 border-t border-neutral-200 dark:border-neutral-800 pt-3">
-          Este test es orientativo y no reemplaza un diagnóstico médico
-          profesional. Consulta a tu especialista en reumatología.
-        </p>
       </div>
     </div>
   );

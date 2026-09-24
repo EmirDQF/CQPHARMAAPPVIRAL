@@ -16,6 +16,10 @@ export const CLINIC_TIME_ZONE = "America/Lima";
 export const WHO_T_SCORE_NORMAL_MIN = -1.0;
 export const WHO_T_SCORE_OSTEOPOROSIS_MAX = -2.5;
 
+/** Rango plausible de un T-score ingresado a mano; fuera de él se asume error de tipeo. */
+export const T_SCORE_INPUT_MIN = -6.0;
+export const T_SCORE_INPUT_MAX = 4.0;
+
 /** Meses hasta la próxima densitometría de control según la clasificación. */
 export const CONTROL_MONTHS_OSTEOPOROSIS = 6;
 export const CONTROL_MONTHS_DEFAULT = 12;

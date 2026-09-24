@@ -14,6 +14,7 @@ import { InstallPwaBanner } from "./InstallPwaBanner";
 import { PainCheckIn } from "./PainCheckIn";
 import { PainTrendChart } from "./PainTrendChart";
 import { PatientProfileLauncher } from "./PatientProfileLauncher";
+import { RedFlagBanner } from "./RedFlagBanner";
 import { RestockAlert } from "./RestockAlert";
 import { SmartPillbox } from "./SmartPillbox";
 import { TreatmentTracker } from "./TreatmentTracker";
@@ -81,6 +82,8 @@ export function AppShell() {
       </header>
 
       <main className="flex-1 w-full max-w-2xl mx-auto px-4 py-6 pb-28 flex flex-col gap-6 text-base sm:text-lg">
+        <RedFlagBanner />
+
         {activeTab === "hoy" && (
           <>
             <PainCheckIn />

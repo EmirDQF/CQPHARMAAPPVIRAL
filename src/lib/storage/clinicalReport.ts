@@ -69,15 +69,36 @@ export function buildClinicalReportSummary(
   };
 }
 
-export function formatClinicalReportText(summary: ClinicalReportSummary): string {
+/** Describe la variación de rigidez con dirección explícita (positivo = disminuyó). */
+export function describeStiffnessChange(reductionPercent: number): string {
+  if (reductionPercent > 0) return `disminuyó ${reductionPercent}%`;
+  if (reductionPercent < 0) return `aumentó ${Math.abs(reductionPercent)}%`;
+  return "se mantuvo sin cambios";
+}
+
+export interface ClinicalReportBoneScan {
+  worstTScore: number;
+  diagnosisLabel: string;
+  scanDate: string;
+}
+
+export function formatClinicalReportText(
+  summary: ClinicalReportSummary,
+  boneScan: ClinicalReportBoneScan | null = null,
+  hasFractureHistory = false
+): string {
   const lines = [
     "📋 Informe Artikare — Seguimiento Clínico",
+    boneScan
+      ? `Densitometría: Peor T-score ${boneScan.worstTScore.toFixed(1)} (${boneScan.diagnosisLabel}) · ${boneScan.scanDate}`
+      : "Densitometría: Sin densitometría registrada",
+    `Antecedente de fractura: ${hasFractureHistory ? "Sí" : "No"}`,
     summary.averagePainLevel !== null
       ? `Dolor promedio (${summary.daysTracked} días registrados): ${summary.averagePainLevel}/10`
       : "Dolor promedio: Sin registros de dolor en los últimos 30 días",
     summary.stiffnessReductionPercent !== null
-      ? `Variación de rigidez matutina: ${summary.stiffnessReductionPercent}%`
-      : "Variación de rigidez matutina: datos insuficientes aún",
+      ? `Rigidez matutina reportada: ${describeStiffnessChange(summary.stiffnessReductionPercent)}`
+      : "Rigidez matutina reportada: datos insuficientes aún",
     `Adherencia a suplementación (30 días): ${summary.adherencePercent}%`,
     `Generado el ${toLimaIsoDate()} para compartir con tu médico reumatólogo.`,
   ];

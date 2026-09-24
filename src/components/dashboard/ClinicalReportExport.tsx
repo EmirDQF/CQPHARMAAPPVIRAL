@@ -1,10 +1,13 @@
 "use client";
 
 import { useMemo, useSyncExternalStore } from "react";
+import { buildBoneScanSummaryFromEntries, dexaVaultStore } from "@/lib/dashboard/dexaVault";
 import { painLogStore } from "@/lib/dashboard/painLog";
+import { patientProfileStore } from "@/lib/dashboard/patientProfile";
 import { pillboxStore } from "@/lib/dashboard/pillbox";
 import {
   buildClinicalReportSummary,
+  describeStiffnessChange,
   formatClinicalReportText,
 } from "@/lib/storage/clinicalReport";
 import { toLimaIsoDate } from "@/lib/utils/date";
@@ -22,12 +25,27 @@ export function ClinicalReportExport() {
     pillboxStore.getServerSnapshot
   );
 
+  const dexaEntries = useSyncExternalStore(
+    dexaVaultStore.subscribe,
+    dexaVaultStore.getSnapshot,
+    dexaVaultStore.getServerSnapshot
+  );
+  const profile = useSyncExternalStore(
+    patientProfileStore.subscribe,
+    patientProfileStore.getSnapshot,
+    patientProfileStore.getServerSnapshot
+  );
+
   const summary = useMemo(
     () => buildClinicalReportSummary(painEntries, pillboxState),
     [painEntries, pillboxState]
   );
-  const reportText = useMemo(() => formatClinicalReportText(summary), [summary]);
-  const whatsAppLink = buildClinicalReportWhatsAppLink(reportText);
+  const boneScan = useMemo(() => buildBoneScanSummaryFromEntries(dexaEntries), [dexaEntries]);
+  const reportText = useMemo(
+    () => formatClinicalReportText(summary, boneScan, profile.hasFractureHistory),
+    [summary, boneScan, profile.hasFractureHistory]
+  );
+  const whatsAppLink = buildClinicalReportWhatsAppLink();
 
   function handleDownload() {
     const blob = new Blob([reportText], { type: "text/plain;charset=utf-8" });
@@ -50,9 +68,14 @@ export function ClinicalReportExport() {
           · Adherencia{" "}
           {summary.adherencePercent}%
           {summary.stiffnessReductionPercent !== null &&
-            ` · Rigidez ${summary.stiffnessReductionPercent > 0 ? "-" : "+"}${Math.abs(summary.stiffnessReductionPercent)}%`}
+            ` · Rigidez ${describeStiffnessChange(summary.stiffnessReductionPercent)}`}
         </p>
       </div>
+
+      <p className="text-sm text-neutral-500">
+        Descarga el informe y adjúntalo en WhatsApp: por tu privacidad, tus datos de salud no
+        viajan dentro del enlace.
+      </p>
 
       <div className="flex flex-col sm:flex-row gap-3">
         <a
@@ -61,7 +84,7 @@ export function ClinicalReportExport() {
           rel="noopener noreferrer"
           className="min-h-12 flex items-center justify-center rounded-xl bg-brand hover:bg-brand-dark text-white font-semibold px-4 flex-1 transition-colors"
         >
-          Compartir por WhatsApp
+          Abrir WhatsApp
         </a>
         <button
           type="button"

@@ -1,20 +1,23 @@
 import type { Appointment } from "../appointments/types";
+import { enqueueOutboxRequest, flushOutbox } from "./outbox";
 
 /**
- * Envío best-effort al backend para analítica clínica. La cita ya quedó
- * guardada en el store local (fuente de verdad de la UI); si esta llamada
- * falla no debe interrumpir la confirmación que ya ve el paciente.
+ * Envía la cita al backend a través del outbox. La cita ya quedó guardada en
+ * el store local (fuente de verdad de la UI); sin consentimiento registrado
+ * el outbox la rechaza y los datos personales nunca salen del dispositivo.
  */
 export function registerAppointmentForAnalytics(appointment: Appointment): void {
-  fetch("/api/appointments", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
+  const queued = enqueueOutboxRequest(
+    "/api/appointments",
+    {
       code: appointment.code,
       serviceId: appointment.serviceId,
       date: appointment.date,
       slot: appointment.slot,
       patient: appointment.patient,
-    }),
-  }).catch(() => {});
+      consent: appointment.consent,
+    },
+    { containsPersonalData: true }
+  );
+  if (queued) void flushOutbox();
 }

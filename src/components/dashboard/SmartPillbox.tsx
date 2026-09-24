@@ -1,12 +1,9 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { doseSchedule } from "@/lib/dashboard/mockData";
+import { DOSE_SCHEDULE } from "@/lib/clinical/constants";
 import { calculateStreakDays, markDoseTaken, pillboxStore } from "@/lib/dashboard/pillbox";
-
-function todayIsoDate(): string {
-  return new Date().toISOString().slice(0, 10);
-}
+import { formatTime24hForDisplay, toLimaIsoDate } from "@/lib/utils/date";
 
 export function SmartPillbox() {
   const state = useSyncExternalStore(
@@ -15,7 +12,7 @@ export function SmartPillbox() {
     pillboxStore.getServerSnapshot
   );
 
-  const takenToday = new Set(state.takenDoseIdsByDate[todayIsoDate()] ?? []);
+  const takenToday = new Set(state.takenDoseIdsByDate[toLimaIsoDate()] ?? []);
   const streakDays = calculateStreakDays(state);
 
   return (
@@ -28,7 +25,7 @@ export function SmartPillbox() {
       </div>
 
       <div className="flex flex-col gap-3">
-        {doseSchedule.map((dose) => {
+        {DOSE_SCHEDULE.map((dose) => {
           const isTaken = takenToday.has(dose.id);
           return (
             <div
@@ -36,7 +33,7 @@ export function SmartPillbox() {
               className="flex items-center justify-between gap-4 rounded-xl border border-neutral-200 dark:border-neutral-800 px-4 py-3"
             >
               <div>
-                <p className="text-sm text-neutral-500">⏰ {dose.time}</p>
+                <p className="text-sm text-neutral-500">⏰ {formatTime24hForDisplay(dose.time)}</p>
                 <p className="font-semibold">{dose.label}</p>
               </div>
               <button
@@ -57,7 +54,7 @@ export function SmartPillbox() {
       </div>
 
       <p className="text-sm text-neutral-500">
-        Mantén tu racha activa para regenerar cartílago y fijar minerales de forma constante.
+        La constancia diaria apoya tu salud articular y ósea. Tus suplementos complementan, no reemplazan, el tratamiento indicado por tu médico.
       </p>
     </section>
   );

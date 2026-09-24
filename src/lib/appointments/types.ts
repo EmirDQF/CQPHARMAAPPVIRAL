@@ -1,3 +1,5 @@
+import type { ConsentRecord } from "../privacy/consent";
+
 export type ClinicalServiceId =
   | "densitometria"
   | "consulta-reumatologia"
@@ -29,4 +31,6 @@ export interface Appointment {
   slot: AppointmentSlot;
   patient: AppointmentPatient;
   createdAt: string;
+  /** Opcional solo por compatibilidad con citas guardadas antes del consentimiento (v1). */
+  consent?: ConsentRecord;
 }

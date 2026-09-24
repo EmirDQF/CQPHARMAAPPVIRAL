@@ -1,16 +1,13 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import type { AppointmentBookedBy } from "@/lib/appointments/types";
+import { ConsentCheckbox } from "@/components/privacy/ConsentCheckbox";
+import type { AppointmentBookedBy, AppointmentPatient } from "@/lib/appointments/types";
+import { createConsentRecord, type ConsentRecord } from "@/lib/privacy/consent";
 
 interface PatientDataStepProps {
   onBack: () => void;
-  onSubmit: (patient: {
-    name: string;
-    age: number;
-    phone: string;
-    bookedBy: AppointmentBookedBy;
-  }) => void;
+  onSubmit: (patient: AppointmentPatient, consent: ConsentRecord) => void;
 }
 
 export function PatientDataStep({ onBack, onSubmit }: PatientDataStepProps) {
@@ -18,18 +15,23 @@ export function PatientDataStep({ onBack, onSubmit }: PatientDataStepProps) {
   const [age, setAge] = useState("");
   const [phone, setPhone] = useState("");
   const [bookedBy, setBookedBy] = useState<AppointmentBookedBy>("propia");
+  const [hasConsented, setHasConsented] = useState(false);
 
   const parsedAge = Number(age);
   const isValid =
     name.trim().length > 1 &&
     phone.trim().length >= 6 &&
     parsedAge > 0 &&
-    parsedAge < 120;
+    parsedAge < 120 &&
+    hasConsented;
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
     if (!isValid) return;
-    onSubmit({ name: name.trim(), age: parsedAge, phone: phone.trim(), bookedBy });
+    onSubmit(
+      { name: name.trim(), age: parsedAge, phone: phone.trim(), bookedBy },
+      createConsentRecord()
+    );
   }
 
   return (
@@ -100,6 +102,8 @@ export function PatientDataStep({ onBack, onSubmit }: PatientDataStepProps) {
           </button>
         </div>
       </div>
+
+      <ConsentCheckbox checked={hasConsented} onChange={setHasConsented} />
 
       <div className="flex gap-3">
         <button

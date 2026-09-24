@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { AppShell } from "@/components/dashboard/AppShell";
-import { latestBoneScan } from "@/lib/dashboard/mockData";
 
 export const metadata: Metadata = {
   title: "Mi Panel de Salud Ósea",
@@ -9,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function DashboardPage() {
-  return <AppShell fallbackScan={latestBoneScan} />;
+  return <AppShell />;
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { getServiceById } from "@/lib/appointments/catalog";
+import { DENSITOMETRY_UPSELL_DISCOUNT_PERCENT } from "@/lib/clinical/constants";
 import type { Appointment } from "@/lib/appointments/types";
 import { productPacks } from "@/lib/products";
 import {
@@ -64,7 +65,7 @@ export function ConfirmationCard({ appointment }: ConfirmationCardProps) {
       {crossSellLink && crossSellPack && (
         <div className="rounded-xl border-2 border-dashed border-brand/40 px-4 py-3">
           <p className="text-sm font-semibold mb-2 text-neutral-900">
-            Agrega tu {crossSellPack.name} con 20% OFF al acudir a tu cita.
+            Agrega tu {crossSellPack.name} con {DENSITOMETRY_UPSELL_DISCOUNT_PERCENT}% OFF al acudir a tu cita.
           </p>
           <a
             href={crossSellLink}

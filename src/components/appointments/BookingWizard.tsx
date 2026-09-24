@@ -4,9 +4,10 @@ import { useMemo, useState } from "react";
 import { buildAvailableDays } from "@/lib/appointments/availability";
 import { bookAppointment } from "@/lib/appointments/store";
 import { registerAppointmentForAnalytics } from "@/lib/api/registerAppointment";
+import type { ConsentRecord } from "@/lib/privacy/consent";
 import type {
   Appointment,
-  AppointmentBookedBy,
+  AppointmentPatient,
   AppointmentSlot,
   ClinicalServiceId,
 } from "@/lib/appointments/types";
@@ -54,14 +55,9 @@ export function BookingWizard() {
     setStep(3);
   }
 
-  function handlePatientSubmit(patient: {
-    name: string;
-    age: number;
-    phone: string;
-    bookedBy: AppointmentBookedBy;
-  }) {
+  function handlePatientSubmit(patient: AppointmentPatient, consent: ConsentRecord) {
     if (!serviceId || !date || !slot) return;
-    const appointment = bookAppointment({ serviceId, date, slot, patient });
+    const appointment = bookAppointment({ serviceId, date, slot, patient, consent });
     registerAppointmentForAnalytics(appointment);
     setConfirmedAppointment(appointment);
   }

@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useSyncExternalStore } from "react";
-import { painLogStore, saveTodayPainLogEntry, todayIsoDate } from "@/lib/dashboard/painLog";
+import { painLogStore, saveTodayPainLogEntry } from "@/lib/dashboard/painLog";
 import type { StiffnessBucket } from "@/lib/dashboard/types";
+import { toLimaIsoDate } from "@/lib/utils/date";
 
 const PAIN_LEVELS = Array.from({ length: 10 }, (_, i) => i + 1);
 
@@ -18,7 +19,7 @@ export function PainCheckIn() {
     painLogStore.getSnapshot,
     painLogStore.getServerSnapshot
   );
-  const todayEntry = entries.find((entry) => entry.date === todayIsoDate()) ?? null;
+  const todayEntry = entries.find((entry) => entry.date === toLimaIsoDate()) ?? null;
 
   const [selectedPainLevel, setSelectedPainLevel] = useState<number | null>(null);
   const [selectedStiffness, setSelectedStiffness] = useState<StiffnessBucket | null>(null);

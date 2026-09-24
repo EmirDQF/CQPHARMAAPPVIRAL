@@ -1,9 +1,12 @@
 "use client";
 
 import { useMemo, useSyncExternalStore } from "react";
-import { mergePainLogWithSeed } from "@/lib/dashboard/mockData";
-import { painLogStore, stiffnessToMinutes } from "@/lib/dashboard/painLog";
+import { painLogStore } from "@/lib/dashboard/painLog";
 import type { PainLogEntry } from "@/lib/dashboard/types";
+import {
+  calculateStiffnessReductionPercent,
+  selectLast30DaysEntries,
+} from "@/lib/storage/clinicalReport";
 
 const CHART_WIDTH = 300;
 const CHART_HEIGHT = 96;
@@ -25,31 +28,21 @@ function buildBarPoints(entries: PainLogEntry[]) {
   });
 }
 
-function averageStiffnessMinutes(entries: PainLogEntry[]): number {
-  if (entries.length === 0) return 0;
-  const total = entries.reduce((sum, entry) => sum + stiffnessToMinutes(entry.stiffness), 0);
-  return total / entries.length;
-}
-
 export function PainTrendChart() {
   const realEntries = useSyncExternalStore(
     painLogStore.subscribe,
     painLogStore.getSnapshot,
-    painLogStore.getServerSnapshot
+    painLogStore.getServerSnapshot,
   );
-  const entries = useMemo(() => mergePainLogWithSeed(realEntries), [realEntries]);
+  const entries = useMemo(
+    () => selectLast30DaysEntries(realEntries),
+    [realEntries],
+  );
 
-  const stiffnessImprovement = useMemo(() => {
-    if (entries.length < 14) return null;
-
-    const firstWeek = entries.slice(0, 7);
-    const lastWeek = entries.slice(-7);
-    const before = averageStiffnessMinutes(firstWeek);
-    const after = averageStiffnessMinutes(lastWeek);
-    if (before <= 0) return null;
-
-    return { percentChange: Math.round(((before - after) / before) * 100) };
-  }, [entries]);
+  const stiffnessReductionPercent = useMemo(
+    () => calculateStiffnessReductionPercent(entries),
+    [entries],
+  );
 
   const bars = useMemo(() => buildBarPoints(entries), [entries]);
 
@@ -60,33 +53,42 @@ export function PainTrendChart() {
     >
       <div>
         <h2 className="text-xl font-bold">Evolución de tus últimos 30 días</h2>
-        {stiffnessImprovement && stiffnessImprovement.percentChange > 0 && (
-          <p className="text-sm font-semibold text-risk-low">
-            Tu rigidez matutina bajó {stiffnessImprovement.percentChange}% este mes.
-          </p>
-        )}
+        {stiffnessReductionPercent !== null &&
+          stiffnessReductionPercent > 0 && (
+            <p className="text-sm font-semibold text-risk-low">
+              Tu rigidez matutina reportada bajó {stiffnessReductionPercent}% en
+              este periodo.
+            </p>
+          )}
       </div>
 
-      <svg
-        viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`}
-        className="w-full h-32"
-        role="img"
-        aria-label="Gráfico de evolución del dolor articular en los últimos 30 días"
-        preserveAspectRatio="none"
-      >
-        {bars.map((bar) => (
-          <rect
-            key={bar.date}
-            x={bar.x}
-            y={bar.y}
-            width={bar.width}
-            height={bar.height}
-            rx={1.5}
-            fill="var(--color-brand)"
-            opacity={0.85}
-          />
-        ))}
-      </svg>
+      {entries.length === 0 ? (
+        <p className="text-sm text-neutral-500">
+          Sin registros de dolor en los últimos 30 días. Haz tu check-in diario
+          para ver tu evolución.
+        </p>
+      ) : (
+        <svg
+          viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`}
+          className="w-full h-32"
+          role="img"
+          aria-label="Gráfico de evolución del dolor articular en los últimos 30 días"
+          preserveAspectRatio="none"
+        >
+          {bars.map((bar) => (
+            <rect
+              key={bar.date}
+              x={bar.x}
+              y={bar.y}
+              width={bar.width}
+              height={bar.height}
+              rx={1.5}
+              fill="var(--color-brand)"
+              opacity={0.85}
+            />
+          ))}
+        </svg>
+      )}
 
       <p className="text-xs text-neutral-500">
         Cada barra representa el nivel de dolor reportado ese día (1–10).

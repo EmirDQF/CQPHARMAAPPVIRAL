@@ -1,41 +1,37 @@
-import { doseSchedule } from "./mockData";
+import { BOTTLE_SERVINGS, DOSE_SCHEDULE, RESTOCK_TRIGGER_DAY } from "../clinical/constants";
 import type { DosePeriod, PillboxState } from "./types";
-
-export const BOTTLE_SUPPLY_DAYS = 60;
-export const RESTOCK_TRIGGER_DAYS = 50;
 
 export interface BottleStatus {
   period: DosePeriod;
   label: string;
-  daysUsed: number;
-  daysRemaining: number;
+  servingsUsed: number;
+  servingsRemaining: number;
   percentRemaining: number;
   needsRestock: boolean;
 }
 
-function countDaysUsedForPeriod(state: PillboxState, doseId: string): number {
+function countServingsUsed(state: PillboxState, doseId: string): number {
   return Object.values(state.takenDoseIdsByDate).filter((doseIds) =>
     doseIds.includes(doseId)
   ).length;
 }
 
 /**
- * Estima los días de frasco restantes por período de dosis, usando el
- * historial real de tomas como proxy del consumo (un frasco dura
- * BOTTLE_SUPPLY_DAYS tomas), tal como indica el blueprint de re-stock
- * predictivo al 80% de duración del frasco.
+ * Estima las tomas restantes de cada frasco usando el historial real de
+ * tomas como proxy del consumo. La reposición se activa en el día
+ * RESTOCK_TRIGGER_DAY de BOTTLE_SERVINGS (80% del frasco).
  */
 export function buildBottleStatuses(state: PillboxState): BottleStatus[] {
-  return doseSchedule.map((dose) => {
-    const daysUsed = countDaysUsedForPeriod(state, dose.id);
-    const daysRemaining = Math.max(0, BOTTLE_SUPPLY_DAYS - daysUsed);
+  return DOSE_SCHEDULE.map((dose) => {
+    const servingsUsed = countServingsUsed(state, dose.id);
+    const servingsRemaining = Math.max(0, BOTTLE_SERVINGS - servingsUsed);
     return {
       period: dose.period,
       label: dose.label,
-      daysUsed,
-      daysRemaining,
-      percentRemaining: Math.round((daysRemaining / BOTTLE_SUPPLY_DAYS) * 100),
-      needsRestock: daysUsed >= RESTOCK_TRIGGER_DAYS,
+      servingsUsed,
+      servingsRemaining,
+      percentRemaining: Math.round((servingsRemaining / BOTTLE_SERVINGS) * 100),
+      needsRestock: servingsUsed >= RESTOCK_TRIGGER_DAY,
     };
   });
 }

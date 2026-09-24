@@ -1,19 +1,17 @@
 "use client";
 
-import { useMemo, useSyncExternalStore } from "react";
+import Link from "next/link";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import { appointmentsStore, getNextUpcomingAppointment } from "@/lib/appointments/store";
 import { buildBoneScanSummaryFromEntries, dexaVaultStore } from "@/lib/dashboard/dexaVault";
 import { patientProfileStore } from "@/lib/dashboard/patientProfile";
 import { painLogStore } from "@/lib/dashboard/painLog";
 import { pillboxStore } from "@/lib/dashboard/pillbox";
-import type { BoneScanSummary } from "@/lib/dashboard/types";
+import { CLINIC_TIME_ZONE } from "@/lib/clinical/constants";
 import { buildClinicalReportSummary } from "@/lib/storage/clinicalReport";
 import type { RiskLevel } from "@/lib/types";
+import { DexaVaultModal } from "./DexaVaultModal";
 import { PainTrendChart } from "./PainTrendChart";
-
-interface ReporteMedicoViewProps {
-  fallbackScan: BoneScanSummary;
-}
 
 const semaphoreEmoji: Record<RiskLevel, string> = {
   bajo: "🟢",
@@ -34,16 +32,19 @@ function formatGeneratedDate(): string {
     day: "numeric",
     month: "long",
     year: "numeric",
+    timeZone: CLINIC_TIME_ZONE,
   });
 }
 
-export function ReporteMedicoView({ fallbackScan }: ReporteMedicoViewProps) {
+export function ReporteMedicoView() {
+  const [isDexaModalOpen, setIsDexaModalOpen] = useState(false);
+
   const dexaEntries = useSyncExternalStore(
     dexaVaultStore.subscribe,
     dexaVaultStore.getSnapshot,
     dexaVaultStore.getServerSnapshot
   );
-  const scan = buildBoneScanSummaryFromEntries(dexaEntries) ?? fallbackScan;
+  const scan = buildBoneScanSummaryFromEntries(dexaEntries);
 
   const profile = useSyncExternalStore(
     patientProfileStore.subscribe,
@@ -78,7 +79,9 @@ export function ReporteMedicoView({ fallbackScan }: ReporteMedicoViewProps) {
   const patientPhone = profile.phone || nextAppointment?.patient.phone || null;
 
   const observations: string[] = [
-    scan.diagnosisMessage,
+    scan
+      ? `Clasificación OMS por peor T-score: ${scan.diagnosisLabel}.`
+      : "Sin densitometría registrada por el paciente.",
     summary.stiffnessReductionPercent !== null
       ? `La rigidez matutina reportada cambió ${summary.stiffnessReductionPercent}% en el periodo evaluado.`
       : "Aún no hay suficientes días de registro para calcular la variación de rigidez matutina.",
@@ -95,9 +98,9 @@ export function ReporteMedicoView({ fallbackScan }: ReporteMedicoViewProps) {
     <div className="flex flex-col min-h-dvh bg-background text-foreground">
       <div className="w-full max-w-2xl mx-auto px-4 py-6 flex flex-col gap-6 print:px-0 print:py-0 print:max-w-none">
         <div className="flex items-center justify-between gap-3 print:hidden">
-          <a href="/app" className="text-sm font-semibold text-brand">
+          <Link href="/app" className="text-sm font-semibold text-brand">
             ← Volver a mi panel
-          </a>
+          </Link>
           <button
             type="button"
             onClick={() => window.print()}
@@ -148,19 +151,43 @@ export function ReporteMedicoView({ fallbackScan }: ReporteMedicoViewProps) {
           </p>
         </section>
 
-        <section className="rounded-2xl border-2 border-neutral-300 dark:border-neutral-700 print:border-black px-6 py-5 flex flex-col gap-2">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-semibold">
-              Densitometría más reciente: {formatScanDate(scan.scanDate)}
+        {scan ? (
+          <section className="rounded-2xl border-2 border-neutral-300 dark:border-neutral-700 print:border-black px-6 py-5 flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-semibold">
+                Densitometría más reciente: {formatScanDate(scan.scanDate)}
+              </p>
+              <span className="text-2xl" aria-hidden="true">
+                {semaphoreEmoji[scan.riskLevel]}
+              </span>
+            </div>
+            <p className="text-xs font-medium uppercase tracking-wide">
+              Peor T-Score (lumbar / cuello femoral)
             </p>
-            <span className="text-2xl" aria-hidden="true">
-              {semaphoreEmoji[scan.riskLevel]}
-            </span>
-          </div>
-          <p className="text-4xl font-extrabold">{scan.tScoreHip.toFixed(1)}</p>
-          <p className="font-semibold uppercase">{scan.diagnosisLabel}</p>
-          <p className="text-sm">{scan.diagnosisMessage}</p>
-        </section>
+            <p className="text-4xl font-extrabold">{scan.worstTScore.toFixed(1)}</p>
+            <p className="font-semibold uppercase">{scan.diagnosisLabel}</p>
+            <p className="text-sm">{scan.diagnosisMessage}</p>
+          </section>
+        ) : (
+          <section className="rounded-2xl border-2 border-dashed border-neutral-300 dark:border-neutral-700 print:border-black px-6 py-5 flex flex-col gap-3">
+            <p className="font-bold">Sin densitometría registrada</p>
+            <div className="flex flex-col sm:flex-row gap-3 print:hidden">
+              <button
+                type="button"
+                onClick={() => setIsDexaModalOpen(true)}
+                className="min-h-12 flex-1 rounded-xl bg-brand hover:bg-brand-dark text-white font-semibold px-4 transition-colors"
+              >
+                Sube tu densitometría
+              </button>
+              <Link
+                href="/citas"
+                className="min-h-12 flex-1 flex items-center justify-center rounded-xl border-2 border-brand text-brand font-semibold px-4 transition-colors hover:bg-brand-light dark:hover:bg-brand-dark/30"
+              >
+                Agendar densitometría
+              </Link>
+            </div>
+          </section>
+        )}
 
         <div className="print:break-inside-avoid">
           <PainTrendChart />
@@ -171,7 +198,10 @@ export function ReporteMedicoView({ fallbackScan }: ReporteMedicoViewProps) {
             Adherencia a suplementación CQ Pharma (30 días): {summary.adherencePercent}%
           </p>
           <p className="text-sm">
-            Dolor promedio reportado: {summary.averagePainLevel}/10
+            Dolor promedio reportado:{" "}
+            {summary.averagePainLevel !== null
+              ? `${summary.averagePainLevel}/10 (${summary.daysTracked} días registrados)`
+              : "Sin registros de dolor en los últimos 30 días"}
           </p>
         </section>
 
@@ -189,6 +219,7 @@ export function ReporteMedicoView({ fallbackScan }: ReporteMedicoViewProps) {
           y no reemplaza una evaluación clínica presencial.
         </p>
       </div>
+      <DexaVaultModal isOpen={isDexaModalOpen} onClose={() => setIsDexaModalOpen(false)} />
     </div>
   );
 }

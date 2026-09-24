@@ -6,7 +6,6 @@ import { NextAppointmentCard } from "@/components/appointments/NextAppointmentCa
 import { usePillboxReminders } from "@/hooks/usePillboxReminders";
 import { appointmentsStore, getNextUpcomingAppointment } from "@/lib/appointments/store";
 import { calculateStreakDays, pillboxStore } from "@/lib/dashboard/pillbox";
-import type { BoneScanSummary } from "@/lib/dashboard/types";
 import { ClinicalReportExport } from "./ClinicalReportExport";
 import { DailyCompletionCelebration } from "./DailyCompletionCelebration";
 import { DailyReinforcementBanner } from "./DailyReinforcementBanner";
@@ -34,11 +33,7 @@ const TABS: TabDefinition[] = [
   { id: "reumatologo", label: "Reumatólogo", icon: "🩺" },
 ];
 
-interface AppShellProps {
-  fallbackScan: BoneScanSummary;
-}
-
-export function AppShell({ fallbackScan }: AppShellProps) {
+export function AppShell() {
   const [activeTab, setActiveTab] = useState<TabId>("hoy");
   usePillboxReminders();
 
@@ -96,7 +91,7 @@ export function AppShell({ fallbackScan }: AppShellProps) {
           </>
         )}
 
-        {activeTab === "hueso" && <DexaVaultSection fallbackScan={fallbackScan} />}
+        {activeTab === "hueso" && <DexaVaultSection />}
 
         {activeTab === "tratamiento" && (
           <>

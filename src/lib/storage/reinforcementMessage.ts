@@ -3,16 +3,16 @@ export function buildDailyReinforcementMessage(streakDays: number): string {
     return "Registra tu primera toma de hoy para comenzar tu racha de adherencia.";
   }
   if (streakDays < 3) {
-    return `Llevas ${streakDays} ${streakDays === 1 ? "día" : "días"} continuos. Cada toma cuenta para fijar minerales en tu hueso.`;
+    return `Llevas ${streakDays} ${streakDays === 1 ? "día" : "días"} continuos. La constancia es lo que más apoya tu plan de cuidado.`;
   }
   if (streakDays < 7) {
-    return `Llevas ${streakDays} días continuos: el Citrato de Magnesio está mejorando la relajación neuromuscular nocturna.`;
+    return `Llevas ${streakDays} días continuos: el Citrato de Magnesio contribuye al funcionamiento normal de músculos y huesos.`;
   }
   if (streakDays < 14) {
-    return `¡${streakDays} días de racha! Tu Colágeno con Vitamina C está optimizando la síntesis de colágeno articular.`;
+    return `¡${streakDays} días de racha! La Vitamina C contribuye a la formación normal de colágeno.`;
   }
   if (streakDays < 30) {
-    return `${streakDays} días continuos: a este ritmo, tu cuerpo está consolidando la fijación de calcio en el hueso.`;
+    return `${streakDays} días continuos: la Vitamina D3 contribuye a la absorción normal del calcio.`;
   }
-  return `¡${streakDays} días de racha! Tu adherencia sostenida es la clave para revertir la osteopenia con el tiempo.`;
+  return `¡${streakDays} días de racha! Tu suplementación complementa el tratamiento indicado por tu médico: comparte tu progreso en tu próximo control.`;
 }

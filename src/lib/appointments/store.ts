@@ -1,4 +1,5 @@
 import { createPersistentStore } from "../storage/persistentStore";
+import { toLimaIsoDate } from "../utils/date";
 import { generateAppointmentCode } from "./generateCode";
 import type { Appointment } from "./types";
 
@@ -16,14 +17,10 @@ export function bookAppointment(
   return appointment;
 }
 
-function todayIsoDate(): string {
-  return new Date().toISOString().slice(0, 10);
-}
-
 export function getNextUpcomingAppointment(
   appointments: Appointment[]
 ): Appointment | null {
-  const today = todayIsoDate();
+  const today = toLimaIsoDate();
   const upcoming = appointments
     .filter((appointment) => appointment.date >= today)
     .sort(

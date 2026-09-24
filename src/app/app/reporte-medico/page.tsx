@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { ReporteMedicoView } from "@/components/dashboard/ReporteMedicoView";
-import { latestBoneScan } from "@/lib/dashboard/mockData";
 
 export const metadata: Metadata = {
   title: "Reporte Médico Imprimible",
@@ -9,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function ReporteMedicoPage() {
-  return <ReporteMedicoView fallbackScan={latestBoneScan} />;
+  return <ReporteMedicoView />;
 }

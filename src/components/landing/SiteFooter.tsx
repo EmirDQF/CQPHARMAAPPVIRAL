@@ -15,6 +15,9 @@ export function SiteFooter() {
             <Link href="/app" className="hover:text-brand">
               Mi Panel
             </Link>
+            <Link href="/privacidad" className="hover:text-brand">
+              Privacidad
+            </Link>
           </nav>
         </div>
 

@@ -1,5 +1,7 @@
 import { NextRequest } from "next/server";
 import { apiError, apiSuccess } from "@/lib/api/response";
+import { createLeadBodySchema, describeValidationError } from "@/lib/api/schemas";
+import type { ConsentRecord } from "@/lib/privacy/consent";
 import type { RiskLevel } from "@/lib/types";
 
 export interface RegisteredLead {
@@ -8,6 +10,7 @@ export interface RegisteredLead {
   articularAge: number;
   riskLevel: RiskLevel;
   phone: string | null;
+  consent: ConsentRecord | null;
   createdAt: string;
 }
 
@@ -15,60 +18,30 @@ export interface RegisteredLead {
 // analítica clínica básica hasta que se integre una base de datos real.
 const registeredLeads: RegisteredLead[] = [];
 
-const VALID_RISK_LEVELS: RiskLevel[] = ["bajo", "moderado", "alto"];
-
-interface CreateLeadBody {
-  chronologicalAge?: unknown;
-  articularAge?: unknown;
-  riskLevel?: unknown;
-  phone?: unknown;
-}
-
-function validateCreateLeadBody(body: CreateLeadBody): string | null {
-  if (
-    typeof body.chronologicalAge !== "number" ||
-    body.chronologicalAge <= 0 ||
-    body.chronologicalAge >= 120
-  ) {
-    return "chronologicalAge inválido";
-  }
-  if (typeof body.articularAge !== "number" || body.articularAge <= 0 || body.articularAge >= 130) {
-    return "articularAge inválido";
-  }
-  if (!VALID_RISK_LEVELS.includes(body.riskLevel as RiskLevel)) {
-    return "riskLevel inválido";
-  }
-  if (body.phone !== undefined && body.phone !== null && typeof body.phone !== "string") {
-    return "phone inválido";
-  }
-  return null;
-}
-
 export async function POST(request: NextRequest) {
-  let body: CreateLeadBody;
+  let body: unknown;
   try {
     body = await request.json();
   } catch {
     return apiError("JSON inválido en el cuerpo de la petición");
   }
 
-  const validationError = validateCreateLeadBody(body);
-  if (validationError) {
-    return apiError(validationError);
+  const parsed = createLeadBodySchema.safeParse(body);
+  if (!parsed.success) {
+    return apiError(`Datos de lead inválidos (${describeValidationError(parsed.error)})`);
   }
 
-  const phone = typeof body.phone === "string" ? body.phone.trim() : "";
-
   const lead: RegisteredLead = {
-    id: `lead-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-    chronologicalAge: body.chronologicalAge as number,
-    articularAge: body.articularAge as number,
-    riskLevel: body.riskLevel as RiskLevel,
-    phone: phone.length > 0 ? phone : null,
+    id: `lead-${crypto.randomUUID()}`,
+    chronologicalAge: parsed.data.chronologicalAge,
+    articularAge: parsed.data.articularAge,
+    riskLevel: parsed.data.riskLevel,
+    phone: parsed.data.phone || null,
+    consent: parsed.data.consent ?? null,
     createdAt: new Date().toISOString(),
   };
 
   registeredLeads.push(lead);
 
-  return apiSuccess(lead, 201);
+  return apiSuccess({ id: lead.id }, 201);
 }

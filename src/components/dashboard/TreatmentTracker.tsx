@@ -5,8 +5,8 @@ import { buildBottleStatuses } from "@/lib/dashboard/bottleTracking";
 import { pillboxStore } from "@/lib/dashboard/pillbox";
 
 const ABSORPTION_TIPS = [
-  "El Citrato de Magnesio se absorbe mejor por la noche: favorece la relajación muscular y la fijación mineral en el hueso.",
-  "Tu Colágeno Hidrolizado necesita Vitamina C pura para sintetizarse correctamente en la articulación.",
+  "Tomar el Citrato de Magnesio por la noche puede contribuir a la relajación muscular y apoyar tu salud ósea.",
+  "Tu Colágeno Hidrolizado se complementa con Vitamina C, que contribuye a la formación normal de colágeno.",
 ];
 
 export function TreatmentTracker() {
@@ -31,7 +31,7 @@ export function TreatmentTracker() {
                   bottle.needsRestock ? "text-risk-moderate" : "text-neutral-500"
                 }`}
               >
-                {bottle.daysRemaining} días restantes
+                {bottle.servingsRemaining} tomas restantes
               </span>
             </div>
             <div className="h-3 w-full rounded-full bg-neutral-200 dark:bg-neutral-800 overflow-hidden">

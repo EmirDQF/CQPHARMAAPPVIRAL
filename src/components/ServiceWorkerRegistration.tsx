@@ -6,8 +6,9 @@ export function ServiceWorkerRegistration() {
   useEffect(() => {
     if (!("serviceWorker" in navigator)) return;
 
-    navigator.serviceWorker.register("/sw.js").catch(() => {
-      // Registro best-effort: si falla, la app sigue funcionando en modo online.
+    // Si el registro falla, la app sigue funcionando en modo online; se reporta para diagnóstico.
+    navigator.serviceWorker.register("/sw.js").catch((error: unknown) => {
+      console.error("[pwa] No se pudo registrar el service worker", error);
     });
   }, []);
 

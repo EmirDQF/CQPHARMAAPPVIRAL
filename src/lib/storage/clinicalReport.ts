@@ -1,9 +1,14 @@
-import { doseSchedule, mergePainLogWithSeed } from "../dashboard/mockData";
+import { isDoseComplete } from "../dashboard/pillbox";
 import { stiffnessToMinutes } from "../dashboard/painLog";
 import type { PainLogEntry, PillboxState } from "../dashboard/types";
+import { lastNIsoDates, toLimaIsoDate } from "../utils/date";
+
+const REPORT_WINDOW_DAYS = 30;
+const MIN_DAYS_FOR_STIFFNESS_TREND = 14;
+const STIFFNESS_COMPARISON_DAYS = 7;
 
 export interface ClinicalReportSummary {
-  averagePainLevel: number;
+  averagePainLevel: number | null;
   stiffnessReductionPercent: number | null;
   adherencePercent: number;
   daysTracked: number;
@@ -18,53 +23,48 @@ function averageStiffnessMinutes(entries: PainLogEntry[]): number {
   return total / entries.length;
 }
 
-function todayIsoDate(): string {
-  return new Date().toISOString().slice(0, 10);
+/** Solo los registros reales del paciente en los últimos 30 días de Lima, del más antiguo al más reciente. */
+export function selectLast30DaysEntries(
+  entries: PainLogEntry[],
+  referenceDate: Date = new Date()
+): PainLogEntry[] {
+  const window = new Set(lastNIsoDates(REPORT_WINDOW_DAYS, referenceDate));
+  return entries
+    .filter((entry) => window.has(entry.date))
+    .sort((a, b) => a.date.localeCompare(b.date));
 }
 
-function last30DayDates(): string[] {
-  const dates: string[] = [];
-  const cursor = new Date();
-  for (let i = 0; i < 30; i += 1) {
-    dates.push(cursor.toISOString().slice(0, 10));
-    cursor.setDate(cursor.getDate() - 1);
-  }
-  return dates;
+export function calculateStiffnessReductionPercent(entries: PainLogEntry[]): number | null {
+  if (entries.length < MIN_DAYS_FOR_STIFFNESS_TREND) return null;
+  const before = averageStiffnessMinutes(entries.slice(0, STIFFNESS_COMPARISON_DAYS));
+  const after = averageStiffnessMinutes(entries.slice(-STIFFNESS_COMPARISON_DAYS));
+  if (before <= 0) return null;
+  return Math.round(((before - after) / before) * 100);
 }
 
 export function buildClinicalReportSummary(
-  realPainEntries: PainLogEntry[],
-  pillboxState: PillboxState
+  painEntries: PainLogEntry[],
+  pillboxState: PillboxState,
+  referenceDate: Date = new Date()
 ): ClinicalReportSummary {
-  const entries = mergePainLogWithSeed(realPainEntries);
+  const entries = selectLast30DaysEntries(painEntries, referenceDate);
 
   const averagePainLevel =
     entries.length > 0
-      ? entries.reduce((sum, entry) => sum + entry.painLevel, 0) / entries.length
-      : 0;
+      ? Math.round(
+          (entries.reduce((sum, entry) => sum + entry.painLevel, 0) / entries.length) * 10
+        ) / 10
+      : null;
 
-  let stiffnessReductionPercent: number | null = null;
-  if (entries.length >= 14) {
-    const before = averageStiffnessMinutes(entries.slice(0, 7));
-    const after = averageStiffnessMinutes(entries.slice(-7));
-    if (before > 0) {
-      stiffnessReductionPercent = Math.round(((before - after) / before) * 100);
-    }
-  }
-
-  const trackedDates = last30DayDates();
-  const completeDoseDays = trackedDates.filter((date) => {
-    const taken = new Set(pillboxState.takenDoseIdsByDate[date] ?? []);
-    return doseSchedule.every((dose) => taken.has(dose.id));
-  }).length;
-  const adherencePercent = Math.round(
-    (completeDoseDays / trackedDates.length) * 100
-  );
+  const trackedDates = lastNIsoDates(REPORT_WINDOW_DAYS, referenceDate);
+  const completeDoseDays = trackedDates.filter((date) =>
+    isDoseComplete(pillboxState, date)
+  ).length;
 
   return {
-    averagePainLevel: Math.round(averagePainLevel * 10) / 10,
-    stiffnessReductionPercent,
-    adherencePercent,
+    averagePainLevel,
+    stiffnessReductionPercent: calculateStiffnessReductionPercent(entries),
+    adherencePercent: Math.round((completeDoseDays / trackedDates.length) * 100),
     daysTracked: entries.length,
   };
 }
@@ -72,12 +72,14 @@ export function buildClinicalReportSummary(
 export function formatClinicalReportText(summary: ClinicalReportSummary): string {
   const lines = [
     "📋 Informe Artikare — Seguimiento Clínico",
-    `Dolor promedio (${summary.daysTracked} días): ${summary.averagePainLevel}/10`,
+    summary.averagePainLevel !== null
+      ? `Dolor promedio (${summary.daysTracked} días registrados): ${summary.averagePainLevel}/10`
+      : "Dolor promedio: Sin registros de dolor en los últimos 30 días",
     summary.stiffnessReductionPercent !== null
-      ? `Reducción de rigidez matutina: ${summary.stiffnessReductionPercent}%`
-      : "Reducción de rigidez matutina: datos insuficientes aún",
+      ? `Variación de rigidez matutina: ${summary.stiffnessReductionPercent}%`
+      : "Variación de rigidez matutina: datos insuficientes aún",
     `Adherencia a suplementación (30 días): ${summary.adherencePercent}%`,
-    `Generado el ${todayIsoDate()} para compartir con tu médico reumatólogo.`,
+    `Generado el ${toLimaIsoDate()} para compartir con tu médico reumatólogo.`,
   ];
   return lines.join("\n");
 }

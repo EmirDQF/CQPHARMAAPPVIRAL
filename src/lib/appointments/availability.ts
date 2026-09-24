@@ -1,3 +1,4 @@
+import { addDaysToIsoDate, toLimaIsoDate } from "../utils/date";
 import type { AppointmentSlot } from "./types";
 
 export interface AvailableDay {
@@ -10,7 +11,14 @@ const DAY_LABEL_FORMATTER = new Intl.DateTimeFormat("es-PE", {
   weekday: "short",
   day: "numeric",
   month: "short",
+  timeZone: "UTC",
 });
+
+const SUNDAY = 0;
+
+function isoDateToUtcNoon(isoDate: string): Date {
+  return new Date(`${isoDate}T12:00:00Z`);
+}
 
 function hashString(value: string): number {
   let hash = 0;
@@ -27,29 +35,28 @@ function isSlotAvailable(dateIso: string, slot: AppointmentSlot): boolean {
 /**
  * Genera disponibilidad simulada pero determinista (sin sábados/domingos
  * fuera de horario ni Math.random) para los próximos `totalDays` hábiles,
- * empezando mañana.
+ * empezando mañana (hora de Lima).
  */
 export function buildAvailableDays(
   referenceDate: Date = new Date(),
   totalDays = 8
 ): AvailableDay[] {
   const days: AvailableDay[] = [];
-  const cursor = new Date(referenceDate);
-  cursor.setDate(cursor.getDate() + 1);
+  let date = addDaysToIsoDate(toLimaIsoDate(referenceDate), 1);
 
   while (days.length < totalDays) {
-    if (cursor.getDay() !== 0) {
-      const date = cursor.toISOString().slice(0, 10);
+    const calendarDay = isoDateToUtcNoon(date);
+    if (calendarDay.getUTCDay() !== SUNDAY) {
       days.push({
         date,
-        label: DAY_LABEL_FORMATTER.format(cursor),
+        label: DAY_LABEL_FORMATTER.format(calendarDay),
         slots: {
           manana: isSlotAvailable(date, "manana"),
           tarde: isSlotAvailable(date, "tarde"),
         },
       });
     }
-    cursor.setDate(cursor.getDate() + 1);
+    date = addDaysToIsoDate(date, 1);
   }
 
   return days;

@@ -1,31 +1,33 @@
 "use client";
 
 import { useEffect } from "react";
-import { doseSchedule } from "@/lib/dashboard/mockData";
-import { millisecondsUntilNextOccurrence } from "@/lib/dashboard/pillboxReminders";
+import { DOSE_SCHEDULE } from "@/lib/clinical/constants";
+import { millisecondsUntilNextLimaTime } from "@/lib/utils/date";
 
 /**
- * Simula recordatorios locales de toma (08:30 AM / 09:30 PM) usando la
- * Notification API del navegador + setTimeout recursivo, sin depender de un
- * servidor de push. Cada dosis se reprograma sola para el día siguiente.
+ * Recordatorios locales de toma (hora de Lima) usando la Notification API
+ * del navegador + setTimeout recursivo, sin servidor de push. Cada dosis se
+ * reprograma sola para el día siguiente.
  */
 export function usePillboxReminders(): void {
   useEffect(() => {
     if (typeof window === "undefined" || !("Notification" in window)) return;
 
     if (Notification.permission === "default") {
-      Notification.requestPermission().catch(() => {});
+      Notification.requestPermission().catch((error: unknown) => {
+        console.error("[pillbox] No se pudo solicitar permiso de notificaciones", error);
+      });
     }
 
-    const cancelFns = doseSchedule.map((dose) => {
+    const cancelFns = DOSE_SCHEDULE.map((dose) => {
       let timeoutId: ReturnType<typeof setTimeout>;
 
       function scheduleNext() {
-        const delay = millisecondsUntilNextOccurrence(dose.time);
+        const delay = millisecondsUntilNextLimaTime(dose.time);
         timeoutId = setTimeout(() => {
           if (Notification.permission === "granted") {
             new Notification("Artikare • Hora de tu toma", {
-              body: `${dose.label} — mantén tu racha de huesos protegidos.`,
+              body: `${dose.label} — mantén tu racha.`,
               icon: "/icons/icon-192x192.png",
             });
           }

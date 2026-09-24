@@ -7,6 +7,7 @@ import {
   buildClinicalReportSummary,
   formatClinicalReportText,
 } from "@/lib/storage/clinicalReport";
+import { toLimaIsoDate } from "@/lib/utils/date";
 import { buildClinicalReportWhatsAppLink } from "@/lib/whatsapp";
 
 export function ClinicalReportExport() {
@@ -33,7 +34,7 @@ export function ClinicalReportExport() {
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = url;
-    anchor.download = `artikare-informe-clinico-${new Date().toISOString().slice(0, 10)}.txt`;
+    anchor.download = `artikare-informe-clinico-${toLimaIsoDate()}.txt`;
     anchor.click();
     URL.revokeObjectURL(url);
   }
@@ -43,10 +44,13 @@ export function ClinicalReportExport() {
       <div>
         <h2 className="text-xl font-bold">Informe para tu Reumatólogo</h2>
         <p className="text-sm text-neutral-500">
-          Dolor promedio {summary.averagePainLevel}/10 · Adherencia{" "}
+          {summary.averagePainLevel !== null
+            ? `Dolor promedio ${summary.averagePainLevel}/10`
+            : "Sin registros de dolor"}{" "}
+          · Adherencia{" "}
           {summary.adherencePercent}%
           {summary.stiffnessReductionPercent !== null &&
-            ` · Rigidez -${summary.stiffnessReductionPercent}%`}
+            ` · Rigidez ${summary.stiffnessReductionPercent > 0 ? "-" : "+"}${Math.abs(summary.stiffnessReductionPercent)}%`}
         </p>
       </div>
 

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { WhatsAppFloatingButton } from "@/components/landing/WhatsAppFloatingButton";
+import { OutboxSync } from "@/components/OutboxSync";
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
 
 const geistSans = Geist({
@@ -75,6 +76,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {children}
         <WhatsAppFloatingButton />
         <ServiceWorkerRegistration />
+        <OutboxSync />
       </body>
     </html>
   );

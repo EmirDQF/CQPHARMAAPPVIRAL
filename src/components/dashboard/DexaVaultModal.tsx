@@ -79,7 +79,7 @@ export function DexaVaultModal({ isOpen, onClose }: DexaVaultModalProps) {
         {summary && (
           <div className="rounded-xl border-2 border-brand px-4 py-3">
             <p className="text-sm font-semibold">
-              {summary.diagnosisLabel} · Peor T-Score: {summary.tScoreHip.toFixed(1)}
+              {summary.diagnosisLabel} · Peor T-Score: {summary.worstTScore.toFixed(1)}
             </p>
             <p className="text-sm">{summary.diagnosisMessage}</p>
           </div>

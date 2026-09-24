@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useSyncExternalStore, type FormEvent } from "react";
+import { ConsentCheckbox } from "@/components/privacy/ConsentCheckbox";
 import { patientProfileStore } from "@/lib/dashboard/patientProfile";
+import { createConsentRecord } from "@/lib/privacy/consent";
 import type { Sex } from "@/lib/types";
 
 interface PatientProfileModalProps {
@@ -23,11 +25,14 @@ export function PatientProfileModal({ isOpen, onClose }: PatientProfileModalProp
   const [hasFractureHistory, setHasFractureHistory] = useState(profile.hasFractureHistory);
   const [allergies, setAllergies] = useState(profile.allergies);
   const [phone, setPhone] = useState(profile.phone);
+  const [hasConsented, setHasConsented] = useState(false);
+  const needsConsent = profile.consent === undefined;
 
   if (!isOpen) return null;
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
+    if (needsConsent && !hasConsented) return;
     const parsedAge = Number(age);
     const parsedWeight = Number(weightKg);
 
@@ -39,6 +44,7 @@ export function PatientProfileModal({ isOpen, onClose }: PatientProfileModalProp
       hasFractureHistory,
       allergies: allergies.trim(),
       phone: phone.trim(),
+      consent: profile.consent ?? createConsentRecord(),
     });
     onClose();
   }
@@ -172,9 +178,14 @@ export function PatientProfileModal({ isOpen, onClose }: PatientProfileModalProp
             />
           </label>
 
+          {needsConsent && (
+            <ConsentCheckbox checked={hasConsented} onChange={setHasConsented} />
+          )}
+
           <button
             type="submit"
-            className="min-h-12 rounded-xl bg-brand hover:bg-brand-dark text-white font-semibold text-lg transition-colors"
+            disabled={needsConsent && !hasConsented}
+            className="min-h-12 rounded-xl bg-brand hover:bg-brand-dark disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold text-lg transition-colors"
           >
             Guardar Perfil
           </button>

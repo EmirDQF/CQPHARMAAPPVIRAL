@@ -19,7 +19,7 @@ export interface DoseSchedule {
 
 export interface BoneScanSummary {
   scanDate: string;
-  tScoreHip: number;
+  worstTScore: number;
   riskLevel: RiskLevel;
   diagnosisLabel: string;
   diagnosisMessage: string;

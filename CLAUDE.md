@@ -1,4 +1,29 @@
-MASTER BLUEPRINT: ECOSISTEMA DIGITAL ARTIKAREPlataforma de Salud Osteoarticular, Densitometría Ósea y Suplementación Clínica CQ PharmaEste documento fusiona la visión clínica en reumatología con arquitectura de producto digital, diseño UX/UI de alta conversión y tácticas de growth hacking orgánico (presupuesto mínimo, alta ejecución).1. Naming, Eslóganes y Posicionamiento de MarcaPara conectar tanto con el adulto con dolor/desgaste (40-65 años) como con el adulto preventivo o el hijo que cuida a sus padres, la marca debe transmitir rigor médico, vitalidad y modernidad, alejándose de la imagen fría de un laboratorio o de una tienda naturista informal.Opción de NombreEslógan PrincipalPosicionamiento EstratégicoPor qué Resuena con el UsuarioArtikare (Recomendada)"Tu libertad de movimiento empieza en tus huesos."Clínico, humano y cercano. Combina la articulación con el cuidado activo (Care).Elimina el estigma de la vejez; atrae al deportista y al adulto que busca preservar su autonomía.OsteoVital"Huesos firmes, vida en movimiento."Autoritario, preventivo y estructural. Centrado en densidad ósea.Da máxima seguridad médica al paciente diagnosticado con osteopenia u osteoporosis.Movilita / Moviliza"Recupera tu movilidad paso a paso."Centrado en el beneficio tangible diario: alivio del dolor y agilidad.Altamente empático para quien sufre rigidez matutina o crujidos dolorosos.Densia Health"Ciencia y precisión para tu salud ósea."HealthTech y diagnóstico de precisión. Eleva la densitometría a estándar de oro.Posiciona la consulta como un centro avanzado de biomecánica y metabolismo óseo.Arquitectura de Marca Recomendada:Utiliza Artikare como la marca paraguas y plataforma digital de cara al paciente (Web/App), respaldada clínicamente: "Artikare • Respaldado por el rigor médico de CQ Pharma".2. Propuesta de Valor y "El Bucle Clínico Infinito"El Problema Crítico del MercadoSuplementación a ciegas: Las personas gastan en colágeno o magnesio de baja absorción sin saber si sus huesos están perdiendo calcio o si sus articulaciones presentan desgaste cartilaginoso.Diagnóstico huérfano: Los centros de imágenes entregan densitometrías frías con gráficas de T-score/Z-score incomprensibles. El paciente sale con miedo y sin un plan de acción continuo.La Solución Integrada: El Círculo CerradoTransformamos un examen aislado y frascos de suplementos en una solución médica integral continua:                       [ 1. CAPTACIÓN VIRAL ]
+MASTER BLUEPRINT: ECOSISTEMA DIGITAL ARTIKAREPlataforma de Salud Osteoarticular, Densitometría Ósea y Suplementación Clínica CQ PharmaEste documento fusiona la visión clínica en reumatología con arquitectura de producto digital, diseño UX/UI de alta conversión y tácticas de growth hacking orgánico (presupuesto mínimo, alta ejecución).
+
+## Reglas clínicas vigentes (prevalecen sobre los ejemplos de este documento)
+
+Si cualquier ejemplo, copy o maqueta de este blueprint contradice estas reglas, **mandan estas reglas**. La fuente de verdad en código es `src/lib/clinical/constants.ts`.
+
+**Clasificación densitométrica OMS (T-score, se usa el peor entre columna lumbar y cuello femoral):**
+
+| Semáforo | Clasificación | Umbral exacto |
+|---|---|---|
+| 🟢 Verde | Normal | T ≥ -1.0 |
+| 🟡 Amarillo | Osteopenia | -2.5 < T < -1.0 (entre -1.0 y -2.5, sin incluir -2.5) |
+| 🔴 Rojo | Osteoporosis | T ≤ -2.5 (-2.5 exacto **es** osteoporosis) |
+
+- El semáforo por T-score aplica a mujeres posmenopáusicas y hombres ≥ 50 años. En menores se muestra "consulte a su médico (Z-score)".
+- Nunca se muestra un T-score que el paciente no registró: sin datos, la app dice "Sin densitometría registrada". Prohibidos los datos demo por defecto.
+- Banderas rojas (T ≤ -2.5, antecedente de fractura o dolor ≥ 8 durante 3+ días) → CTA de evaluación reumatológica **por encima** de cualquier CTA de producto.
+- El test de edad articular es orientativo, nunca diagnóstico: toda pantalla de resultado lleva su descargo.
+
+**Frases prohibidas (cura o reversión):** "cura", "curar", "revierte", "revertir la osteopenia/osteoporosis", "regenera/regenerar cartílago", "repara", "elimina el dolor", "garantiza", ni afirmar que un suplemento reemplaza el tratamiento médico.
+
+**Verbos permitidos:** "apoya", "contribuye a", "complementa tu tratamiento", "ayuda a mantener", "acompaña". Los suplementos **nunca** reemplazan el tratamiento indicado por el médico.
+
+**Horarios y fechas:** todas las fechas diarias se calculan en America/Lima (tomas 08:30 y 21:30).
+
+1. Naming, Eslóganes y Posicionamiento de MarcaPara conectar tanto con el adulto con dolor/desgaste (40-65 años) como con el adulto preventivo o el hijo que cuida a sus padres, la marca debe transmitir rigor médico, vitalidad y modernidad, alejándose de la imagen fría de un laboratorio o de una tienda naturista informal.Opción de NombreEslógan PrincipalPosicionamiento EstratégicoPor qué Resuena con el UsuarioArtikare (Recomendada)"Tu libertad de movimiento empieza en tus huesos."Clínico, humano y cercano. Combina la articulación con el cuidado activo (Care).Elimina el estigma de la vejez; atrae al deportista y al adulto que busca preservar su autonomía.OsteoVital"Huesos firmes, vida en movimiento."Autoritario, preventivo y estructural. Centrado en densidad ósea.Da máxima seguridad médica al paciente diagnosticado con osteopenia u osteoporosis.Movilita / Moviliza"Recupera tu movilidad paso a paso."Centrado en el beneficio tangible diario: alivio del dolor y agilidad.Altamente empático para quien sufre rigidez matutina o crujidos dolorosos.Densia Health"Ciencia y precisión para tu salud ósea."HealthTech y diagnóstico de precisión. Eleva la densitometría a estándar de oro.Posiciona la consulta como un centro avanzado de biomecánica y metabolismo óseo.Arquitectura de Marca Recomendada:Utiliza Artikare como la marca paraguas y plataforma digital de cara al paciente (Web/App), respaldada clínicamente: "Artikare • Respaldado por el rigor médico de CQ Pharma".2. Propuesta de Valor y "El Bucle Clínico Infinito"El Problema Crítico del MercadoSuplementación a ciegas: Las personas gastan en colágeno o magnesio de baja absorción sin saber si sus huesos están perdiendo calcio o si sus articulaciones presentan desgaste cartilaginoso.Diagnóstico huérfano: Los centros de imágenes entregan densitometrías frías con gráficas de T-score/Z-score incomprensibles. El paciente sale con miedo y sin un plan de acción continuo.La Solución Integrada: El Círculo CerradoTransformamos un examen aislado y frascos de suplementos en una solución médica integral continua:                       [ 1. CAPTACIÓN VIRAL ]
                 Test de Edad Articular y Riesgo Óseo
                                 │
                                 ▼
@@ -114,9 +139,9 @@ Empaquetado Estratégico de Productos CQ PharmaPack ComercialContenido del PackI
 │ 1. SEMÁFORO ÓSEO (BÓVEDA DE RESULTADOS)                     │
 │    ┌───────────────────────────────────────────────────┐    │
 │    │  Tu Última Densitometría: 15 de Agosto           │    │
-│    │  T-Score Cadera: -1.6  [ 🟨 OSTEOPENIA MODERADA ] │    │
-│    │  "Estás a tiempo de revertir la pérdida con tu    │    │
-│    │   protocolo de Citrato de Magnesio + D3."         │    │
+│    │  Peor T-Score: -1.6    [ 🟨 OSTEOPENIA ]         │    │
+│    │  "Tu médico definirá el tratamiento. El Citrato  │    │
+│    │   de Mg + D3 puede complementarlo."               │    │
 │    │  [Ver Gráfico Comparativo]  [Próximo Control: 12m]│    │
 │    └───────────────────────────────────────────────────┘    │
 ├─────────────────────────────────────────────────────────────┤
@@ -129,14 +154,14 @@ Empaquetado Estratégico de Productos CQ PharmaPack ComercialContenido del PackI
 │ 3. PASTILLERO INTELIGENTE (ADHERENCIA A TRATAMIENTO)        │
 │    ⏰ 08:30 AM | Colágeno Hidrolizado + Vitamina C  [Tomar] │
 │    ⏰ 09:30 PM | Citrato de Magnesio               [Tomar] │
-│    "Mantén tu racha para regenerar cartílago."              │
+│    "La constancia apoya tu salud articular y ósea."        │
 ├─────────────────────────────────────────────────────────────┤
 │ 4. RE-STOCK INTELIGENTE CQ PHARMA (1 Clic)                  │
 │    🔔 "Tu frasco de Magnesio está al 15%. Pide tu reposición│
 │        con 10% de descuento antes de interrumpir tu racha." │
 │    [ Reponer Mi Pack con Descuento ]                        │
 └─────────────────────────────────────────────────────────────┘
-Especificación de Módulos de la PWASemáforo Óseo (Bóveda Densitométrica):El paciente sube la foto o PDF de su densitometría, o el consultorio la asocia directamente a su cuenta.La interfaz traduce el T-score numérico en un indicador visual intuitivo:Verde (Normal: T > -1.0): Fase de mantenimiento y prevención deportiva.Amarillo (Osteopenia: -1.0 a -2.5): Fase de intervención activa con magnesio y vitamina D3.Rojo (Osteoporosis: T < -2.5): Alerta médica para seguimiento reumatológico estricto.Diario de Dolor y Rigidez (Tracking Clínico):Registro matutino rápido de 2 toques: nivel de dolor y minutos de rigidez.La app genera una gráfica correlativa: "Tras 45 días tomando tu Pack Movilidad, tu rigidez matutina bajó de 35 minutos a 10 minutos". Esto blinda la retención del paciente y la continuidad de compra.Pastillero Digital Inteligente:Notificaciones push programadas según farmacocinética:Mañana: Colágeno con Vitamina C (optimiza síntesis de colágeno durante el día).Noche: Citrato de Magnesio (favorece relajación muscular nocturna y fijación mineral ósea).Reabastecimiento Predictivo:Al alcanzar el 80% del tiempo de duración estimado del frasco (día 50 de 60), se activa un botón de compra directa con delivery para evitar que el paciente suspenda el tratamiento.7. Hoja de Ruta de Ejecución Ágil (Bajo Presupuesto, Máxima Velocidad)Dado que cuentas con tiempo para ejecutar pero presupuesto financiero limitado, la estrategia se divide en tres fases autofinanciadas:[ SEMANAS 1 A 3 ]                  [ MESES 2 A 3 ]                   [ MES 4 EN ADELANTE ]
+Especificación de Módulos de la PWASemáforo Óseo (Bóveda Densitométrica):El paciente sube la foto o PDF de su densitometría, o el consultorio la asocia directamente a su cuenta.La interfaz traduce el T-score numérico en un indicador visual intuitivo:Verde (Normal: T ≥ -1.0): Fase de mantenimiento y prevención deportiva.Amarillo (Osteopenia: -2.5 < T < -1.0): Fase de intervención activa con magnesio y vitamina D3.Rojo (Osteoporosis: T ≤ -2.5): Alerta médica para seguimiento reumatológico estricto.Diario de Dolor y Rigidez (Tracking Clínico):Registro matutino rápido de 2 toques: nivel de dolor y minutos de rigidez.La app genera una gráfica descriptiva de lo que el paciente registró (ej.: "En los últimos 45 días, tu rigidez matutina reportada pasó de 35 a 10 minutos"), sin atribuir la mejoría al suplemento. Esto blinda la retención del paciente y la continuidad de compra.Pastillero Digital Inteligente:Notificaciones push programadas según farmacocinética:Mañana: Colágeno con Vitamina C (optimiza síntesis de colágeno durante el día).Noche: Citrato de Magnesio (favorece relajación muscular nocturna y fijación mineral ósea).Reabastecimiento Predictivo:Al alcanzar el 80% del tiempo de duración estimado del frasco (día 50 de 60), se activa un botón de compra directa con delivery para evitar que el paciente suspenda el tratamiento.7. Hoja de Ruta de Ejecución Ágil (Bajo Presupuesto, Máxima Velocidad)Dado que cuentas con tiempo para ejecutar pero presupuesto financiero limitado, la estrategia se divide en tres fases autofinanciadas:[ SEMANAS 1 A 3 ]                  [ MESES 2 A 3 ]                   [ MES 4 EN ADELANTE ]
 FASE 1: FLUJO DE CAJA              FASE 2: DIGITALIZACIÓN            FASE 3: ESCALA Y RECURRENCIA
 • Lanzar Landing Page con el       • Desplegar PWA con el            • Lanzar membresía anual
   Test de Edad Articular.            Semáforo Óseo Digital.            "Artikare 365" (Suscripción).

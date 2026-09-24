@@ -1,15 +1,12 @@
 import { createPersistentStore } from "../storage/persistentStore";
+import { toLimaIsoDate } from "../utils/date";
 import type { PainLogEntry } from "./types";
 
 const store = createPersistentStore<PainLogEntry[]>("artikare_pain_log_v1", []);
 
-export function todayIsoDate(): string {
-  return new Date().toISOString().slice(0, 10);
-}
-
 export function saveTodayPainLogEntry(entry: Omit<PainLogEntry, "date">): void {
   const current = store.getSnapshot();
-  const date = todayIsoDate();
+  const date = toLimaIsoDate();
   const updated = [
     ...current.filter((item) => item.date !== date),
     { ...entry, date },

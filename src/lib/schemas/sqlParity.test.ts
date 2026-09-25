@@ -11,6 +11,7 @@ import {
   PAIN_LEVEL_MIN,
   PATIENT_AGE_MAX,
   PATIENT_AGE_MIN,
+  SOFT_DELETE_RESTORE_DAYS,
   T_SCORE_INPUT_MAX,
   T_SCORE_INPUT_MIN,
 } from "../clinical/constants";
@@ -59,6 +60,13 @@ describe("paridad constantes clínicas ↔ SQL", () => {
     expect(sql).toContain("check (scale(lumbar_t) <= 2)");
     expect(sql).toContain("check (scale(femoral_t) <= 2)");
     expect(sql).not.toMatch(/_t numeric\(/);
+  });
+
+  it("la ventana para deshacer un borrado usa SOFT_DELETE_RESTORE_DAYS", () => {
+    const window = `interval '${SOFT_DELETE_RESTORE_DAYS} days'`;
+    expect(sql).toContain(`deleted_at > now() - ${window}`);
+    expect(sql).toContain(`deleted_at <= now() - ${window}`);
+    expect(sql.match(/interval '(\d+) days'/g)?.every((match) => match === window)).toBe(true);
   });
 
   it("el dolor usa PAIN_LEVEL_MIN/MAX", () => {

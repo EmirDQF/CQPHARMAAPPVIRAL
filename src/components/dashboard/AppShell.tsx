@@ -6,6 +6,7 @@ import { NextAppointmentCard } from "@/components/appointments/NextAppointmentCa
 import { usePillboxReminders } from "@/hooks/usePillboxReminders";
 import { appointmentsStore, getNextUpcomingAppointment } from "@/lib/appointments/store";
 import { calculateStreakDays, pillboxStore } from "@/lib/dashboard/pillbox";
+import { ClinicalRecordsManager } from "./ClinicalRecordsManager";
 import { ClinicalReportExport } from "./ClinicalReportExport";
 import { DailyCompletionCelebration } from "./DailyCompletionCelebration";
 import { DailyReinforcementBanner } from "./DailyReinforcementBanner";
@@ -121,6 +122,7 @@ export function AppShell() {
             >
               🖨️ Ver Ficha Imprimible para tu Médico
             </Link>
+            <ClinicalRecordsManager />
           </>
         )}
       </main>

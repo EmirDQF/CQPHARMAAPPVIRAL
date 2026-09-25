@@ -37,24 +37,61 @@ interface RedFlagInput {
   referenceDate?: Date;
 }
 
+/** Fechas con dolor ≥ 8 dentro de los últimos 14 días de Lima. */
+function severePainDatesInWindow(
+  entries: readonly PainLogEntry[],
+  referenceDate: Date
+): Set<string> {
+  const window = new Set(lastNIsoDates(SEVERE_PAIN_WINDOW_DAYS, referenceDate));
+  return new Set(
+    entries
+      .filter((entry) => entry.painLevel >= SEVERE_PAIN_MIN_LEVEL && window.has(entry.date))
+      .map((entry) => entry.date)
+  );
+}
+
+/** Días consecutivos de dolor severo que incluyen `date` (0 si ese día no es severo). */
+function severeStreakLengthThrough(date: string, severeDates: Set<string>): number {
+  if (!severeDates.has(date)) return 0;
+  let daysBefore = 0;
+  while (severeDates.has(addDaysToIsoDate(date, -(daysBefore + 1)))) daysBefore += 1;
+  let daysAfter = 0;
+  while (severeDates.has(addDaysToIsoDate(date, daysAfter + 1))) daysAfter += 1;
+  return daysBefore + 1 + daysAfter;
+}
+
 /** Dolor ≥ 8 durante 3+ días consecutivos dentro de los últimos 14 días de Lima. */
 export function hasSeverePainStreak(
   entries: readonly PainLogEntry[],
   referenceDate: Date = new Date()
 ): boolean {
-  const window = new Set(lastNIsoDates(SEVERE_PAIN_WINDOW_DAYS, referenceDate));
-  const severeDates = new Set(
-    entries
-      .filter((entry) => entry.painLevel >= SEVERE_PAIN_MIN_LEVEL && window.has(entry.date))
-      .map((entry) => entry.date)
+  const severeDates = severePainDatesInWindow(entries, referenceDate);
+  return [...severeDates].some(
+    (date) => severeStreakLengthThrough(date, severeDates) >= SEVERE_PAIN_MIN_CONSECUTIVE_DAYS
   );
+}
 
-  for (const date of severeDates) {
-    let streakLength = 1;
-    while (severeDates.has(addDaysToIsoDate(date, streakLength))) streakLength += 1;
-    if (streakLength >= SEVERE_PAIN_MIN_CONSECUTIVE_DAYS) return true;
-  }
-  return false;
+/** El registro forma parte de una racha de dolor severo que hoy activa la bandera roja. */
+export function isPartOfSeverePainStreak(
+  entry: PainLogEntry,
+  entries: readonly PainLogEntry[],
+  referenceDate: Date = new Date()
+): boolean {
+  const severeDates = severePainDatesInWindow(entries, referenceDate);
+  return (
+    severeStreakLengthThrough(entry.date, severeDates) >= SEVERE_PAIN_MIN_CONSECUTIVE_DAYS
+  );
+}
+
+/**
+ * Densitometría en rango de osteoporosis (peor T ≤ -2.5). Se trata como
+ * importante para el reumatólogo aunque no sea el estudio más reciente.
+ */
+export function isRedFlagDexaScan(scan: {
+  lumbarTScore: number;
+  femoralNeckTScore: number;
+}): boolean {
+  return Math.min(scan.lumbarTScore, scan.femoralNeckTScore) <= WHO_T_SCORE_OSTEOPOROSIS_MAX;
 }
 
 export function detectRedFlags({

@@ -1,4 +1,5 @@
 import { createPersistentStore } from "../storage/persistentStore";
+import { discardTrashedRecordsFor } from "../storage/trash";
 import { toLimaIsoDate } from "../utils/date";
 import type { PainLogEntry } from "./types";
 
@@ -7,6 +8,7 @@ const store = createPersistentStore<PainLogEntry[]>("artikare_pain_log_v1", []);
 export function saveTodayPainLogEntry(entry: Omit<PainLogEntry, "date">): void {
   const current = store.getSnapshot();
   const date = toLimaIsoDate();
+  discardTrashedRecordsFor("pain", date);
   const updated = [
     ...current.filter((item) => item.date !== date),
     { ...entry, date },

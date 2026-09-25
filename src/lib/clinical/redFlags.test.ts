@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 import type { PainLogEntry } from "../dashboard/types";
-import { detectRedFlags, hasSeverePainStreak } from "./redFlags";
+import {
+  detectRedFlags,
+  hasSeverePainStreak,
+  isPartOfSeverePainStreak,
+  isRedFlagDexaScan,
+} from "./redFlags";
 
 // 12:00 en Lima del 2026-09-24.
 const LIMA_NOON = new Date("2026-09-24T17:00:00Z");
@@ -111,5 +116,55 @@ describe("hasSeverePainStreak", () => {
     const limaNight = new Date("2026-09-25T03:00:00Z");
     const entries = [painOn("2026-09-11", 8), painOn("2026-09-12", 8), painOn("2026-09-13", 8)];
     expect(hasSeverePainStreak(entries, limaNight)).toBe(true);
+  });
+});
+
+describe("pain level 0 (sin dolor)", () => {
+  it("never counts toward the severe pain streak", () => {
+    const entries = [painOn("2026-09-20", 0), painOn("2026-09-21", 0), painOn("2026-09-22", 0)];
+    expect(hasSeverePainStreak(entries, LIMA_NOON)).toBe(false);
+  });
+
+  it("breaks a streak like any other level below 8", () => {
+    const entries = [painOn("2026-09-20", 9), painOn("2026-09-21", 0), painOn("2026-09-22", 9)];
+    expect(hasSeverePainStreak(entries, LIMA_NOON)).toBe(false);
+  });
+});
+
+describe("isRedFlagDexaScan", () => {
+  it.each([
+    [-2.5, -1.0, true],
+    [-1.0, -2.6, true],
+    [-2.49, -1.0, false],
+    [-1.0, -1.0, false],
+  ] as const)("lumbar %s / femoral %s → %s", (lumbarTScore, femoralNeckTScore, expected) => {
+    expect(isRedFlagDexaScan({ lumbarTScore, femoralNeckTScore })).toBe(expected);
+  });
+});
+
+describe("isPartOfSeverePainStreak", () => {
+  const streak = [painOn("2026-09-20", 8), painOn("2026-09-21", 9), painOn("2026-09-22", 8)];
+
+  it("flags every day of a 3-day streak of pain >= 8", () => {
+    for (const entry of streak) {
+      expect(isPartOfSeverePainStreak(entry, streak, LIMA_NOON)).toBe(true);
+    }
+  });
+
+  it("does not flag a severe day outside any streak", () => {
+    const entries = [...streak, painOn("2026-09-24", 10)];
+    expect(isPartOfSeverePainStreak(painOn("2026-09-24", 10), entries, LIMA_NOON)).toBe(false);
+  });
+
+  it("does not flag a 2-day streak or a day below 8", () => {
+    const twoDays = [painOn("2026-09-20", 8), painOn("2026-09-21", 8)];
+    expect(isPartOfSeverePainStreak(twoDays[0], twoDays, LIMA_NOON)).toBe(false);
+    const withSeven = [...streak, painOn("2026-09-23", 7)];
+    expect(isPartOfSeverePainStreak(painOn("2026-09-23", 7), withSeven, LIMA_NOON)).toBe(false);
+  });
+
+  it("does not flag a streak outside the 14-day window", () => {
+    const old = [painOn("2026-09-01", 9), painOn("2026-09-02", 9), painOn("2026-09-03", 9)];
+    expect(isPartOfSeverePainStreak(old[1], old, LIMA_NOON)).toBe(false);
   });
 });

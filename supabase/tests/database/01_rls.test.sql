@@ -38,10 +38,10 @@ select is(
   (select count(*)::int from pg_class c join pg_namespace n on n.oid = c.relnamespace
    where n.nspname = 'public' and c.relkind = 'r'
      and c.relname in ('profiles','consents','assessments','dexa_scans','pain_logs',
-                       'products','dose_events','bottles','appointments')
+                       'products','dose_events','bottles','appointments','audit_log','consent_proofs')
      and c.relrowsecurity and c.relforcerowsecurity),
-  9,
-  'las 9 tablas tienen RLS habilitada y forzada'
+  11,
+  'las 11 tablas tienen RLS habilitada y forzada'
 );
 select is(
   (select count(*)::int from information_schema.role_table_grants
@@ -127,9 +127,9 @@ select throws_ok(
 select lives_ok($$update public.profiles set name = 'hackeado'$$, 'update de perfiles ajenos no falla');
 select lives_ok($$update public.dexa_scans set lumbar_t = 0$$, 'update de densitometrías ajenas no falla');
 select lives_ok($$update public.pain_logs set pain_level = 0$$, 'update de dolor ajeno no falla');
-select lives_ok($$delete from public.dexa_scans$$, 'delete de densitometrías ajenas no falla');
-select lives_ok($$delete from public.pain_logs$$, 'delete de dolor ajeno no falla');
-select lives_ok($$delete from public.dose_events$$, 'delete de tomas ajenas no falla');
+select throws_ok($$delete from public.dexa_scans$$, '42501', null, 'sin DELETE directo de densitometrías');
+select throws_ok($$delete from public.pain_logs$$, '42501', null, 'sin DELETE directo de dolor');
+select throws_ok($$delete from public.dose_events$$, '42501', null, 'sin DELETE directo de tomas');
 select lives_ok($$delete from public.bottles$$, 'delete de frascos ajenos no falla');
 select lives_ok($$update public.appointments set status = 'cancelada'$$, 'cancelar citas ajenas no falla');
 

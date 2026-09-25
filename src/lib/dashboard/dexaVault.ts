@@ -13,6 +13,7 @@ import {
   type BoneDensityPatient,
 } from "../clinical/tScoreEligibility";
 import { createPersistentStore } from "../storage/persistentStore";
+import { discardTrashedRecordsFor } from "../storage/trash";
 import type { RiskLevel } from "../types";
 import type { BoneScanSummary } from "./types";
 
@@ -121,6 +122,7 @@ function worstTScoreOf(entry: DexaScanEntry): number {
 }
 
 export function addDexaScanEntry(entry: Omit<DexaScanEntry, "id">): void {
+  discardTrashedRecordsFor("dexa", entry.date);
   const id = `dexa-${Date.now()}`;
   const updated = [...store.getSnapshot(), { ...entry, id }].sort((a, b) =>
     a.date.localeCompare(b.date)

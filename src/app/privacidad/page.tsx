@@ -41,12 +41,14 @@ const SECTIONS: { title: string; paragraphs: string[] }[] = [
     paragraphs: [
       "Puedes solicitar el acceso, rectificación, cancelación u oposición al tratamiento de tus datos escribiendo a [correo de privacidad por completar]. También puedes borrar los datos de Mi Panel limpiando los datos del sitio en tu navegador.",
       "Si consideras que tus derechos no fueron atendidos, puedes acudir a la Autoridad Nacional de Protección de Datos Personales (Ministerio de Justicia y Derechos Humanos).",
+      "Si borras un registro desde Mis registros, deja de mostrarse y de contarse en tus reportes, y puedes deshacerlo durante 30 días; después se elimina. Borrar tu cuenta elimina de forma definitiva todos tus datos clínicos, aunque hayas borrado algunos antes.",
     ],
   },
   {
     title: "6. Consentimiento",
     paragraphs: [
       "Registramos la fecha y la versión de esta política que aceptaste. Si la política cambia, te pediremos un nuevo consentimiento.",
+      "Si borras tu cuenta, conservamos solo una prueba seudonimizada de que diste y retiraste tu consentimiento: un código que no permite identificarte a simple vista, la finalidad, la versión de la política y las fechas, sin tu nombre, correo, teléfono ni datos de salud. Pendiente de revisión legal (Ley 29733).",
     ],
   },
 ];

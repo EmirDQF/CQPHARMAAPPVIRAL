@@ -1,8 +1,8 @@
 "use client";
 
 import { useMemo, useSyncExternalStore } from "react";
+import { buildPainBars } from "@/lib/dashboard/painChart";
 import { painLogStore } from "@/lib/dashboard/painLog";
-import type { PainLogEntry } from "@/lib/dashboard/types";
 import {
   calculateStiffnessReductionPercent,
   selectLast30DaysEntries,
@@ -10,23 +10,7 @@ import {
 
 const CHART_WIDTH = 300;
 const CHART_HEIGHT = 96;
-const MAX_PAIN_LEVEL = 10;
-
-function buildBarPoints(entries: PainLogEntry[]) {
-  if (entries.length === 0) return [];
-  const barWidth = CHART_WIDTH / entries.length;
-
-  return entries.map((entry, index) => {
-    const barHeight = (entry.painLevel / MAX_PAIN_LEVEL) * CHART_HEIGHT;
-    return {
-      x: index * barWidth,
-      y: CHART_HEIGHT - barHeight,
-      width: Math.max(barWidth - 2, 1),
-      height: barHeight,
-      date: entry.date,
-    };
-  });
-}
+const CHART_SIZE = { width: CHART_WIDTH, height: CHART_HEIGHT };
 
 export function PainTrendChart() {
   const realEntries = useSyncExternalStore(
@@ -44,7 +28,7 @@ export function PainTrendChart() {
     [entries],
   );
 
-  const bars = useMemo(() => buildBarPoints(entries), [entries]);
+  const bars = useMemo(() => buildPainBars(entries, CHART_SIZE), [entries]);
 
   return (
     <section
@@ -84,14 +68,14 @@ export function PainTrendChart() {
               height={bar.height}
               rx={1.5}
               fill="var(--color-brand)"
-              opacity={0.85}
+              opacity={bar.isPainFree ? 0.45 : 0.85}
             />
           ))}
         </svg>
       )}
 
       <p className="text-xs text-neutral-500">
-        Cada barra representa el nivel de dolor reportado ese día (1–10).
+        Cada barra representa el nivel de dolor reportado ese día (0–10). Una línea baja marca un día registrado sin dolor.
       </p>
     </section>
   );

@@ -36,6 +36,9 @@ export const ARTICULAR_AGE_MAX = 129;
 export const PAIN_LEVEL_MIN = 0;
 export const PAIN_LEVEL_MAX = 10;
 
+/** Días en que el paciente puede deshacer el borrado de un registro clínico. */
+export const SOFT_DELETE_RESTORE_DAYS = 30;
+
 /** Bandera roja: dolor ≥ 8 durante 3+ días consecutivos dentro de los últimos 14 días de Lima. */
 export const SEVERE_PAIN_MIN_LEVEL = 8;
 export const SEVERE_PAIN_MIN_CONSECUTIVE_DAYS = 3;

@@ -11,6 +11,7 @@ import {
 
 const CHECK_VIOLATION = "23514";
 const INSUFFICIENT_PRIVILEGE = "42501";
+const NOT_FOUND = "P0002";
 
 const OWNED_TABLES = [
   "profiles",
@@ -99,8 +100,14 @@ describe("RLS vía PostgREST (Supabase local)", () => {
       .select();
     expect(update.data).toEqual([]);
 
+    // Nadie tiene DELETE directo: el borrado del paciente es suave y va por RPC.
     const removal = await b.client.from("dexa_scans").delete().eq("user_id", a.userId).select();
-    expect(removal.data).toEqual([]);
+    expect(removal.error?.code).toBe(INSUFFICIENT_PRIVILEGE);
+    const softRemoval = await b.client.rpc("soft_delete_record", {
+      p_table: "pain_logs",
+      p_id: (await a.client.from("pain_logs").select("id").single()).data?.id,
+    });
+    expect(softRemoval.error?.code).toBe(NOT_FOUND);
 
     const [pain, dexa] = await Promise.all([
       a.client.from("pain_logs").select("pain_level"),

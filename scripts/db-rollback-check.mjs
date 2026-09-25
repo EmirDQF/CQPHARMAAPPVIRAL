@@ -18,6 +18,8 @@ const EXPECTED_TABLES = [
   "dose_events",
   "bottles",
   "appointments",
+  "audit_log",
+  "consent_proofs",
 ];
 
 function runSql(sql) {
@@ -63,16 +65,21 @@ console.log(`ok - cada una de las ${migrations.length} migraciones tiene su roll
 
 // Comando fijo, sin argumentos interpolados (npx necesita shell en Windows).
 execSync("npx supabase db reset", { stdio: "ignore" });
-assertEqual(countTables(), EXPECTED_TABLES.length, "up: las 9 tablas existen");
+assertEqual(countTables(), EXPECTED_TABLES.length, `up: las ${EXPECTED_TABLES.length} tablas existen`);
 
 for (const rollback of [...rollbacks].reverse()) {
   runSql(readFileSync(join(ROLLBACKS_DIR, rollback), "utf8"));
 }
 assertEqual(countTables(), 0, "down: no queda ninguna tabla");
 assertEqual(countTypes(), 0, "down: no queda ningún enum");
+assertEqual(
+  Number(runSql("select count(*) from pg_namespace where nspname = 'private';")),
+  0,
+  "down: no queda el esquema private"
+);
 
 for (const migration of migrations) {
   runSql(readFileSync(join(MIGRATIONS_DIR, migration), "utf8"));
 }
-assertEqual(countTables(), EXPECTED_TABLES.length, "up de nuevo: las 9 tablas existen");
+assertEqual(countTables(), EXPECTED_TABLES.length, `up de nuevo: las ${EXPECTED_TABLES.length} tablas existen`);
 assertEqual(Number(runSql("select count(*) from public.products;")), 2, "up de nuevo: catálogo sembrado");

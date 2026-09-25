@@ -165,3 +165,25 @@ describe("formatClinicalReportText red flags", () => {
     );
   });
 });
+
+describe("pain level 0 (sin dolor)", () => {
+  it("counts 0 in the average instead of skipping the day", () => {
+    const summary = buildClinicalReportSummary(
+      [entry("2026-09-28", 0), entry("2026-09-29", 0), entry("2026-09-30", 9)],
+      { takenDoseIdsByDate: {} },
+      NOON_IN_LIMA_SEP_30
+    );
+    expect(summary.averagePainLevel).toBe(3);
+    expect(summary.daysTracked).toBe(3);
+  });
+
+  it("reports an average of 0/10 when every day was without pain", () => {
+    const summary = buildClinicalReportSummary(
+      [entry("2026-09-29", 0), entry("2026-09-30", 0)],
+      { takenDoseIdsByDate: {} },
+      NOON_IN_LIMA_SEP_30
+    );
+    expect(summary.averagePainLevel).toBe(0);
+    expect(formatClinicalReportText(summary)).toContain("0/10");
+  });
+});

@@ -16,6 +16,8 @@ export interface DoseSchedule {
   time: string;
   label: string;
   period: DosePeriod;
+  /** Producto del catálogo `products` que se toma en este horario. */
+  productId: string;
 }
 
 interface BoneScanSummaryBase {

@@ -26,6 +26,16 @@ export const T_SCORE_INPUT_MAX = 4.0;
  */
 export const T_SCORE_ELIGIBILITY_MIN_AGE = 50;
 
+/** Edad del paciente en años enteros (perfil, test y citas). */
+export const PATIENT_AGE_MIN = 1;
+export const PATIENT_AGE_MAX = 119;
+/** Tope de la edad articular estimada por el test (edad + puntaje de riesgo). */
+export const ARTICULAR_AGE_MAX = 129;
+
+/** Escala del diario de dolor (0 = sin dolor). */
+export const PAIN_LEVEL_MIN = 0;
+export const PAIN_LEVEL_MAX = 10;
+
 /** Bandera roja: dolor ≥ 8 durante 3+ días consecutivos dentro de los últimos 14 días de Lima. */
 export const SEVERE_PAIN_MIN_LEVEL = 8;
 export const SEVERE_PAIN_MIN_CONSECUTIVE_DAYS = 3;
@@ -37,7 +47,8 @@ export const CONTROL_MONTHS_DEFAULT = 12;
 
 /**
  * Horarios de toma en formato 24 h (hora de Lima). Los `id` se persisten en
- * localStorage (artikare_pillbox_v1): no cambiarlos sin migración.
+ * localStorage (artikare_pillbox_v1) y en la base (enum `dose_id`): no
+ * cambiarlos sin migración. `productId` apunta al catálogo `products`.
  */
 export const DOSE_SCHEDULE: readonly DoseSchedule[] = [
   {
@@ -45,12 +56,14 @@ export const DOSE_SCHEDULE: readonly DoseSchedule[] = [
     time: "08:30",
     label: "Colágeno Hidrolizado + Vitamina C",
     period: "morning",
+    productId: "colageno-vitamina-c",
   },
   {
     id: "night-magnesium",
     time: "21:30",
     label: "Citrato de Magnesio + D3",
     period: "night",
+    productId: "citrato-magnesio-d3",
   },
 ];
 

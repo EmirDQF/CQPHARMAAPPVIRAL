@@ -1,17 +1,8 @@
 import { z } from "zod";
 import { APPOINTMENT_CODE_PATTERN } from "../appointments/generateCode";
-import type { AppointmentBookedBy, AppointmentSlot, ClinicalServiceId } from "../appointments/types";
 import { consentRecordSchema } from "../privacy/consent";
-import type { RiskLevel } from "../types";
-
-const CLINICAL_SERVICE_IDS = [
-  "densitometria",
-  "consulta-reumatologia",
-  "control-preventivo",
-] as const satisfies readonly ClinicalServiceId[];
-const APPOINTMENT_SLOTS = ["manana", "tarde"] as const satisfies readonly AppointmentSlot[];
-const BOOKED_BY = ["propia", "hijo"] as const satisfies readonly AppointmentBookedBy[];
-const RISK_LEVELS = ["bajo", "moderado", "alto"] as const satisfies readonly RiskLevel[];
+import { APPOINTMENT_SLOTS, BOOKED_BY, CLINICAL_SERVICE_IDS } from "../schemas/appointment";
+import { RISK_LEVELS } from "../schemas/assessment";
 
 const MAX_HUMAN_AGE = 120;
 const MAX_ARTICULAR_AGE = 130;

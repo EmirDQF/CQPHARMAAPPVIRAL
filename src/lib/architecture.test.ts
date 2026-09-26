@@ -48,9 +48,10 @@ describe("findSupabaseImportViolations", () => {
     ]);
   });
 
-  it("allows src/lib/repositories/** and ignores text that is not an import", () => {
+  it("allows src/lib/repositories/** and src/lib/supabase/**, and ignores text that is not an import", () => {
     const files: SourceFile[] = [
       { path: "src/lib/repositories/supabase/client.ts", content: `import { createClient } from "${SUPABASE}supabase-js";` },
+      { path: "src/lib/supabase/client.ts", content: `import { createBrowserClient } from "${SUPABASE}ssr";` },
       { path: "src/lib/notes.ts", content: `// Supabase guarda los datos en ${SUPABASE}...` },
     ];
     expect(findSupabaseImportViolations(files)).toEqual([]);
@@ -58,7 +59,7 @@ describe("findSupabaseImportViolations", () => {
 });
 
 describe("arquitectura del repositorio", () => {
-  it("solo src/lib/repositories/** importa Supabase", () => {
+  it("solo src/lib/repositories/** y src/lib/supabase/** importan Supabase", () => {
     expect(findSupabaseImportViolations(readSourceFiles())).toEqual([]);
   });
 });

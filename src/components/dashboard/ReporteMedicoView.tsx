@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { AccountInvite } from "@/components/auth/AccountInvite";
 import { useMemo, useState, useSyncExternalStore } from "react";
 import { appointmentsStore, getNextUpcomingAppointment } from "@/lib/appointments/store";
 import { painLogStore } from "@/lib/dashboard/painLog";
@@ -247,6 +248,8 @@ export function ReporteMedicoView() {
           Este reporte es generado por el paciente a partir de su seguimiento en la app Artikare
           y no reemplaza una evaluación clínica presencial.
         </p>
+
+        <AccountInvite moment="reporte" />
       </div>
       <DexaVaultModal isOpen={isDexaModalOpen} onClose={() => setIsDexaModalOpen(false)} />
     </div>

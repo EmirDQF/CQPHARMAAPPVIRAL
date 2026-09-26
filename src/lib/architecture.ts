@@ -4,8 +4,11 @@ export interface SourceFile {
   content: string;
 }
 
-/** Repository Pattern: solo los adaptadores de src/lib/repositories/** hablan con Supabase. */
-const ALLOWED_PREFIX = "src/lib/repositories/";
+/**
+ * Repository Pattern: solo los adaptadores de src/lib/repositories/** y la
+ * conexión de src/lib/supabase/** (clientes, sesión, proxy) hablan con Supabase.
+ */
+const ALLOWED_PREFIXES = ["src/lib/repositories/", "src/lib/supabase/"];
 
 // import ... from "pkg" · export ... from "pkg" · import "pkg" · import("pkg") · require("pkg")
 const SUPABASE_IMPORT =
@@ -13,7 +16,7 @@ const SUPABASE_IMPORT =
 
 export function findSupabaseImportViolations(files: readonly SourceFile[]): string[] {
   return files
-    .filter((file) => !file.path.startsWith(ALLOWED_PREFIX))
+    .filter((file) => !ALLOWED_PREFIXES.some((prefix) => file.path.startsWith(prefix)))
     .filter((file) => SUPABASE_IMPORT.test(file.content))
     .map((file) => file.path);
 }

@@ -156,6 +156,18 @@ Revisores siempre: `healthcare-reviewer` y `code-reviewer`, más los extra de la
 | Emails del OTP en spam | Dominio verificado en Resend (SPF/DKIM), que configura el usuario |
 | La UI sin conexión deja de funcionar | La caché local sigue siendo la fuente de la UI; E2E en modo sin conexión |
 
+## 8b. Checklist de producción de Auth (C2, lo hace el usuario en los paneles)
+
+Bloqueante antes de poner las variables de Supabase en Vercel:
+
+- **Supabase → Authentication → Providers → Email:** "Confirm email" **activado**. Con esa opción apagada, Supabase asigna el correo a una sesión anónima sin verificar el OTP, y alguien podría apropiarse del correo de otra persona (comprobado en local).
+- **Supabase → Authentication → Email:** el OTP vence en **600 s** y tiene 6 dígitos. Las plantillas "Confirm signup", "Magic Link" y "Change Email address" usan el contenido de `supabase/templates/otp.html` (solo `{{ .Token }}`, sin enlace).
+- **Supabase → Authentication → Attack Protection:** captcha **Turnstile activado**, con `TURNSTILE_SECRET_KEY`. Sin esto, el captcha es solo un control del lado del cliente, porque la API de Auth es pública.
+- **Vercel:** `NEXT_PUBLIC_TURNSTILE_SITE_KEY` definida. En producción, si falta, la pantalla de acceso se cierra (fail-closed).
+- **Cloudflare Turnstile:** usar el modo del widget **"Managed"** o **"Non-interactive"**, nunca un desafío visual obligatorio (WCAG 3.3.8).
+- **Resend:** dominio verificado (SPF/DKIM) y configurado como SMTP propio de Supabase.
+- **La invitación a crear cuenta** sigue oculta (`src/lib/auth/features.ts`) hasta que C3 respalde los registros. No se activa antes.
+
 ## 9. Pendientes heredados (requieren decisión del usuario o validación clínica)
 
 - Umbral de derivación en pacientes con Z-score: hoy es T ≤ -2.5; la ISCD usa Z ≤ -2.0. Necesita validación clínica.

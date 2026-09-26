@@ -11,6 +11,7 @@ import type {
   AppointmentSlot,
   ClinicalServiceId,
 } from "@/lib/appointments/types";
+import { AccountInvite } from "@/components/auth/AccountInvite";
 import { ConfirmationCard } from "./ConfirmationCard";
 import { DateTimeStep } from "./DateTimeStep";
 import { PatientDataStep } from "./PatientDataStep";
@@ -63,7 +64,12 @@ export function BookingWizard() {
   }
 
   if (confirmedAppointment) {
-    return <ConfirmationCard appointment={confirmedAppointment} />;
+    return (
+      <div className="flex flex-col gap-6">
+        <ConfirmationCard appointment={confirmedAppointment} />
+        <AccountInvite moment="cita" />
+      </div>
+    );
   }
 
   return (

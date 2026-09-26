@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useSyncExternalStore } from "react";
 import { NextAppointmentCard } from "@/components/appointments/NextAppointmentCard";
+import { AccountInvite } from "@/components/auth/AccountInvite";
 import { usePillboxReminders } from "@/hooks/usePillboxReminders";
 import { appointmentsStore, getNextUpcomingAppointment } from "@/lib/appointments/store";
 import { calculateStreakDays, pillboxStore } from "@/lib/dashboard/pillbox";
@@ -92,6 +93,7 @@ export function AppShell() {
             <DailyCompletionCelebration />
             <DailyReinforcementBanner />
             <PainTrendChart />
+            <AccountInvite moment="racha" streakDays={streakDays} />
           </>
         )}
 

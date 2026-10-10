@@ -159,8 +159,10 @@ select throws_ok(
 -- ─── Borrado en cascada (ARCO) ──────────────────────────────────────────────
 delete from auth.users where id = '11111111-1111-4111-8111-111111111111';
 select is(
-  (select count(*)::int from public.dexa_scans) + (select count(*)::int from public.pain_logs)
-    + (select count(*)::int from public.dose_events),
+  -- Solo las filas de este usuario: la suite de integración deja datos de otras cuentas en la BD local.
+  (select count(*)::int from public.dexa_scans where user_id = '11111111-1111-4111-8111-111111111111')
+    + (select count(*)::int from public.pain_logs where user_id = '11111111-1111-4111-8111-111111111111')
+    + (select count(*)::int from public.dose_events where user_id = '11111111-1111-4111-8111-111111111111'),
   0,
   'borrar el usuario de auth elimina sus datos clínicos'
 );

@@ -11,6 +11,7 @@ import {
 } from "@/lib/storage/clinicalReport";
 import { toLimaIsoDate } from "@/lib/utils/date";
 import { buildClinicalReportWhatsAppLink } from "@/lib/whatsapp";
+import { WhatsAppCta } from "@/components/ui/WhatsAppCta";
 import { useClinicalStatus } from "./useActiveRedFlags";
 
 export function ClinicalReportExport() {
@@ -71,14 +72,13 @@ export function ClinicalReportExport() {
       </p>
 
       <div className="flex flex-col sm:flex-row gap-3">
-        <a
+        <WhatsAppCta
           href={whatsAppLink}
-          target="_blank"
-          rel="noopener noreferrer"
+          containerClassName="flex-1"
           className="min-h-12 flex items-center justify-center rounded-xl bg-brand hover:bg-brand-dark text-white font-semibold px-4 flex-1 transition-colors"
         >
           Abrir WhatsApp
-        </a>
+        </WhatsAppCta>
         <button
           type="button"
           onClick={handleDownload}

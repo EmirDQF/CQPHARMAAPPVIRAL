@@ -4,6 +4,7 @@ import {
   buildDensitometriaWhatsAppLink,
   buildSupplementWhatsAppLink,
 } from "@/lib/whatsapp";
+import { WhatsAppCta } from "@/components/ui/WhatsAppCta";
 
 interface ResultCardProps {
   result: RiskResult;
@@ -86,22 +87,18 @@ export function ResultCard({ result, onRestart }: ResultCardProps) {
               Agendar evaluación reumatológica
             </Link>
           )}
-          <a
+          <WhatsAppCta
             href={densitometriaLink}
-            target="_blank"
-            rel="noopener noreferrer"
             className="w-full text-center rounded-xl bg-brand hover:bg-brand-dark text-white font-semibold px-4 py-3 transition-colors"
           >
             Agendar Densitometría por WhatsApp
-          </a>
-          <a
+          </WhatsAppCta>
+          <WhatsAppCta
             href={supplementLink}
-            target="_blank"
-            rel="noopener noreferrer"
             className="w-full text-center rounded-xl border-2 border-brand text-brand hover:bg-brand-light font-semibold px-4 py-3 transition-colors"
           >
             Pedir mi Pack CQ Pharma por WhatsApp
-          </a>
+          </WhatsAppCta>
           <button
             type="button"
             onClick={onRestart}

@@ -9,6 +9,7 @@ import {
   buildAppointmentConfirmationWhatsAppLink,
   buildProductPackWhatsAppLink,
 } from "@/lib/whatsapp";
+import { WhatsAppCta } from "@/components/ui/WhatsAppCta";
 import { useActiveRedFlags } from "@/components/dashboard/useActiveRedFlags";
 
 interface ConfirmationCardProps {
@@ -34,8 +35,10 @@ export function ConfirmationCard({ appointment }: ConfirmationCardProps) {
   const crossSellPackId =
     appointment.serviceId === "densitometria" ? "hueso-fuerte-360" : "movilidad-total";
   const crossSellPack = productPacks.find((pack) => pack.id === crossSellPackId);
-  const crossSellLink =
-    crossSellPack && !hasRedFlag ? buildProductPackWhatsAppLink(crossSellPack) : null;
+  const crossSell =
+    crossSellPack && !hasRedFlag
+      ? { pack: crossSellPack, link: buildProductPackWhatsAppLink(crossSellPack) }
+      : null;
 
   return (
     <section className="rounded-2xl border-2 border-risk-low bg-risk-low-bg px-6 py-6 flex flex-col gap-4">
@@ -59,14 +62,12 @@ export function ConfirmationCard({ appointment }: ConfirmationCardProps) {
         </p>
       )}
 
-      <a
+      <WhatsAppCta
         href={whatsAppLink}
-        target="_blank"
-        rel="noopener noreferrer"
         className="min-h-12 flex items-center justify-center rounded-xl bg-brand hover:bg-brand-dark text-white font-semibold px-4 transition-colors"
       >
         Confirmar por WhatsApp
-      </a>
+      </WhatsAppCta>
 
       {hasRedFlag && (
         <div className="rounded-xl border-2 border-risk-high bg-white/70 px-4 py-3 flex flex-col gap-2 text-neutral-900">
@@ -85,19 +86,17 @@ export function ConfirmationCard({ appointment }: ConfirmationCardProps) {
         </div>
       )}
 
-      {crossSellLink && crossSellPack && (
+      {crossSell && (
         <div className="rounded-xl border-2 border-dashed border-brand/40 px-4 py-3">
           <p className="text-sm font-semibold mb-2 text-neutral-900">
-            Agrega tu {crossSellPack.name} con {DENSITOMETRY_UPSELL_DISCOUNT_PERCENT}% OFF al acudir a tu cita.
+            Agrega tu {crossSell.pack.name} con {DENSITOMETRY_UPSELL_DISCOUNT_PERCENT}% OFF al acudir a tu cita.
           </p>
-          <a
-            href={crossSellLink}
-            target="_blank"
-            rel="noopener noreferrer"
+          <WhatsAppCta
+            href={crossSell.link}
             className="min-h-12 flex items-center justify-center rounded-xl bg-white border-2 border-brand text-brand font-semibold px-4"
           >
             Reservar pack con descuento
-          </a>
+          </WhatsAppCta>
         </div>
       )}
     </section>

@@ -1,5 +1,6 @@
 import type { ProductPack } from "@/lib/products";
 import { buildProductPackWhatsAppLink } from "@/lib/whatsapp";
+import { WhatsAppCta } from "@/components/ui/WhatsAppCta";
 
 interface ProductCardProps {
   pack: ProductPack;
@@ -39,14 +40,12 @@ export function ProductCard({ pack }: ProductCardProps) {
 
       <p className="text-xs text-neutral-500 mt-auto">{pack.indication}</p>
 
-      <a
+      <WhatsAppCta
         href={whatsAppLink}
-        target="_blank"
-        rel="noopener noreferrer"
         className="w-full text-center rounded-xl bg-brand hover:bg-brand-dark text-white font-semibold px-4 py-3 transition-colors"
       >
         Reservar por WhatsApp
-      </a>
+      </WhatsAppCta>
     </div>
   );
 }

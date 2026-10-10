@@ -1,6 +1,6 @@
 # Fase 1 (Hito C) — Persistencia y base de datos con Supabase
 
-**Estado:** plan aprobado por el usuario el 2026-09-25, con los ajustes incluidos abajo.
+**Estado:** plan aprobado por el usuario el 2026-09-25, con los ajustes incluidos abajo. **Ejecutado** (2026-10-10): C1–C5 cerrados; C5 en `9b8eeda` y respaldo encendido en `89efaf5`. Queda solo lo del usuario: checklist 8b, revisión legal de `/privacidad` y el cron de purga de la papelera (ver `docs/ROADMAP.md`).
 **Base:** commit `392822e` (Hito B cerrado).
 **Fuentes de verdad, por orden:** CLAUDE.md → "Reglas clínicas vigentes" y `src/lib/clinical/constants.ts`; luego `.claude/rules/*`; luego este plan.
 

@@ -16,6 +16,7 @@ import {
   snoozeReminderOffer,
   type ReminderSupport,
 } from "@/lib/reminders/reminders";
+import { enableNativeDoseReminders, isNativeApp } from "@/lib/native/doseNotifications";
 import { millisecondsUntilNextLimaTime, toLimaIsoDate } from "@/lib/utils/date";
 
 const NOTIFICATION_ICON = "/icons/icon-192x192.png";
@@ -26,7 +27,11 @@ const NOTIFICATION_ICON = "/icons/icon-192x192.png";
  */
 const supportListeners = createListenerSet();
 
+/** En la app nativa el permiso vive en el sistema operativo; se recuerda el último resultado. */
+let nativeSupport: ReminderSupport = "ask";
+
 function getSupportSnapshot(): ReminderSupport {
+  if (isNativeApp()) return nativeSupport;
   return detectReminderSupport(readReminderEnvironment());
 }
 
@@ -91,7 +96,8 @@ export function usePillboxReminders(): PillboxReminders {
   const isGranted = support === "granted";
 
   useEffect(() => {
-    if (!isGranted) return;
+    // En nativo los programa el sistema operativo (doseNotifications.ts).
+    if (!isGranted || isNativeApp()) return;
 
     const timeoutIds = new Map<string, ReturnType<typeof setTimeout>>();
 
@@ -108,7 +114,9 @@ export function usePillboxReminders(): PillboxReminders {
   }, [isGranted]);
 
   const requestPermission = useCallback(async () => {
-    if ("Notification" in window) {
+    if (isNativeApp()) {
+      nativeSupport = (await enableNativeDoseReminders()) === "granted" ? "granted" : "calendar";
+    } else if ("Notification" in window) {
       try {
         await Notification.requestPermission();
       } catch (error: unknown) {

@@ -12,6 +12,32 @@ export const consentGrantBodySchema = z.object({
   consent: consentRecordSchema,
 });
 
+/** Derecho de oposición (C5): retirar el respaldo es otra fila, con `revoked_at`. */
+export const consentRevokeBodySchema = z.object({
+  purpose: z.literal("respaldo-cuenta"),
+  revokedAt: z.iso.datetime(),
+  consentVersion: z.string().min(1).max(64),
+});
+
+const consentEventBodySchema = z.union([consentGrantBodySchema, consentRevokeBodySchema]);
+
+function toConsentRow(body: z.infer<typeof consentEventBodySchema>) {
+  if ("consent" in body) {
+    return {
+      purpose: body.purpose,
+      policy_version: body.consent.consentVersion,
+      granted_at: body.consent.consentAt,
+      revoked_at: null,
+    };
+  }
+  return {
+    purpose: body.purpose,
+    policy_version: body.consentVersion,
+    granted_at: body.revokedAt,
+    revoked_at: body.revokedAt,
+  };
+}
+
 export type ConsentGrantResult =
   | { status: 201; data: { purpose: "respaldo-cuenta" } }
   | { status: 400 | 401 | 503; error: string };
@@ -32,17 +58,12 @@ export async function handleConsentGrant({ client, requester, body }: ConsentGra
     return { status: 401, error: "Se requiere una cuenta para registrar el consentimiento" };
   }
 
-  const parsedBody = consentGrantBodySchema.safeParse(body);
+  const parsedBody = consentEventBodySchema.safeParse(body);
   if (!parsedBody.success) {
     return { status: 400, error: `Consentimiento inválido (${describeValidationError(parsedBody.error)})` };
   }
 
-  const row = consentInsertSchema.safeParse({
-    purpose: parsedBody.data.purpose,
-    policy_version: parsedBody.data.consent.consentVersion,
-    granted_at: parsedBody.data.consent.consentAt,
-    revoked_at: null,
-  });
+  const row = consentInsertSchema.safeParse(toConsentRow(parsedBody.data));
   if (!row.success) {
     return { status: 400, error: `Consentimiento inválido (${describeValidationError(row.error)})` };
   }

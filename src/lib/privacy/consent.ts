@@ -5,7 +5,7 @@ import { z } from "zod";
  * obliga a pedir consentimiento nuevo: los registros guardan la versión que
  * el paciente aceptó, nunca se asume la vigente.
  */
-export const CONSENT_VERSION = "2026-09-24-provisional";
+export const CONSENT_VERSION = "2026-10-10-provisional";
 
 export const PRIVACY_POLICY_PATH = "/privacidad";
 

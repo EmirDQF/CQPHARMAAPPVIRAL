@@ -1,10 +1,12 @@
 /**
- * Interruptor del respaldo de Mi Panel en la cuenta. C3 ya lo implementa
- * (repositorios, /api/sync, consentimiento `respaldo-cuenta`), pero sigue
- * apagado: la política vigente dice que Mi Panel solo se guarda en el
- * celular. Se enciende recién con C5 (texto de transferencia internacional
- * y revisión legal) y el checklist 8b de docs/plans/fase-1-supabase.md.
- * Apagado, no se muestra la invitación ni la oferta y no se sube nada.
+ * Interruptor del respaldo de Mi Panel en la cuenta (C3). Sigue apagado hasta
+ * cerrar C5 (revisión de seguridad/a11y/BD del diff ARCO); se enciende en C5,
+ * con la política que declara la transferencia internacional (Brasil,
+ * sa-east-1), los derechos ARCO en Ajustes y las pruebas de cero pérdida
+ * (src/lib/sync/zeroLoss.test.ts) en verde. Aun encendido, nada sube sin
+ * Supabase configurado, sin cuenta y sin el consentimiento `respaldo-cuenta`.
+ * Antes de producción: checklist 8b de docs/plans/fase-1-supabase.md y la
+ * revisión legal de /privacidad (docs/ROADMAP.md).
  */
 export function isAccountSyncAvailable(): boolean {
   return false;

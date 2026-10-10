@@ -1,9 +1,15 @@
 import { z } from "zod";
-import { enqueueOutboxRequest, flushOutbox } from "../api/outbox";
+import { enqueueOutboxRequest, flushOutbox, outboxStore } from "../api/outbox";
 import { ACCOUNT_INVITE_SNOOZE_DAYS } from "../auth/accountInvite";
 import type { AuthStatus } from "../auth/types";
 import { createPersistentStore } from "../storage/persistentStore";
-import { consentRecordSchema, createConsentRecord, isConsentCurrent, type ConsentRecord } from "./consent";
+import {
+  CONSENT_VERSION,
+  consentRecordSchema,
+  createConsentRecord,
+  isConsentCurrent,
+  type ConsentRecord,
+} from "./consent";
 
 /**
  * Consentimiento `respaldo-cuenta` dado en este celular (C3). La política
@@ -83,6 +89,28 @@ export function shouldOfferAccountBackup({
   if (!isSyncAvailable || authStatus !== "account") return false;
   if (hasCurrentAccountBackupConsent(consentState)) return false;
   return !isSnoozed(dismissedAt, now);
+}
+
+/**
+ * Derecho de oposición (C5): deja de respaldar en el acto. Borra el
+ * consentimiento local (SyncCoordinator se detiene), descarta los lotes de
+ * respaldo aún no enviados y encola la revocación para la cuenta. Lo ya
+ * respaldado sigue en la cuenta hasta que el paciente la borre.
+ */
+export function revokeAccountBackupConsent(now: Date = new Date()): void {
+  const previous = accountBackupConsentStore.getSnapshot().consent;
+  accountBackupConsentStore.write({ consent: null });
+  outboxStore.write(outboxStore.getSnapshot().filter((entry) => entry.endpoint !== "/api/sync"));
+  const queued = enqueueOutboxRequest(
+    "/api/consents",
+    {
+      purpose: "respaldo-cuenta",
+      revokedAt: now.toISOString(),
+      consentVersion: previous?.consentVersion ?? CONSENT_VERSION,
+    },
+    { containsPersonalData: false, now: now.getTime() }
+  );
+  if (queued) void flushOutbox();
 }
 
 /** Guarda el consentimiento y encola su registro en la cuenta (no lleva datos de salud). */

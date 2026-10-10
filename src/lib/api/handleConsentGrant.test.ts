@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { isConsentActive } from "@/lib/repositories/consents";
 import type { RepositoryClient } from "@/lib/repositories/supabaseRows";
 import { createFakeSupabase, type FakeSupabase } from "@/test/fakeSupabase";
 import { handleConsentGrant } from "./handleConsentGrant";
@@ -62,5 +63,34 @@ describe("handleConsentGrant", () => {
     fake.failNext("insert");
 
     await expect(run(grantBody)).resolves.toMatchObject({ status: 503 });
+  });
+});
+
+describe("handleConsentGrant: revocación (derecho de oposición)", () => {
+  const revokeBody = {
+    purpose: "respaldo-cuenta",
+    revokedAt: "2026-10-10T14:59:30.000Z",
+    consentVersion: "2026-09-24-provisional",
+  };
+
+  it("agrega una fila de revocación y el consentimiento deja de estar vigente", async () => {
+    await run(grantBody);
+
+    await expect(run(revokeBody)).resolves.toEqual({ status: 201, data: { purpose: "respaldo-cuenta" } });
+
+    const rows = fake.rows("consents");
+    expect(rows).toHaveLength(2);
+    expect(rows[1]).toEqual(
+      expect.objectContaining({ granted_at: revokeBody.revokedAt, revoked_at: revokeBody.revokedAt })
+    );
+    const events = rows as unknown as Parameters<typeof isConsentActive>[0];
+    expect(isConsentActive(events, "respaldo-cuenta")).toBe(false);
+  });
+
+  it("rechaza una revocación con fecha futura o sin cuenta", async () => {
+    await expect(run({ ...revokeBody, revokedAt: "2026-10-11T00:00:00.000Z" })).resolves.toMatchObject({
+      status: 400,
+    });
+    await expect(run(revokeBody, null)).resolves.toMatchObject({ status: 401 });
   });
 });

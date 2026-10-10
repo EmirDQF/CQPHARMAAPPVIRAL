@@ -4,6 +4,8 @@ import { useLayoutEffect, useRef, type ReactNode, type SyntheticEvent } from "re
 
 interface ModalDialogProps {
   labelledBy: string;
+  /** Id del texto que explica las consecuencias; se anuncia junto con el título. */
+  describedBy?: string;
   onClose: () => void;
   children: ReactNode;
 }
@@ -13,7 +15,7 @@ interface ModalDialogProps {
  * mantiene el foco dentro, cierra con Escape y devuelve el foco al botón que
  * lo abrió. Se monta solo mientras está abierto.
  */
-export function ModalDialog({ labelledBy, onClose, children }: ModalDialogProps) {
+export function ModalDialog({ labelledBy, describedBy, onClose, children }: ModalDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   // Layout effect: el cierre ocurre antes de quitar el nodo, así el navegador restaura el foco.
@@ -34,6 +36,7 @@ export function ModalDialog({ labelledBy, onClose, children }: ModalDialogProps)
     <dialog
       ref={dialogRef}
       aria-labelledby={labelledBy}
+      aria-describedby={describedBy}
       onCancel={handleCancel}
       className="m-0 h-dvh max-h-none w-full max-w-none bg-transparent p-0 text-foreground backdrop:bg-black/50"
     >

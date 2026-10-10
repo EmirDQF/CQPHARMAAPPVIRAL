@@ -80,6 +80,13 @@ export function AppShell() {
               </span>
             </div>
             <PatientProfileLauncher />
+            <Link
+              href="/app/ajustes"
+              aria-label="Ajustes y privacidad"
+              className="min-h-12 min-w-12 flex items-center justify-center rounded-full text-xl bg-neutral-100 dark:bg-neutral-800"
+            >
+              <span aria-hidden="true">⚙️</span>
+            </Link>
           </div>
         </div>
         <InstallPwaBanner />

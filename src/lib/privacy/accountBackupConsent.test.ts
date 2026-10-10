@@ -11,6 +11,7 @@ import {
   grantAccountBackupConsent,
   hasCurrentAccountBackupConsent,
   parseAccountBackupConsent,
+  revokeAccountBackupConsent,
   shouldOfferAccountBackup,
 } from "./accountBackupConsent";
 import { CONSENT_VERSION } from "./consent";
@@ -69,6 +70,35 @@ describe("consentimiento respaldo-cuenta", () => {
   it("un valor corrupto en el celular se lee como sin consentimiento", () => {
     expect(parseAccountBackupConsent({ consent: { consentAt: "ayer" } })).toBeNull();
     expect(parseAccountBackupConsent("sí")).toBeNull();
+  });
+});
+
+describe("revokeAccountBackupConsent (derecho de oposición)", () => {
+  it("borra el consentimiento local, descarta lotes de respaldo pendientes y encola la revocación", () => {
+    grantAccountBackupConsent(NOW);
+    outboxStore.write([
+      ...outboxStore.getSnapshot(),
+      {
+        id: "lote-pendiente",
+        endpoint: "/api/sync",
+        body: {},
+        containsPersonalData: true,
+        attempts: 0,
+        retries: 0,
+        nextAttemptAt: 0,
+      },
+    ]);
+
+    revokeAccountBackupConsent(new Date(NOW.getTime() + 1000));
+
+    expect(accountBackupConsentStore.getSnapshot()).toEqual({ consent: null });
+    const endpoints = outboxStore.getSnapshot().map((entry) => entry.endpoint);
+    expect(endpoints).not.toContain("/api/sync");
+    expect(outboxStore.getSnapshot().at(-1)?.body).toEqual({
+      purpose: "respaldo-cuenta",
+      revokedAt: "2026-10-10T15:00:01.000Z",
+      consentVersion: CONSENT_VERSION,
+    });
   });
 });
 

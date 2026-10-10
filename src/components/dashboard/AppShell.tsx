@@ -17,6 +17,7 @@ import { PainCheckIn } from "./PainCheckIn";
 import { PainTrendChart } from "./PainTrendChart";
 import { PatientProfileLauncher } from "./PatientProfileLauncher";
 import { RedFlagBanner } from "./RedFlagBanner";
+import { ReminderOffer } from "./ReminderOffer";
 import { RestockAlert } from "./RestockAlert";
 import { SmartPillbox } from "./SmartPillbox";
 import { TreatmentTracker } from "./TreatmentTracker";
@@ -38,7 +39,7 @@ const TABS: TabDefinition[] = [
 
 export function AppShell() {
   const [activeTab, setActiveTab] = useState<TabId>("hoy");
-  usePillboxReminders();
+  const reminders = usePillboxReminders();
 
   const pillboxState = useSyncExternalStore(
     pillboxStore.subscribe,
@@ -90,6 +91,13 @@ export function AppShell() {
           <>
             <PainCheckIn />
             <SmartPillbox />
+            {reminders.shouldOffer && reminders.support && (
+              <ReminderOffer
+                support={reminders.support}
+                onEnable={reminders.requestPermission}
+                onSnooze={reminders.snooze}
+              />
+            )}
             <DailyCompletionCelebration />
             <DailyReinforcementBanner />
             <PainTrendChart />

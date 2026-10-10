@@ -1,44 +1,127 @@
 "use client";
 
-import { useEffect } from "react";
+import { useCallback, useEffect, useSyncExternalStore } from "react";
 import { DOSE_SCHEDULE } from "@/lib/clinical/constants";
-import { millisecondsUntilNextLimaTime } from "@/lib/utils/date";
+import { createListenerSet } from "@/lib/createListenerSet";
+import { pillboxStore } from "@/lib/dashboard/pillbox";
+import {
+  REMINDER_BODY,
+  REMINDER_TITLE,
+  detectReminderSupport,
+  hasTakenAnyDose,
+  readReminderEnvironment,
+  reminderPromptStore,
+  shouldNotifyDose,
+  shouldOfferReminders,
+  snoozeReminderOffer,
+  type ReminderSupport,
+} from "@/lib/reminders/reminders";
+import { millisecondsUntilNextLimaTime, toLimaIsoDate } from "@/lib/utils/date";
+
+const NOTIFICATION_ICON = "/icons/icon-192x192.png";
 
 /**
- * Recordatorios locales de toma (hora de Lima) usando la Notification API
- * del navegador + setTimeout recursivo, sin servidor de push. Cada dosis se
- * reprograma sola para el día siguiente.
+ * El navegador no avisa cuando cambia el permiso: se notifica a mano tras
+ * pedirlo, así todas las instancias del hook leen el mismo valor.
  */
-export function usePillboxReminders(): void {
-  useEffect(() => {
-    if (typeof window === "undefined" || !("Notification" in window)) return;
+const supportListeners = createListenerSet();
 
-    if (Notification.permission === "default") {
-      Notification.requestPermission().catch((error: unknown) => {
-        console.error("[pillbox] No se pudo solicitar permiso de notificaciones", error);
-      });
+function getSupportSnapshot(): ReminderSupport {
+  return detectReminderSupport(readReminderEnvironment());
+}
+
+function getServerSupportSnapshot(): null {
+  return null;
+}
+
+export interface PillboxReminders {
+  /** null hasta montar en el navegador (en el servidor no se sabe). */
+  support: ReminderSupport | null;
+  shouldOffer: boolean;
+  /** Pide permiso; solo debe llamarse desde un toque del paciente. */
+  requestPermission: () => Promise<void>;
+  snooze: () => void;
+}
+
+/**
+ * Chrome en Android no permite `new Notification()` en la página ("Illegal
+ * constructor"): ahí hay que pasar por el service worker.
+ */
+async function showReminderNotification(tag: string): Promise<void> {
+  const options: NotificationOptions = { body: REMINDER_BODY, icon: NOTIFICATION_ICON, tag };
+  const registration = await navigator.serviceWorker?.getRegistration();
+  if (registration) {
+    await registration.showNotification(REMINDER_TITLE, options);
+    return;
+  }
+  new Notification(REMINDER_TITLE, options);
+}
+
+function notifyIfPending(doseId: string, tag: string): void {
+  if (Notification.permission !== "granted") return;
+  if (!shouldNotifyDose(pillboxStore.getSnapshot(), doseId, toLimaIsoDate())) return;
+
+  showReminderNotification(tag).catch((error: unknown) => {
+    console.error("[reminders] No se pudo mostrar el recordatorio", error);
+  });
+}
+
+/**
+ * Recordatorios locales de toma (hora de Lima) con la Notification API y un
+ * setTimeout que se reprograma cada día. Nunca pide permiso por su cuenta:
+ * la oferta aparece después de la primera toma y el permiso se pide al tocar.
+ */
+export function usePillboxReminders(): PillboxReminders {
+  const support = useSyncExternalStore(
+    supportListeners.subscribe,
+    getSupportSnapshot,
+    getServerSupportSnapshot
+  );
+  const pillboxState = useSyncExternalStore(
+    pillboxStore.subscribe,
+    pillboxStore.getSnapshot,
+    pillboxStore.getServerSnapshot
+  );
+  const promptState = useSyncExternalStore(
+    reminderPromptStore.subscribe,
+    reminderPromptStore.getSnapshot,
+    reminderPromptStore.getServerSnapshot
+  );
+
+  const isGranted = support === "granted";
+
+  useEffect(() => {
+    if (!isGranted) return;
+
+    const timeoutIds = new Map<string, ReturnType<typeof setTimeout>>();
+
+    function scheduleNext(doseId: string, time: string, tag: string) {
+      const timeoutId = setTimeout(() => {
+        notifyIfPending(doseId, tag);
+        scheduleNext(doseId, time, tag);
+      }, millisecondsUntilNextLimaTime(time));
+      timeoutIds.set(doseId, timeoutId);
     }
 
-    const cancelFns = DOSE_SCHEDULE.map((dose) => {
-      let timeoutId: ReturnType<typeof setTimeout>;
+    DOSE_SCHEDULE.forEach((dose) => scheduleNext(dose.id, dose.time, `artikare-${dose.period}`));
+    return () => timeoutIds.forEach((timeoutId) => clearTimeout(timeoutId));
+  }, [isGranted]);
 
-      function scheduleNext() {
-        const delay = millisecondsUntilNextLimaTime(dose.time);
-        timeoutId = setTimeout(() => {
-          if (Notification.permission === "granted") {
-            new Notification("Artikare • Hora de tu toma", {
-              body: `${dose.label} — mantén tu racha.`,
-              icon: "/icons/icon-192x192.png",
-            });
-          }
-          scheduleNext();
-        }, delay);
+  const requestPermission = useCallback(async () => {
+    if ("Notification" in window) {
+      try {
+        await Notification.requestPermission();
+      } catch (error: unknown) {
+        console.error("[reminders] No se pudo solicitar permiso de notificaciones", error);
       }
-
-      scheduleNext();
-      return () => clearTimeout(timeoutId);
-    });
-
-    return () => cancelFns.forEach((cancel) => cancel());
+    }
+    supportListeners.notify();
   }, []);
+
+  const shouldOffer =
+    support !== null &&
+    support !== "granted" &&
+    shouldOfferReminders(promptState, toLimaIsoDate(), hasTakenAnyDose(pillboxState));
+
+  return { support, shouldOffer, requestPermission, snooze: snoozeReminderOffer };
 }

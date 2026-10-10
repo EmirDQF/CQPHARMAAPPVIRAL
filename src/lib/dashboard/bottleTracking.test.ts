@@ -33,6 +33,25 @@ describe("buildBottleStatuses", () => {
     expect(onTrigger[1].needsRestock).toBe(false);
   });
 
+  it("counts only the doses of the current bottle after 'Ya repuse mi frasco'", () => {
+    const pillbox = stateWithMorningDoses(RESTOCK_TRIGGER_DAY);
+    const restartedOn = addDaysToIsoDate("2026-01-01", RESTOCK_TRIGGER_DAY - 5);
+    const statuses = buildBottleStatuses(pillbox, {
+      bottles: [{ productId: "colageno-vitamina-c", startedOn: restartedOn }],
+    });
+
+    expect(statuses[0].productId).toBe("colageno-vitamina-c");
+    expect(statuses[0].servingsUsed).toBe(5);
+    expect(statuses[0].needsRestock).toBe(false);
+  });
+
+  it("a new bottle of another product does not reset this one", () => {
+    const statuses = buildBottleStatuses(stateWithMorningDoses(RESTOCK_TRIGGER_DAY), {
+      bottles: [{ productId: "citrato-magnesio-d3", startedOn: "2026-01-10" }],
+    });
+    expect(statuses[0].needsRestock).toBe(true);
+  });
+
   it("never reports negative servings", () => {
     const statuses = buildBottleStatuses(stateWithMorningDoses(BOTTLE_SERVINGS + 5));
     expect(statuses[0].servingsRemaining).toBe(0);

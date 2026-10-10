@@ -5,8 +5,14 @@ import { ownedRowColumns } from "./shared";
 
 export const RISK_LEVELS = ["bajo", "moderado", "alto"] as const satisfies readonly RiskLevel[];
 
-const ANSWER_TEXT_MAX = 64;
+/**
+ * Claves y valores son identificadores ASCII (`nutricionMineral`, `a_veces`):
+ * así 20 respuestas de 64 caracteres siempre caben en el CHECK
+ * `pg_column_size(answers) <= 4096` (texto multibyte podría superarlo).
+ */
+const ANSWER_TOKEN_PATTERN = /^[A-Za-z0-9_-]{1,64}$/;
 const MAX_ANSWERS = 20;
+const answerTokenSchema = z.string().regex(ANSWER_TOKEN_PATTERN);
 
 /** Resultado del Test de Edad Articular (orientativo, nunca diagnóstico). */
 export const assessmentInsertSchema = z.object({
@@ -14,7 +20,7 @@ export const assessmentInsertSchema = z.object({
   articular_age: z.number().int().min(PATIENT_AGE_MIN).max(ARTICULAR_AGE_MAX),
   risk_level: z.enum(RISK_LEVELS),
   answers: z
-    .record(z.string().max(ANSWER_TEXT_MAX), z.string().max(ANSWER_TEXT_MAX))
+    .record(answerTokenSchema, answerTokenSchema)
     .refine((answers) => Object.keys(answers).length <= MAX_ANSWERS),
 });
 

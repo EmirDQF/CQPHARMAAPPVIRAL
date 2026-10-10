@@ -1,18 +1,19 @@
 import { z } from "zod";
 import { APPOINTMENT_CODE_PATTERN } from "../appointments/generateCode";
+import { ARTICULAR_AGE_MAX, PATIENT_AGE_MAX, PATIENT_AGE_MIN } from "../clinical/constants";
 import { consentRecordSchema } from "../privacy/consent";
-import { APPOINTMENT_SLOTS, BOOKED_BY, CLINICAL_SERVICE_IDS } from "../schemas/appointment";
+import {
+  APPOINTMENT_SLOTS,
+  BOOKED_BY,
+  CLINICAL_SERVICE_IDS,
+  PATIENT_PHONE_PATTERN,
+} from "../schemas/appointment";
 import { RISK_LEVELS } from "../schemas/assessment";
 
-const MAX_HUMAN_AGE = 120;
-const MAX_ARTICULAR_AGE = 130;
+const patientAgeSchema = z.number().int().min(PATIENT_AGE_MIN).max(PATIENT_AGE_MAX);
 
-const phoneSchema = z
-  .string()
-  .trim()
-  .min(6)
-  .max(20)
-  .regex(/^[+\d\s-]+$/);
+// Mismo patrón que el CHECK de appointments.patient_phone (solo espacios, no tabs ni saltos).
+const phoneSchema = z.string().trim().regex(PATIENT_PHONE_PATTERN);
 
 export const createAppointmentBodySchema = z.object({
   code: z.string().regex(APPOINTMENT_CODE_PATTERN).optional(),
@@ -21,7 +22,7 @@ export const createAppointmentBodySchema = z.object({
   slot: z.enum(APPOINTMENT_SLOTS),
   patient: z.object({
     name: z.string().trim().min(2).max(120),
-    age: z.number().int().positive().lt(MAX_HUMAN_AGE),
+    age: patientAgeSchema,
     phone: phoneSchema,
     bookedBy: z.enum(BOOKED_BY),
   }),
@@ -33,8 +34,8 @@ export type CreateAppointmentBody = z.infer<typeof createAppointmentBodySchema>;
 
 export const createLeadBodySchema = z
   .object({
-    chronologicalAge: z.number().int().positive().lt(MAX_HUMAN_AGE),
-    articularAge: z.number().int().positive().lt(MAX_ARTICULAR_AGE),
+    chronologicalAge: patientAgeSchema,
+    articularAge: z.number().int().min(PATIENT_AGE_MIN).max(ARTICULAR_AGE_MAX),
     riskLevel: z.enum(RISK_LEVELS),
     phone: phoneSchema.nullish(),
     consent: consentRecordSchema.optional(),

@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import { buildBottleStatuses } from "@/lib/dashboard/bottleTracking";
+import { bottlesStore } from "@/lib/dashboard/bottles";
 import { pillboxStore } from "@/lib/dashboard/pillbox";
 
 const ABSORPTION_TIPS = [
@@ -15,7 +16,12 @@ export function TreatmentTracker() {
     pillboxStore.getSnapshot,
     pillboxStore.getServerSnapshot
   );
-  const bottles = buildBottleStatuses(state);
+  const bottlesState = useSyncExternalStore(
+    bottlesStore.subscribe,
+    bottlesStore.getSnapshot,
+    bottlesStore.getServerSnapshot
+  );
+  const bottles = buildBottleStatuses(state, bottlesState);
 
   return (
     <section className="rounded-2xl border border-neutral-200 dark:border-neutral-800 px-6 py-6 flex flex-col gap-5">

@@ -3,6 +3,7 @@
 import { useSyncExternalStore } from "react";
 import { RESTOCK_DISCOUNT_PERCENT } from "@/lib/clinical/constants";
 import { buildBottleStatuses } from "@/lib/dashboard/bottleTracking";
+import { bottlesStore, startNewBottle } from "@/lib/dashboard/bottles";
 import { pillboxStore } from "@/lib/dashboard/pillbox";
 import type { DosePeriod } from "@/lib/dashboard/types";
 import { productPacks } from "@/lib/products";
@@ -21,8 +22,15 @@ export function RestockAlert() {
     pillboxStore.getSnapshot,
     pillboxStore.getServerSnapshot
   );
+  const bottles = useSyncExternalStore(
+    bottlesStore.subscribe,
+    bottlesStore.getSnapshot,
+    bottlesStore.getServerSnapshot
+  );
   const hasRedFlag = useActiveRedFlags().length > 0;
-  const bottlesToRestock = buildBottleStatuses(state).filter((bottle) => bottle.needsRestock);
+  const bottlesToRestock = buildBottleStatuses(state, bottles).filter(
+    (bottle) => bottle.needsRestock
+  );
 
   // Con bandera roja no se ofrece reposición con descuento: primero el reumatólogo.
   if (hasRedFlag) return null;
@@ -34,6 +42,7 @@ export function RestockAlert() {
           (candidate) => candidate.id === RESTOCK_PACK_ID_BY_PERIOD[bottle.period]
         );
         if (!pack) return null;
+        const whatsAppLink = buildProductPackWhatsAppLink(pack);
 
         return (
           <section
@@ -52,19 +61,31 @@ export function RestockAlert() {
               />
             </div>
 
-            <p className="text-sm text-neutral-700">
-              Pide tu reposición de {pack.name} con {RESTOCK_DISCOUNT_PERCENT}% de descuento
-              antes de interrumpir tu racha.
+            <p className="text-base text-neutral-700">
+              Si te quedan pocas tomas, puedes pedir tu reposición de {pack.name} con{" "}
+              {RESTOCK_DISCOUNT_PERCENT}% de descuento.
             </p>
 
-            <a
-              href={buildProductPackWhatsAppLink(pack)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="min-h-12 flex items-center justify-center rounded-xl bg-risk-moderate text-white font-semibold px-4 transition-colors hover:opacity-90"
+            {whatsAppLink ? (
+              <a
+                href={whatsAppLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="min-h-12 flex items-center justify-center rounded-xl bg-risk-moderate text-white font-semibold px-4 transition-colors hover:opacity-90"
+              >
+                Reponer Mi Pack con Descuento
+              </a>
+            ) : (
+              <p className="text-base text-neutral-700">WhatsApp no disponible por el momento.</p>
+            )}
+
+            <button
+              type="button"
+              onClick={() => startNewBottle(bottle.productId)}
+              className="min-h-12 rounded-xl border-2 border-risk-moderate text-risk-moderate font-semibold px-4 transition-colors hover:bg-white/60"
             >
-              Reponer Mi Pack con Descuento
-            </a>
+              Ya repuse mi frasco
+            </button>
           </section>
         );
       })}

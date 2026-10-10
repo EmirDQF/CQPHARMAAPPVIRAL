@@ -78,3 +78,23 @@ export const RESTOCK_TRIGGER_DAY = 50;
 export const RESTOCK_DISCOUNT_PERCENT = 10;
 /** Descuento del pack sugerido al confirmar una cita de densitometría. */
 export const DENSITOMETRY_UPSELL_DISCOUNT_PERCENT = 20;
+
+/**
+ * Hábito diario. Se premia el ACTO de registrar, nunca el valor clínico.
+ * Escudo de Constancia: 1 por cada 7 días completos (máx. 2), se consume solo.
+ */
+export const STREAK_DAYS_PER_SHIELD = 7;
+export const STREAK_MAX_SHIELDS = 2;
+/** Hitos de constancia (días de racha) que desbloquean insignias. */
+export const STREAK_MILESTONES = [3, 7, 14, 21, 30, 60, 100] as const;
+/**
+ * Cupón por racha: apagado hasta que el negocio confirme porcentaje y
+ * vigencia. Aun encendido, se oculta con bandera roja y no lleva cuenta regresiva.
+ */
+export const STREAK_BENEFIT_ENABLED = false;
+/** Ventana para deshacer un registro de un toque (check-in o toma). */
+export const UNDO_WINDOW_MS = 10_000;
+/** Días antes de volver a ofrecer los recordatorios tras un "Ahora no". */
+export const REMINDER_PROMPT_SNOOZE_DAYS = 14;
+/** Tope de notificaciones por día (sin patrones oscuros). */
+export const MAX_DAILY_NOTIFICATIONS = 3;

@@ -1,0 +1,3 @@
+# El wrapper de Gradle es un script sh: con CRLF falla en Linux/macOS (CI, Mac para iOS).
+android/gradlew text eol=lf
+*.bat text eol=crlf

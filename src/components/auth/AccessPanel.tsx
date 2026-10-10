@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState, type FormEvent } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState, type FormEvent } from "react";
 import { isAccountSyncAvailable } from "@/lib/auth/features";
 import { AUTH_FAILURE_MESSAGES } from "@/lib/auth/messages";
 import { OTP_CODE_LENGTH, type OtpChannel } from "@/lib/auth/otpChannel";
@@ -65,7 +65,8 @@ export function AccessPanel({
   }, []);
 
   // Al cambiar de paso el foco va al contenido nuevo, así el lector de pantalla lo anuncia.
-  useEffect(() => {
+  // Layout effect: el foco se mueve en el mismo commit que muestra el paso, sin ventana intermedia.
+  useLayoutEffect(() => {
     if (previousStepRef.current === step) return;
     previousStepRef.current = step;
     if (step === "code") codeInputRef.current?.focus();

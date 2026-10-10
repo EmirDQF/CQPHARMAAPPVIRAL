@@ -170,6 +170,8 @@ describe("productRowSchema", () => {
     doses_per_bottle: 60,
     price_pen: null,
     active: false,
+    created_at: "2026-09-25T15:00:00.123456+00:00",
+    updated_at: "2026-09-25T15:00:00.123456+00:00",
   };
 
   it("acepta un producto inactivo sin datos regulatorios", () => {

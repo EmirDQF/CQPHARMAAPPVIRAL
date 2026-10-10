@@ -1,4 +1,4 @@
-import { DOSE_SCHEDULE } from "../clinical/constants";
+import { DOSE_SCHEDULE, REMINDER_PROMPT_SNOOZE_DAYS } from "../clinical/constants";
 import type { PillboxState } from "../dashboard/types";
 import { createPersistentStore } from "../storage/persistentStore";
 import { addDaysToIsoDate, toLimaIsoDate } from "../utils/date";
@@ -10,9 +10,6 @@ import { addDaysToIsoDate, toLimaIsoDate } from "../utils/date";
  */
 export const REMINDER_TITLE = "Toma tus suplementos";
 export const REMINDER_BODY = "Abre Artikare para registrar tu toma.";
-
-/** Días que "Ahora no" oculta la oferta de recordatorios. */
-export const REMINDER_SNOOZE_DAYS = 14;
 
 const LIMA_TIME_ZONE = "America/Lima";
 const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
@@ -85,7 +82,7 @@ export const reminderPromptStore = createPersistentStore<ReminderPromptState>(
 );
 
 export function snoozeReminderOffer(today: string = toLimaIsoDate()): void {
-  reminderPromptStore.write({ snoozedUntil: addDaysToIsoDate(today, REMINDER_SNOOZE_DAYS) });
+  reminderPromptStore.write({ snoozedUntil: addDaysToIsoDate(today, REMINDER_PROMPT_SNOOZE_DAYS) });
 }
 
 /**

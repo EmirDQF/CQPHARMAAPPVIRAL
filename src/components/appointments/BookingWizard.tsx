@@ -12,6 +12,7 @@ import type {
   ClinicalServiceId,
 } from "@/lib/appointments/types";
 import { AccountInvite } from "@/components/auth/AccountInvite";
+import { AppointmentSessionGate } from "./AppointmentSessionGate";
 import { ConfirmationCard } from "./ConfirmationCard";
 import { DateTimeStep } from "./DateTimeStep";
 import { PatientDataStep } from "./PatientDataStep";
@@ -67,6 +68,7 @@ export function BookingWizard() {
     return (
       <div className="flex flex-col gap-6">
         <ConfirmationCard appointment={confirmedAppointment} />
+        <AppointmentSessionGate />
         <AccountInvite moment="cita" />
       </div>
     );

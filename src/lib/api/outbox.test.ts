@@ -16,6 +16,7 @@ import {
   parseDeadLetters,
   parseOutboxEntries,
   purgeExpiredDeadLetters,
+  registerOutboxSentHandler,
   retryDeadLetter,
   type DeadLetterEntry,
 } from "./outbox";
@@ -291,6 +292,66 @@ describe("flushOutbox · 408 and 429", () => {
     await flushOutbox({ now: NOW, fetchImpl: mockFetch(throttled) });
 
     expect(outboxStore.getSnapshot()[0].nextAttemptAt).toBe(NOW + 90_000);
+  });
+});
+
+describe("flushOutbox · 401 (aún sin sesión)", () => {
+  it("conserva la entrada sin gastar intentos hasta que exista sesión (C4)", async () => {
+    queueLead();
+
+    await flushOutbox({ now: NOW, fetchImpl: mockFetch(401), random: noJitter });
+
+    expect(deadLetterStore.getSnapshot()).toEqual([]);
+    expect(outboxStore.getSnapshot()).toEqual([
+      expect.objectContaining({ attempts: 0, retries: 1, nextAttemptAt: NOW + OUTBOX_BASE_RETRY_DELAY_MS / 2 }),
+    ]);
+  });
+
+  it("se envía en cuanto hay sesión, sin esperar el backoff", async () => {
+    queueLead();
+    await flushOutbox({ now: NOW, fetchImpl: mockFetch(401), random: noJitter });
+
+    await flushOutbox({ now: NOW, fetchImpl: mockFetch(201), ignoreBackoff: true });
+
+    expect(outboxStore.getSnapshot()).toEqual([]);
+  });
+});
+
+describe("registerOutboxSentHandler", () => {
+  it("entrega la respuesta de un envío exitoso a quien la registró", async () => {
+    const handler = vi.fn();
+    const unregister = registerOutboxSentHandler("/api/leads", handler);
+    queueLead();
+    const response = new Response(JSON.stringify({ success: true, data: { id: "x" } }), { status: 201 });
+
+    await flushOutbox({ now: NOW, fetchImpl: mockFetch(response) });
+    unregister();
+
+    expect(handler).toHaveBeenCalledWith(expect.objectContaining({ endpoint: "/api/leads" }), response);
+  });
+
+  it("si quien la registró falla, la entrada igual sale de la cola (ya se envió)", async () => {
+    const unregister = registerOutboxSentHandler("/api/leads", () => {
+      throw new Error("fallo del manejador");
+    });
+    queueLead();
+
+    await flushOutbox({ now: NOW, fetchImpl: mockFetch(201) });
+    unregister();
+
+    expect(outboxStore.getSnapshot()).toEqual([]);
+    expect(deadLetterStore.getSnapshot()).toEqual([]);
+  });
+
+  it("no se llama ante un fallo del servidor", async () => {
+    const handler = vi.fn();
+    const unregister = registerOutboxSentHandler("/api/leads", handler);
+    queueLead();
+
+    await flushOutbox({ now: NOW, fetchImpl: mockFetch(503), random: noJitter });
+    unregister();
+
+    expect(handler).not.toHaveBeenCalled();
   });
 });
 

@@ -5,6 +5,7 @@ import { ProgressBar } from "./ProgressBar";
 import { QuestionStep } from "./QuestionStep";
 import { ResultCard } from "./ResultCard";
 import { calculateRisk } from "@/lib/calculateRisk";
+import { savePendingAssessment } from "@/lib/api/pendingAssessment";
 import { registerLeadForAnalytics } from "@/lib/api/registerLead";
 import { scoredQuestions, TOTAL_STEPS } from "@/lib/questions";
 import type { AgeSexValue, RiskResult, ScoredAnswers, Sex } from "@/lib/types";
@@ -39,6 +40,8 @@ export function ArticularTest() {
       const ageSex: AgeSexValue = { age: Number(ageInput), sex: sex as Sex };
       const riskResult = calculateRisk(ageSex, nextAnswers);
       registerLeadForAnalytics(riskResult);
+      // Se sube a `assessments` recién cuando haya sesión (cita o cuenta), nunca crea una.
+      savePendingAssessment(riskResult);
       setResult(riskResult);
       setPhase("result");
       return;

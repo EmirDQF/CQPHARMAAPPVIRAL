@@ -2,9 +2,11 @@
 import { render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+const unregisterSentHandler = vi.hoisted(() => vi.fn());
 const outboxMocks = vi.hoisted(() => ({
   flushOutbox: vi.fn(() => Promise.resolve()),
   purgeExpiredDeadLetters: vi.fn(),
+  registerOutboxSentHandler: vi.fn(() => unregisterSentHandler),
 }));
 
 vi.mock("@/lib/api/outbox", () => outboxMocks);
@@ -22,6 +24,14 @@ afterEach(() => {
 });
 
 describe("OutboxSync", () => {
+  it("instala el manejador del código final de las citas y lo quita al desmontarse", () => {
+    const { unmount } = render(<OutboxSync />);
+
+    expect(outboxMocks.registerOutboxSentHandler).toHaveBeenCalledWith("/api/appointments", expect.any(Function));
+    unmount();
+    expect(unregisterSentHandler).toHaveBeenCalledTimes(1);
+  });
+
   it("purges old dead letters and flushes on mount", () => {
     render(<OutboxSync />);
 

@@ -17,6 +17,9 @@ export const APPOINTMENT_SLOTS = ["manana", "tarde"] as const satisfies readonly
 export const BOOKED_BY = ["propia", "hijo"] as const satisfies readonly AppointmentBookedBy[];
 export const APPOINTMENT_STATUSES = ["solicitada", "confirmada", "cancelada", "atendida"] as const;
 
+/** Citas por paciente y hora que acepta la RPC create_appointment (rate limit en la base). */
+export const APPOINTMENT_HOURLY_LIMIT = 3;
+
 /** Mismo patrón que el CHECK de `appointments.patient_phone`. */
 export const PATIENT_PHONE_PATTERN = /^[+0-9 -]{6,20}$/;
 

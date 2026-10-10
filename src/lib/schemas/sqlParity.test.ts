@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { APPOINTMENT_CODE_PATTERN } from "../appointments/generateCode";
+import { APPOINTMENT_CODE_ALPHABET, APPOINTMENT_CODE_PATTERN } from "../appointments/generateCode";
 import {
   ARTICULAR_AGE_MAX,
   BOTTLE_SERVINGS,
@@ -17,6 +17,7 @@ import {
 } from "../clinical/constants";
 import { MENOPAUSAL_STATUSES } from "../clinical/tScoreEligibility";
 import {
+  APPOINTMENT_HOURLY_LIMIT,
   APPOINTMENT_SLOTS,
   APPOINTMENT_STATUSES,
   BOOKED_BY,
@@ -133,6 +134,11 @@ describe("paridad constantes clínicas ↔ SQL", () => {
 
   it("el código de cita usa el mismo alfabeto que APPOINTMENT_CODE_PATTERN", () => {
     expect(sql).toContain(`check (code ~ '${APPOINTMENT_CODE_PATTERN.source.toLowerCase()}')`);
+  });
+
+  it("create_appointment usa el alfabeto del código y APPOINTMENT_HOURLY_LIMIT", () => {
+    expect(sql).toContain(`alphabet constant text := '${APPOINTMENT_CODE_ALPHABET.toLowerCase()}'`);
+    expect(sql).toContain(`if recent_count >= ${APPOINTMENT_HOURLY_LIMIT} then`);
   });
 
   it("teléfono de cita y peso del perfil replican los límites de Zod", () => {

@@ -12,6 +12,8 @@ import { createPersistentStore } from "../storage/persistentStore";
  * Clases de fallo:
  * - Sin conexión (navigator.onLine false o fetch lanza): no gasta intentos.
  * - 408 / 429: se reintenta sin gastar intentos (respeta Retry-After).
+ * - 401: aún no hay sesión (p. ej. el invitado no completó el captcha); se
+ *   reintenta sin gastar intentos y sale en cuanto exista la sesión.
  * - 5xx: gasta un intento; al llegar a OUTBOX_MAX_SERVER_FAILURES → cola de errores.
  * - Otros 4xx: directo a la cola de errores (no se descarta).
  */
@@ -26,10 +28,17 @@ export const OUTBOX_DEAD_LETTER_MAX_AGE_MS = 30 * 24 * 60 * 60_000;
 const OUTBOX_STORAGE_KEY = "artikare_outbox_v1";
 const MS_PER_SECOND = 1000;
 const RETRYABLE_CLIENT_STATUSES: readonly number[] = [408, 429];
+const UNAUTHORIZED_STATUS = 401;
 const SERVER_ERROR_MIN_STATUS = 500;
 
-// /api/sync y /api/consents: respaldo de Mi Panel en la cuenta (C3).
-const OUTBOX_ENDPOINTS = ["/api/appointments", "/api/leads", "/api/sync", "/api/consents"] as const;
+// /api/sync y /api/consents: respaldo de Mi Panel en la cuenta (C3); /api/assessments: C4.
+const OUTBOX_ENDPOINTS = [
+  "/api/appointments",
+  "/api/leads",
+  "/api/sync",
+  "/api/consents",
+  "/api/assessments",
+] as const;
 export type OutboxEndpoint = (typeof OUTBOX_ENDPOINTS)[number];
 
 const outboxEntrySchema = z.object({
@@ -148,11 +157,13 @@ type SendOutcome =
   | { kind: "sent" }
   | { kind: "offline" }
   | { kind: "throttled"; retryAfterMs: number | null }
+  | { kind: "awaiting-session" }
   | { kind: "server-error"; status: number }
   | { kind: "rejected"; status: number };
 
 function classifyResponse(response: Response, now: number): SendOutcome {
   if (response.ok) return { kind: "sent" };
+  if (response.status === UNAUTHORIZED_STATUS) return { kind: "awaiting-session" };
   if (RETRYABLE_CLIENT_STATUSES.includes(response.status)) {
     return {
       kind: "throttled",
@@ -165,6 +176,32 @@ function classifyResponse(response: Response, now: number): SendOutcome {
   return { kind: "rejected", status: response.status };
 }
 
+type SentHandler = (entry: OutboxEntry, response: Response) => void | Promise<void>;
+
+const sentHandlers = new Map<OutboxEndpoint, SentHandler>();
+
+/**
+ * Qué hacer con la respuesta de un envío exitoso (p. ej. el código final de
+ * una cita). Devuelve la función para quitarlo.
+ */
+export function registerOutboxSentHandler(endpoint: OutboxEndpoint, handler: SentHandler): () => void {
+  sentHandlers.set(endpoint, handler);
+  return () => {
+    if (sentHandlers.get(endpoint) === handler) sentHandlers.delete(endpoint);
+  };
+}
+
+/** Un fallo del manejador no devuelve la entrada a la cola: el servidor ya la recibió. */
+async function notifySent(entry: OutboxEntry, response: Response): Promise<void> {
+  const handler = sentHandlers.get(entry.endpoint);
+  if (!handler) return;
+  try {
+    await handler(entry, response);
+  } catch (error) {
+    console.error(`[outbox] ${entry.endpoint}: no se pudo procesar la respuesta`, error instanceof Error ? error.name : "error desconocido");
+  }
+}
+
 async function sendEntry(entry: OutboxEntry, fetchImpl: typeof fetch, now: number): Promise<SendOutcome> {
   try {
     const response = await fetchImpl(entry.endpoint, {
@@ -172,6 +209,7 @@ async function sendEntry(entry: OutboxEntry, fetchImpl: typeof fetch, now: numbe
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(entry.body),
     });
+    if (response.ok) await notifySent(entry, response);
     return classifyResponse(response, now);
   } catch (error) {
     const reason = error instanceof Error ? error.name : "error desconocido";
@@ -217,6 +255,7 @@ function nextEntryState(
     case "sent":
       return null;
     case "offline":
+    case "awaiting-session":
       return rescheduled(entry, now, random);
     case "throttled":
       return rescheduled(entry, now, random, outcome.retryAfterMs ?? undefined);

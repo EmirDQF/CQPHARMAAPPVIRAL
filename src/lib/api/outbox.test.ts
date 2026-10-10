@@ -108,6 +108,28 @@ describe("enqueueOutboxRequest", () => {
   });
 });
 
+describe("endpoints de respaldo (C3)", () => {
+  it("encola lotes de /api/sync con consentimiento y sobreviven a la relectura", () => {
+    const batch = { domain: "painLogs", upserts: [], deletes: [], consent: createConsentRecord(new Date(NOW)) };
+
+    expect(enqueueOutboxRequest("/api/sync", batch, { containsPersonalData: true, now: NOW })).toBe(true);
+    expect(enqueueOutboxRequest("/api/consents", { purpose: "respaldo-cuenta" }, { containsPersonalData: false, now: NOW })).toBe(true);
+
+    expect(parseOutboxEntries(outboxStore.getSnapshot())?.map((entry) => entry.endpoint)).toEqual([
+      "/api/sync",
+      "/api/consents",
+    ]);
+  });
+
+  it("un lote de /api/sync sin consentimiento no se encola (Ley 29733)", () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+
+    const queued = enqueueOutboxRequest("/api/sync", { domain: "painLogs" }, { containsPersonalData: true, now: NOW });
+
+    expect(queued).toBe(false);
+  });
+});
+
 describe("computeRetryDelayMs", () => {
   it("grows exponentially from the base delay and stops at the cap", () => {
     expect(computeRetryDelayMs(1, () => 1)).toBe(OUTBOX_BASE_RETRY_DELAY_MS);

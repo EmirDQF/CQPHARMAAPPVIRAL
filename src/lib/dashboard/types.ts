@@ -7,6 +7,8 @@ export interface PainLogEntry {
   date: string;
   painLevel: number;
   stiffness: StiffnessBucket;
+  /** Última edición local (ISO); ausente en registros previos a C3. Decide los conflictos al sincronizar. */
+  updatedAt?: string;
 }
 
 export type DosePeriod = "morning" | "night";

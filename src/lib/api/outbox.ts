@@ -28,7 +28,8 @@ const MS_PER_SECOND = 1000;
 const RETRYABLE_CLIENT_STATUSES: readonly number[] = [408, 429];
 const SERVER_ERROR_MIN_STATUS = 500;
 
-const OUTBOX_ENDPOINTS = ["/api/appointments", "/api/leads"] as const;
+// /api/sync y /api/consents: respaldo de Mi Panel en la cuenta (C3).
+const OUTBOX_ENDPOINTS = ["/api/appointments", "/api/leads", "/api/sync", "/api/consents"] as const;
 export type OutboxEndpoint = (typeof OUTBOX_ENDPOINTS)[number];
 
 const outboxEntrySchema = z.object({

@@ -17,6 +17,8 @@ export interface PatientProfile {
   phone: string;
   /** Ausente en perfiles guardados antes del consentimiento (v1): se pide al volver a guardar. */
   consent?: ConsentRecord;
+  /** Última edición local (ISO); ausente en perfiles previos a C3. Decide los conflictos al sincronizar. */
+  updatedAt?: string;
 }
 
 export const emptyPatientProfile: PatientProfile = {
@@ -57,6 +59,7 @@ const storedProfileSchema = z.object({
   allergies: z.string().catch(""),
   phone: z.string().catch(""),
   consent: consentRecordSchema.optional().catch(undefined),
+  updatedAt: z.iso.datetime().optional().catch(undefined),
 });
 
 /**
@@ -67,7 +70,7 @@ const storedProfileSchema = z.object({
 export function normalizeStoredPatientProfile(raw: unknown): PatientProfile | null {
   if (typeof raw !== "object" || raw === null || Array.isArray(raw)) return null;
 
-  const { consent, ...profile } = storedProfileSchema.parse(raw);
+  const { consent, updatedAt, ...profile } = storedProfileSchema.parse(raw);
   const hasFractureHistory =
     profile.hasFractureHistory === false && !consent ? null : profile.hasFractureHistory;
 
@@ -75,6 +78,7 @@ export function normalizeStoredPatientProfile(raw: unknown): PatientProfile | nu
     ...profile,
     hasFractureHistory,
     ...(consent ? { consent } : {}),
+    ...(updatedAt ? { updatedAt } : {}),
   };
 }
 
@@ -83,3 +87,8 @@ export const patientProfileStore = createPersistentStore<PatientProfile>(
   emptyPatientProfile,
   normalizeStoredPatientProfile
 );
+
+/** Guarda el perfil con la hora de edición, que decide los conflictos al sincronizar (C3). */
+export function savePatientProfile(profile: Omit<PatientProfile, "updatedAt">): void {
+  patientProfileStore.write({ ...profile, updatedAt: new Date().toISOString() });
+}

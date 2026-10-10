@@ -3,7 +3,11 @@
 import { useState, useSyncExternalStore, type FormEvent } from "react";
 import { ConsentCheckbox } from "@/components/privacy/ConsentCheckbox";
 import { ModalDialog } from "@/components/ui/ModalDialog";
-import { parseProfileAgeInput, patientProfileStore } from "@/lib/dashboard/patientProfile";
+import {
+  parseProfileAgeInput,
+  patientProfileStore,
+  savePatientProfile,
+} from "@/lib/dashboard/patientProfile";
 import { createConsentRecord, isConsentCurrent } from "@/lib/privacy/consent";
 import type { MenopausalStatus } from "@/lib/clinical/tScoreEligibility";
 import type { Sex } from "@/lib/types";
@@ -126,7 +130,7 @@ export function PatientProfileModal({ onClose }: PatientProfileModalProps) {
     }
     const parsedWeight = Number(weightKg);
 
-    patientProfileStore.write({
+    savePatientProfile({
       name: name.trim(),
       age: ageResult.value,
       sex,

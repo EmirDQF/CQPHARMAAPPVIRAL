@@ -1,8 +1,11 @@
 import { z } from "zod";
 import { notFutureTimestampSchema, ownedRowColumns, timestampSchema } from "./shared";
 
-/** Finalidades del tratamiento de datos (Ley 29733) que registra `consents`. */
-export const CONSENT_PURPOSES = ["perfil-clinico", "cita", "contacto-test"] as const;
+/**
+ * Finalidades del tratamiento de datos (Ley 29733) que registra `consents`.
+ * `respaldo-cuenta` autoriza subir los registros de Mi Panel a la cuenta (C3).
+ */
+export const CONSENT_PURPOSES = ["perfil-clinico", "cita", "contacto-test", "respaldo-cuenta"] as const;
 
 const consentFields = {
   purpose: z.enum(CONSENT_PURPOSES),

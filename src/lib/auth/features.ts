@@ -1,8 +1,10 @@
 /**
- * ¿Los registros locales ya se respaldan en la cuenta? Hasta el sub-hito C3
- * (repositorios + migración de artikare_*_v1) la respuesta es no: la invitación
- * a crear cuenta promete "No pierdas tus registros si cambias de celular" y no
- * puede mostrarse antes de que esa promesa sea verdad.
+ * Interruptor del respaldo de Mi Panel en la cuenta. C3 ya lo implementa
+ * (repositorios, /api/sync, consentimiento `respaldo-cuenta`), pero sigue
+ * apagado: la política vigente dice que Mi Panel solo se guarda en el
+ * celular. Se enciende recién con C5 (texto de transferencia internacional
+ * y revisión legal) y el checklist 8b de docs/plans/fase-1-supabase.md.
+ * Apagado, no se muestra la invitación ni la oferta y no se sube nada.
  */
 export function isAccountSyncAvailable(): boolean {
   return false;

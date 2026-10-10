@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useSyncExternalStore } from "react";
 import { NextAppointmentCard } from "@/components/appointments/NextAppointmentCard";
+import { AccountBackupOffer } from "@/components/auth/AccountBackupOffer";
 import { AccountInvite } from "@/components/auth/AccountInvite";
 import { usePillboxReminders } from "@/hooks/usePillboxReminders";
 import { appointmentsStore, getNextUpcomingAppointment } from "@/lib/appointments/store";
@@ -101,6 +102,7 @@ export function AppShell() {
             <DailyCompletionCelebration />
             <DailyReinforcementBanner />
             <PainTrendChart />
+            <AccountBackupOffer />
             <AccountInvite moment="racha" streakDays={streakDays} />
           </>
         )}

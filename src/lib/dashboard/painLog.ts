@@ -5,13 +5,14 @@ import type { PainLogEntry } from "./types";
 
 const store = createPersistentStore<PainLogEntry[]>("artikare_pain_log_v1", []);
 
-export function saveTodayPainLogEntry(entry: Omit<PainLogEntry, "date">): void {
+export function saveTodayPainLogEntry(entry: Omit<PainLogEntry, "date" | "updatedAt">): void {
   const current = store.getSnapshot();
-  const date = toLimaIsoDate();
+  const now = new Date();
+  const date = toLimaIsoDate(now);
   discardTrashedRecordsFor("pain", date);
   const updated = [
     ...current.filter((item) => item.date !== date),
-    { ...entry, date },
+    { ...entry, date, updatedAt: now.toISOString() },
   ].sort((a, b) => a.date.localeCompare(b.date));
 
   store.write(updated);

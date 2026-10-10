@@ -4,6 +4,7 @@ import "./globals.css";
 import { WhatsAppFloatingButton } from "@/components/landing/WhatsAppFloatingButton";
 import { OutboxSync } from "@/components/OutboxSync";
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
+import { SyncCoordinator } from "@/components/SyncCoordinator";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -76,6 +77,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <WhatsAppFloatingButton />
         <ServiceWorkerRegistration />
         <OutboxSync />
+        <SyncCoordinator />
       </body>
     </html>
   );

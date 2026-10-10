@@ -27,16 +27,22 @@ import { RISK_LEVELS } from "./assessment";
 import { CONSENT_PURPOSES } from "./consent";
 import { STIFFNESS_BUCKETS } from "./painLog";
 import { PROFILE_WEIGHT_MAX_KG, SEXES } from "./profile";
+import { parseMigrations } from "./sqlSchemaParser";
 
 const MIGRATIONS_DIR = join(process.cwd(), "supabase", "migrations");
 
-/** Todas las migraciones en orden, sin comentarios, en minúsculas y con espacios colapsados. */
-function readMigrationsSql(): string {
+/** Todas las migraciones en orden, tal como están en disco. */
+function readRawMigrationsSql(): string {
   return readdirSync(MIGRATIONS_DIR)
     .filter((file) => file.endsWith(".sql"))
     .sort()
     .map((file) => readFileSync(join(MIGRATIONS_DIR, file), "utf8"))
-    .join("\n")
+    .join("\n");
+}
+
+/** Todas las migraciones en orden, sin comentarios, en minúsculas y con espacios colapsados. */
+function readMigrationsSql(): string {
+  return readRawMigrationsSql()
     .replace(/--.*$/gm, "")
     .replace(/\s+/g, " ")
     .toLowerCase();
@@ -111,14 +117,18 @@ describe("paridad constantes clínicas ↔ SQL", () => {
     expect(sql).toContain(`create type public.sex as enum (${sqlEnumList(SEXES)})`);
     expect(sql).toContain(`create type public.risk_level as enum (${sqlEnumList(RISK_LEVELS)})`);
     expect(sql).toContain(
-      `create type public.consent_purpose as enum (${sqlEnumList(CONSENT_PURPOSES)})`
-    );
-    expect(sql).toContain(
       `create type public.appointment_slot as enum (${sqlEnumList(APPOINTMENT_SLOTS)})`
     );
     expect(sql).toContain(
       `create type public.appointment_booked_by as enum (${sqlEnumList(BOOKED_BY)})`
     );
+  });
+
+  it("las finalidades de consentimiento, tras aplicar todas las migraciones, son CONSENT_PURPOSES", () => {
+    const { enums } = parseMigrations(readRawMigrationsSql());
+
+    expect(enums.get("consent_purpose")).toEqual(CONSENT_PURPOSES);
+    expect(CONSENT_PURPOSES).toContain("respaldo-cuenta");
   });
 
   it("el código de cita usa el mismo alfabeto que APPOINTMENT_CODE_PATTERN", () => {

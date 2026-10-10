@@ -23,6 +23,8 @@ export interface DexaScanEntry {
   lumbarTScore: number;
   femoralNeckTScore: number;
   radiologyCenter: string;
+  /** Última edición local (ISO); ausente en registros previos a C3. Decide los conflictos al sincronizar. */
+  updatedAt?: string;
 }
 
 /** Un valor que no es lista no se usa (ni se sobrescribe); las entradas inválidas se filtran al leer. */
@@ -121,10 +123,11 @@ function worstTScoreOf(entry: DexaScanEntry): number {
   return Math.min(entry.lumbarTScore, entry.femoralNeckTScore);
 }
 
-export function addDexaScanEntry(entry: Omit<DexaScanEntry, "id">): void {
+export function addDexaScanEntry(entry: Omit<DexaScanEntry, "id" | "updatedAt">): void {
   discardTrashedRecordsFor("dexa", entry.date);
-  const id = `dexa-${Date.now()}`;
-  const updated = [...store.getSnapshot(), { ...entry, id }].sort((a, b) =>
+  const now = new Date();
+  const id = `dexa-${now.getTime()}`;
+  const updated = [...store.getSnapshot(), { ...entry, id, updatedAt: now.toISOString() }].sort((a, b) =>
     a.date.localeCompare(b.date)
   );
   store.write(updated);

@@ -25,7 +25,7 @@ describe("PainCheckIn", () => {
     fireEvent.click(screen.getByRole("button", { name: "Guardar registro de hoy" }));
 
     expect(painLogStore.getSnapshot()).toEqual([
-      { date: toLimaIsoDate(), painLevel: 0, stiffness: "0-15" },
+      { date: toLimaIsoDate(), painLevel: 0, stiffness: "0-15", updatedAt: expect.any(String) },
     ]);
     const status = screen.getByRole("status");
     expect(status).toHaveTextContent("Registraste tu día");

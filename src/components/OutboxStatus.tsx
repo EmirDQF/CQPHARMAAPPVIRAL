@@ -13,6 +13,8 @@ import {
 const ENDPOINT_LABELS: Record<OutboxEndpoint, string> = {
   "/api/appointments": "Reserva de cita",
   "/api/leads": "Resultado del test",
+  "/api/sync": "Respaldo de tus registros",
+  "/api/consents": "Autorización del respaldo",
 };
 
 const FAILED_AT_FORMATTER = new Intl.DateTimeFormat("es-PE", {

@@ -1,6 +1,5 @@
 /**
- * Interruptor del respaldo de Mi Panel en la cuenta (C3). Sigue apagado hasta
- * cerrar C5 (revisión de seguridad/a11y/BD del diff ARCO); se enciende en C5,
+ * Interruptor del respaldo de Mi Panel en la cuenta (C3). Encendido en C5,
  * con la política que declara la transferencia internacional (Brasil,
  * sa-east-1), los derechos ARCO en Ajustes y las pruebas de cero pérdida
  * (src/lib/sync/zeroLoss.test.ts) en verde. Aun encendido, nada sube sin
@@ -9,5 +8,5 @@
  * revisión legal de /privacidad (docs/ROADMAP.md).
  */
 export function isAccountSyncAvailable(): boolean {
-  return false;
+  return true;
 }

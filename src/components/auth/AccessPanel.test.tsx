@@ -1,8 +1,15 @@
 // @vitest-environment jsdom
 import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { OtpChannel } from "@/lib/auth/otpChannel";
 import { AccessPanel } from "./AccessPanel";
+
+let mockSyncAvailable = true;
+vi.mock("@/lib/auth/features", () => ({ isAccountSyncAvailable: () => mockSyncAvailable }));
+
+beforeEach(() => {
+  mockSyncAvailable = true;
+});
 
 function createChannel(overrides: Partial<OtpChannel> = {}): OtpChannel {
   return {
@@ -37,11 +44,21 @@ describe("AccessPanel", () => {
 
     const status = await screen.findByRole("status");
     expect(status).toHaveTextContent("¡Listo!");
-    // Mientras no exista el respaldo en servidor (C3) no se promete que los datos viajan.
-    expect(status).toHaveTextContent("siguen guardados en este celular");
+    expect(status).not.toHaveTextContent("siguen guardados en este celular");
     expect(status).toHaveFocus();
     expect(channel.verifyCode).toHaveBeenCalledWith("paciente@correo.pe", "123456");
     expect(onSuccess).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not promise a backup while account sync is switched off", async () => {
+    mockSyncAvailable = false;
+    render(<AccessPanel channel={createChannel()} />);
+
+    const codeInput = await submitEmail("paciente@correo.pe");
+    fireEvent.change(codeInput, { target: { value: "123456" } });
+    fireEvent.click(screen.getByRole("button", { name: "Verificar" }));
+
+    expect(await screen.findByRole("status")).toHaveTextContent("siguen guardados en este celular");
   });
 
   it("explains a wrong code in plain Spanish and keeps the patient on the code step", async () => {

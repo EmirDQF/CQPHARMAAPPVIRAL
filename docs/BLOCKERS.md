@@ -7,9 +7,9 @@ Lo que sigue solo puede hacerlo el usuario.
 |---|---|---|---|
 | B1 | iOS (`npx cap add ios`) | BLOQUEADO: este equipo es Windows; Xcode y CocoaPods solo existen en macOS. | En una Mac: `npm ci && npx cap add ios && npx cap sync ios`, abrir en Xcode y firmar con Apple Developer. |
 | B2 | `appId` definitivo | ABIERTO: se usa `com.artikare.app` (`src/lib/native/appIdentity.ts` = `capacitor.config.ts`, verificado por test). No se puede cambiar tras publicar en Play. | Confirmarlo antes de la primera subida a Google Play. |
-| B3 | Dominio de producción | ABIERTO: WebView, App Links y shell offline usan `CAP_SERVER_URL` (por defecto `https://artikare.com`). | Desplegar la web y fijar `CAP_SERVER_URL` y `NEXT_PUBLIC_SITE_URL` antes de `npm run build:android`. |
-| B4 | Huella SHA-256 de firma | ABIERTO: `/.well-known/assetlinks.json` responde `[]` hasta configurarla (nunca se inventa). | Definir `ANDROID_SHA256_FINGERPRINT` con la huella del keystore de subida y la de Play App Signing. |
-| B5 | Keystore de release | ABIERTO: `npm run build:android` se detiene con mensaje claro sin él. | Crear el keystore y `android/keystore.properties` (ignorado por git) o variables `ANDROID_KEYSTORE_*`. |
+| B3 | Dominio de producción | ABIERTO: WebView, App Links y shell offline usan `CAP_SERVER_URL`. Ya **no hay valor por defecto**: en release, `cap sync` y Gradle fallan sin una URL https pública. Para probar en el teléfono hoy: `npm run mobile:dev` (ver `docs/MOBILE.md`). | Desplegar la web (p. ej. Vercel) con las variables de producción y fijar `CAP_SERVER_URL` y `NEXT_PUBLIC_SITE_URL` antes de `npm run build:android`. |
+| B4 | Huella SHA-256 de firma | ABIERTO: `/.well-known/assetlinks.json` responde `[]` hasta configurarla (nunca se inventa). Huella de la **clave de subida** (leída del keystore local, pública): `BD:49:59:69:27:3E:01:48:47:70:8F:AB:7A:60:4C:8D:D5:D5:B7:00:6B:65:B7:C0:B6:49:24:8A:EA:06:F1:66`. | Copiar la huella de **Play App Signing** (Play Console → Integridad de la app) y definir en el despliegue `ANDROID_SHA256_FINGERPRINT="<subida>,<play>"`. |
+| B5 | Keystore de release | HECHO por el usuario: existe `android/keystore.properties` → `.keystore` ignorado por git (`CN=Artikare, O=CQ Pharma, C=PE`). Sin él, Gradle bloquea cualquier release (`8e9656c`). | **Respaldarlo fuera del equipo** (si se pierde no se puede actualizar la app sin el proceso de reseteo de clave de Play). |
 | B6 | pg_cron en producción | ABIERTO: la migración programa la purga diaria solo si el proyecto ofrece pg_cron. | Activar pg_cron en el panel de Supabase si no aparece `daily-soft-delete-purge` en `cron.job`. |
 
 ## Resueltos (técnicos)
@@ -21,6 +21,8 @@ Lo que sigue solo puede hacerlo el usuario.
 - Purga de la papelera local de invitado (`artikare_trash_v1`) al abrir y al volver a la app, mismo criterio que la base; pgTAP con el caso límite de 29 días 23 h (`cfd569a`). La purga en Supabase (`20261010150000`, rollback en `supabase/rollbacks/`) ya estaba en verde.
 - Deep links en arranque en frío (`getLaunchUrl`, Android no emite `appUrlOpen` sin `onNewIntent`) y esquema `artikare://test` · `artikare://blog/<slug>` en un intent-filter aparte sin `autoVerify` (`88a07b5`).
 - Lint sin avisos: se ignora la salida generada de Gradle y `cap sync` (`80109a4`).
+- Entornos `CAP_ENV` dev/release sin fallback inventado (`3b10fbd`) · cleartext solo en el APK debug vía `network_security_config` (`60def24`) · scripts `mobile:dev`/`mobile:install`/`mobile:verify` y guardia anti-contaminación en `build:android` y Gradle (`fd6ea4d`).
+- Probado en el teléfono (2026-10-11) y corregido: los recordatorios nativos nunca se programaban en Android (`0bc9b2d`); el shell offline no ejecutaba su script con `server.url` (`e8f662a`); aviso de hidratación por safe-area (`d593444`); release sin firma vía `gradlew` directo (`8e9656c`); revisión de seguridad y código (`b6c21a6`).
 
-Última verificación (2026-10-11): `typecheck`, `lint` (0 avisos), `vitest` 794/794, `verify-env` OK (8 avisos de variables de despliegue, ver B3–B4), `next build` OK, pgTAP 6/6 archivos, `processDebugMainManifest` OK.
+Última verificación (2026-10-11, `b6c21a6`): `tsc` OK, `eslint` 0 avisos, `vitest` 94 archivos · 836/836, E2E shell offline 1/1, `next build` OK (25/25 páginas), `mobile:install` en Samsung `RFCTB0PFLWB` OK. `mobile:verify` se detiene en `verify-env --strict` (faltan las 8 variables de producción, ver B3–B4): esperado.
 No hacen falta variables de entorno nuevas: todas están en `.env.example`.

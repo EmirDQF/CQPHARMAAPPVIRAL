@@ -84,10 +84,10 @@ export function PainCheckIn() {
   }
 
   return (
-    <section className="rounded-2xl border border-neutral-200 dark:border-neutral-800 px-6 py-6 flex flex-col gap-5">
+    <section className="rounded-card border border-line bg-surface shadow-soft px-6 py-6 flex flex-col gap-5">
       <div>
         <h2 className="text-xl font-bold">¿Cómo amanecieron tus articulaciones hoy?</h2>
-        <p className="text-sm text-neutral-500">Check-in diario · 10 segundos</p>
+        <p className="text-sm text-muted">Check-in diario · 10 segundos</p>
       </div>
 
       <div>
@@ -136,7 +136,7 @@ export function PainCheckIn() {
         type="button"
         onClick={handleSave}
         disabled={painLevel === null || stiffness === null}
-        className="min-h-12 rounded-xl bg-brand hover:bg-brand-dark disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold text-lg transition-colors"
+        className="min-h-12 rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold text-lg transition-colors"
       >
         {todayEntry ? "✓ Registrado hoy — actualizar" : "Guardar registro de hoy"}
       </button>
@@ -158,7 +158,7 @@ export function PainCheckIn() {
             <button
               type="button"
               onClick={saveEntry}
-              className="flex-1 min-h-12 rounded-xl bg-brand hover:bg-brand-dark text-white font-semibold"
+              className="flex-1 min-h-12 rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] text-white font-semibold"
             >
               Sí, corregir a {painLevel}
             </button>

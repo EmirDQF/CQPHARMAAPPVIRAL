@@ -59,13 +59,13 @@ export function AppShell() {
 
   return (
     <div className="flex flex-col min-h-dvh">
-      <header className="sticky top-0 z-30 bg-background/95 backdrop-blur border-b border-neutral-200 dark:border-neutral-800 px-4 py-4 flex flex-col gap-3">
+      <header className="sticky top-0 z-30 bg-background/95 backdrop-blur border-b border-line px-4 py-4 flex flex-col gap-3">
         <div className="flex items-center justify-between gap-3">
           <div>
             <p className="text-lg font-bold">
               Hola{patientFirstName ? `, ${patientFirstName}` : ""} 👋
             </p>
-            <p className="text-sm text-neutral-500">Tu salud ósea, en un solo lugar.</p>
+            <p className="text-sm text-muted">Tu salud ósea, en un solo lugar.</p>
           </div>
           <div className="flex items-center gap-2">
             <div
@@ -148,7 +148,7 @@ export function AppShell() {
 
       <nav
         aria-label="Navegación principal"
-        className="fixed bottom-0 inset-x-0 z-40 bg-background border-t border-neutral-200 dark:border-neutral-800 pb-[env(safe-area-inset-bottom)]"
+        className="fixed bottom-0 inset-x-0 z-40 bg-background border-t border-line pb-[env(safe-area-inset-bottom)]"
       >
         <div className="max-w-2xl mx-auto grid grid-cols-4">
           {TABS.map((tab) => (
@@ -160,7 +160,7 @@ export function AppShell() {
               className={`min-h-16 flex flex-col items-center justify-center gap-1 text-xs font-semibold transition-colors ${
                 activeTab === tab.id
                   ? "text-brand"
-                  : "text-neutral-500 dark:text-neutral-400"
+                  : "text-muted"
               }`}
             >
               <span className="text-2xl" aria-hidden="true">

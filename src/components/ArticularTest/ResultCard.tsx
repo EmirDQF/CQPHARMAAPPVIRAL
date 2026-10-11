@@ -27,7 +27,7 @@ export function ResultCard({ result, onRestart }: ResultCardProps) {
   const needsRheumatologyReview = result.riskLevel === "alto";
 
   return (
-    <div className="w-full max-w-md mx-auto rounded-2xl border border-neutral-200 dark:border-neutral-800 overflow-hidden shadow-sm">
+    <div className="w-full max-w-md mx-auto rounded-card border border-line bg-surface shadow-soft overflow-hidden shadow-sm">
       <div className="bg-brand text-white px-6 py-4">
         <p className="text-sm font-medium opacity-90">
           🦴 Reporte de Salud Ósea &amp; Articular
@@ -38,13 +38,13 @@ export function ResultCard({ result, onRestart }: ResultCardProps) {
       <div className="px-6 py-5 flex flex-col gap-5">
         <div className="flex justify-between gap-4">
           <div>
-            <p className="text-xs text-neutral-500 uppercase tracking-wide">
+            <p className="text-xs text-muted uppercase tracking-wide">
               Edad real
             </p>
             <p className="text-2xl font-bold">{result.chronologicalAge} años</p>
           </div>
           <div className="text-right">
-            <p className="text-xs text-neutral-500 uppercase tracking-wide">
+            <p className="text-xs text-muted uppercase tracking-wide">
               Edad articular estimada
             </p>
             <p className="text-2xl font-bold">{result.articularAge} años</p>
@@ -88,7 +88,7 @@ export function ResultCard({ result, onRestart }: ResultCardProps) {
           </div>
         </div>
 
-        <p className="text-xs text-neutral-500">
+        <p className="text-xs text-muted">
           Este test es orientativo y no reemplaza un diagnóstico médico
           profesional. Consulta a tu especialista en reumatología.
         </p>
@@ -96,7 +96,7 @@ export function ResultCard({ result, onRestart }: ResultCardProps) {
         <div className="flex flex-col gap-3 pt-2">
           <WhatsAppCta
             href={densitometriaLink}
-            className={`w-full text-center rounded-xl bg-brand hover:bg-brand-dark text-white font-semibold px-4 py-3 transition-colors ${FOCUS_RING}`}
+            className={`w-full text-center rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] text-white font-semibold px-4 py-3 transition-colors ${FOCUS_RING}`}
           >
             Agendar Densitometría por WhatsApp
           </WhatsAppCta>
@@ -110,7 +110,7 @@ export function ResultCard({ result, onRestart }: ResultCardProps) {
           <button
             type="button"
             onClick={onRestart}
-            className={`w-full text-center text-sm text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300 px-4 py-2 ${FOCUS_RING}`}
+            className={`w-full text-center text-sm text-muted hover:text-neutral-700 dark:hover:text-neutral-300 px-4 py-2 ${FOCUS_RING}`}
           >
             Volver a hacer el test
           </button>

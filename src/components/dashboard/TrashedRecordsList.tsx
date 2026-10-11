@@ -26,7 +26,7 @@ export function TrashedRecordsList({ items, onRestore }: TrashedRecordsListProps
             >
               <span>
                 {label}
-                <span className="block text-sm text-neutral-500">Puedes deshacerlo hasta el {deadline}</span>
+                <span className="block text-sm text-muted">Puedes deshacerlo hasta el {deadline}</span>
               </span>
               <button
                 type="button"

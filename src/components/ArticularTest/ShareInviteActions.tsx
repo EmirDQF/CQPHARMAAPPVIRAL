@@ -49,7 +49,7 @@ export function ShareInviteActions() {
   const message = outcome ? OUTCOME_MESSAGES[outcome] : undefined;
 
   return (
-    <div className="flex flex-col gap-3 border-t border-neutral-200 dark:border-neutral-800 pt-4">
+    <div className="flex flex-col gap-3 border-t border-line pt-4">
       <p className="text-sm font-medium">¿Conoces a alguien a quien le sirva? Compartes solo la invitación, no tu resultado.</p>
       <button
         type="button"

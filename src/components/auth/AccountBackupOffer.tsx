@@ -110,7 +110,7 @@ export function AccountBackupOffer() {
           type="button"
           onClick={handleActivate}
           disabled={!hasAccepted}
-          className="flex-1 min-h-12 rounded-xl bg-brand hover:bg-brand-dark text-white font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex-1 min-h-12 rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] text-white font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {ACCOUNT_BACKUP_OFFER_COPY.accept}
         </button>

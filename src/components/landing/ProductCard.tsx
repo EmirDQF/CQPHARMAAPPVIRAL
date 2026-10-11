@@ -10,7 +10,7 @@ export function ProductCard({ pack }: ProductCardProps) {
   const whatsAppLink = buildProductPackWhatsAppLink(pack);
 
   return (
-    <div className="flex flex-col gap-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 p-6 h-full">
+    <div className="flex flex-col gap-4 rounded-card border border-line bg-surface shadow-soft p-6 h-full">
       <div className="flex flex-wrap gap-2">
         {pack.badges.map((badge) => (
           <span
@@ -38,11 +38,11 @@ export function ProductCard({ pack }: ProductCardProps) {
         ))}
       </ul>
 
-      <p className="text-xs text-neutral-500 mt-auto">{pack.indication}</p>
+      <p className="text-xs text-muted mt-auto">{pack.indication}</p>
 
       <WhatsAppCta
         href={whatsAppLink}
-        className="w-full text-center rounded-xl bg-brand hover:bg-brand-dark text-white font-semibold px-4 py-3 transition-colors"
+        className="w-full text-center rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] text-white font-semibold px-4 py-3 transition-colors"
       >
         Reservar por WhatsApp
       </WhatsAppCta>

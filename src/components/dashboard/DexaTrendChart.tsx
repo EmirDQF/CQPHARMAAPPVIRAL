@@ -59,7 +59,7 @@ export function DexaTrendChart({ entries }: DexaTrendChartProps) {
           strokeWidth={2}
         />
       </svg>
-      <div className="flex gap-4 text-xs text-neutral-500 mt-1">
+      <div className="flex gap-4 text-xs text-muted mt-1">
         <span>— Columna Lumbar</span>
         <span className="text-risk-moderate">— Cuello Femoral</span>
       </div>

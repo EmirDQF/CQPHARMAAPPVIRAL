@@ -21,7 +21,7 @@ export function ServiceStep({ onSelect }: ServiceStepProps) {
             key={service.id}
             type="button"
             onClick={() => onSelect(service.id)}
-            className="min-h-12 text-left rounded-2xl border-2 border-neutral-200 dark:border-neutral-800 hover:border-brand px-5 py-4 transition-colors"
+            className="min-h-12 text-left rounded-2xl border-2 border-line hover:border-brand px-5 py-4 transition-colors"
           >
             <p className="font-bold text-lg">{service.name}</p>
             <p className="text-sm text-neutral-600 dark:text-neutral-300">

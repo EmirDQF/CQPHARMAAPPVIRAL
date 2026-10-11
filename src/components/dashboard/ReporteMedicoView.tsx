@@ -119,7 +119,7 @@ export function ReporteMedicoView() {
           <button
             type="button"
             onClick={() => window.print()}
-            className="min-h-12 rounded-xl bg-brand hover:bg-brand-dark text-white font-semibold px-5 transition-colors"
+            className="min-h-12 rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] text-white font-semibold px-5 transition-colors"
           >
             <span aria-hidden="true">🖨️ </span>Imprimir / Guardar en PDF
           </button>
@@ -130,7 +130,7 @@ export function ReporteMedicoView() {
           <p className="text-neutral-600 dark:text-neutral-300 print:text-black">
             Reporte Osteoarticular
           </p>
-          <p className="text-xs text-neutral-500 print:text-black mt-1">
+          <p className="text-xs text-muted print:text-black mt-1">
             Generado el {formatGeneratedDate()}
           </p>
         </header>
@@ -205,7 +205,7 @@ export function ReporteMedicoView() {
               <button
                 type="button"
                 onClick={() => setIsDexaModalOpen(true)}
-                className="min-h-12 flex-1 rounded-xl bg-brand hover:bg-brand-dark text-white font-semibold px-4 transition-colors"
+                className="min-h-12 flex-1 rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] text-white font-semibold px-4 transition-colors"
               >
                 Sube tu densitometría
               </button>

@@ -16,7 +16,7 @@ export function SmartPillbox() {
   const streakDays = calculateStreakDays(state);
 
   return (
-    <section className="rounded-2xl border border-neutral-200 dark:border-neutral-800 px-6 py-6 flex flex-col gap-4">
+    <section className="rounded-card border border-line bg-surface shadow-soft px-6 py-6 flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold">Pastillero Inteligente</h2>
         <span className="text-sm font-semibold whitespace-nowrap">
@@ -30,10 +30,10 @@ export function SmartPillbox() {
           return (
             <div
               key={dose.id}
-              className="flex items-center justify-between gap-4 rounded-xl border border-neutral-200 dark:border-neutral-800 px-4 py-3"
+              className="flex items-center justify-between gap-4 rounded-control border border-line bg-surface px-4 py-3"
             >
               <div>
-                <p className="text-sm text-neutral-500">⏰ {formatTime24hForDisplay(dose.time)}</p>
+                <p className="text-sm text-muted">⏰ {formatTime24hForDisplay(dose.time)}</p>
                 <p className="font-semibold">{dose.label}</p>
               </div>
               <button
@@ -43,7 +43,7 @@ export function SmartPillbox() {
                 className={`min-h-12 min-w-24 rounded-xl font-semibold px-4 transition-colors ${
                   isTaken
                     ? "bg-risk-low-bg text-risk-low cursor-default"
-                    : "bg-brand hover:bg-brand-dark text-white"
+                    : "bg-action-strong hover:bg-brand-dark active:scale-[0.98] text-white"
                 }`}
               >
                 {isTaken ? "✓ Tomado" : "Tomar"}
@@ -53,7 +53,7 @@ export function SmartPillbox() {
         })}
       </div>
 
-      <p className="text-sm text-neutral-500">
+      <p className="text-sm text-muted">
         La constancia diaria apoya tu salud articular y ósea. Tus suplementos complementan, no reemplazan, el tratamiento indicado por tu médico.
       </p>
     </section>

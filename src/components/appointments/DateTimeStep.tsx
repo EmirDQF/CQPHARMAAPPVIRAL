@@ -73,7 +73,7 @@ export function DateTimeStep({ availableDays, onBack, onSelect }: DateTimeStepPr
       <button
         type="button"
         onClick={onBack}
-        className="self-start text-sm font-semibold text-neutral-500 hover:text-brand"
+        className="self-start text-sm font-semibold text-muted hover:text-brand"
       >
         ← Cambiar servicio
       </button>

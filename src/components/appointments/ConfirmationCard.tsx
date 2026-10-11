@@ -64,7 +64,7 @@ export function ConfirmationCard({ appointment }: ConfirmationCardProps) {
 
       <WhatsAppCta
         href={whatsAppLink}
-        className="min-h-12 flex items-center justify-center rounded-xl bg-brand hover:bg-brand-dark text-white font-semibold px-4 transition-colors"
+        className="min-h-12 flex items-center justify-center rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] text-white font-semibold px-4 transition-colors"
       >
         Confirmar por WhatsApp
       </WhatsAppCta>

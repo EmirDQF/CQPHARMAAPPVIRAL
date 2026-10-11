@@ -52,10 +52,10 @@ export function ClinicalReportExport() {
   }
 
   return (
-    <section className="rounded-2xl border border-neutral-200 dark:border-neutral-800 px-6 py-6 flex flex-col gap-4">
+    <section className="rounded-card border border-line bg-surface shadow-soft px-6 py-6 flex flex-col gap-4">
       <div>
         <h2 className="text-xl font-bold">Informe para tu Reumatólogo</h2>
-        <p className="text-sm text-neutral-500">
+        <p className="text-sm text-muted">
           {summary.averagePainLevel !== null
             ? `Dolor promedio ${summary.averagePainLevel}/10`
             : "Sin registros de dolor"}{" "}
@@ -66,7 +66,7 @@ export function ClinicalReportExport() {
         </p>
       </div>
 
-      <p className="text-sm text-neutral-500">
+      <p className="text-sm text-muted">
         Descarga el informe y adjúntalo en WhatsApp: por tu privacidad, tus datos de salud no
         viajan dentro del enlace.
       </p>
@@ -75,7 +75,7 @@ export function ClinicalReportExport() {
         <WhatsAppCta
           href={whatsAppLink}
           containerClassName="flex-1"
-          className="min-h-12 flex items-center justify-center rounded-xl bg-brand hover:bg-brand-dark text-white font-semibold px-4 flex-1 transition-colors"
+          className="min-h-12 flex items-center justify-center rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] text-white font-semibold px-4 flex-1 transition-colors"
         >
           Abrir WhatsApp
         </WhatsAppCta>

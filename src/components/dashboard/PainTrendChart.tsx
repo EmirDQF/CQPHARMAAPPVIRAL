@@ -33,7 +33,7 @@ export function PainTrendChart() {
   return (
     <section
       id="tendencia"
-      className="rounded-2xl border border-neutral-200 dark:border-neutral-800 px-6 py-6 flex flex-col gap-4 scroll-mt-20"
+      className="rounded-card border border-line bg-surface shadow-soft px-6 py-6 flex flex-col gap-4 scroll-mt-20"
     >
       <div>
         <h2 className="text-xl font-bold">Evolución de tus últimos 30 días</h2>
@@ -47,7 +47,7 @@ export function PainTrendChart() {
       </div>
 
       {entries.length === 0 ? (
-        <p className="text-sm text-neutral-500">
+        <p className="text-sm text-muted">
           Sin registros de dolor en los últimos 30 días. Haz tu check-in diario
           para ver tu evolución.
         </p>
@@ -74,7 +74,7 @@ export function PainTrendChart() {
         </svg>
       )}
 
-      <p className="text-xs text-neutral-500">
+      <p className="text-xs text-muted">
         Cada barra representa el nivel de dolor reportado ese día (0–10). Una línea baja marca un día registrado sin dolor.
       </p>
     </section>

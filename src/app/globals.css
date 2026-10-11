@@ -1,8 +1,38 @@
 @import "tailwindcss";
 
+/*
+ * Sistema de diseño "Clínico amable" (docs/DESIGN.md). Los valores --color-*
+ * de la capa nueva deben coincidir con src/lib/design/tokens.ts: lo verifica
+ * src/lib/design/contrast.test.ts junto con el contraste AA de cada par.
+ * El semáforo OMS y la bandera roja (--color-risk-*) no se pastelizan.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-canvas: #F8FAFC;
+  --color-surface: #FFFFFF;
+  --color-ink: #0F172A;
+  --color-muted: #64748B;
+  --color-line: #E2E8F0;
+  --color-clinic: #0F4C81;
+  --color-action: #14B8A6;
+  --color-action-ink: #042F2E;
+  --color-action-strong: #0F766E;
+  --color-on-action-strong: #FFFFFF;
+  --color-progress: #0F766E;
+  --color-pastel-mint: #D9F5EF;
+  --color-pastel-mint-ink: #0B4F47;
+  --color-pastel-sky: #DCEEFB;
+  --color-pastel-sky-ink: #0F4C81;
+  --color-pastel-lavender: #E8E7FB;
+  --color-pastel-lavender-ink: #3730A3;
+  --color-pastel-peach: #FDEBDD;
+  --color-pastel-peach-ink: #7C2D12;
+  --color-pastel-rose: #FBE4EA;
+  --color-pastel-rose-ink: #9F1239;
+  --color-pastel-lemon: #FBF3CF;
+  --color-pastel-lemon-ink: #713F12;
+
+  --background: var(--color-canvas);
+  --foreground: var(--color-ink);
 
   --color-brand: #0f766e;
   --color-brand-dark: #115e59;
@@ -19,6 +49,29 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-canvas: var(--color-canvas);
+  --color-surface: var(--color-surface);
+  --color-ink: var(--color-ink);
+  --color-muted: var(--color-muted);
+  --color-line: var(--color-line);
+  --color-clinic: var(--color-clinic);
+  --color-action: var(--color-action);
+  --color-action-ink: var(--color-action-ink);
+  --color-action-strong: var(--color-action-strong);
+  --color-on-action-strong: var(--color-on-action-strong);
+  --color-progress: var(--color-progress);
+  --color-pastel-mint: var(--color-pastel-mint);
+  --color-pastel-mint-ink: var(--color-pastel-mint-ink);
+  --color-pastel-sky: var(--color-pastel-sky);
+  --color-pastel-sky-ink: var(--color-pastel-sky-ink);
+  --color-pastel-lavender: var(--color-pastel-lavender);
+  --color-pastel-lavender-ink: var(--color-pastel-lavender-ink);
+  --color-pastel-peach: var(--color-pastel-peach);
+  --color-pastel-peach-ink: var(--color-pastel-peach-ink);
+  --color-pastel-rose: var(--color-pastel-rose);
+  --color-pastel-rose-ink: var(--color-pastel-rose-ink);
+  --color-pastel-lemon: var(--color-pastel-lemon);
+  --color-pastel-lemon-ink: var(--color-pastel-lemon-ink);
   --color-brand: var(--color-brand);
   --color-brand-dark: var(--color-brand-dark);
   --color-brand-light: var(--color-brand-light);
@@ -28,14 +81,38 @@
   --color-risk-moderate-bg: var(--color-risk-moderate-bg);
   --color-risk-high: var(--color-risk-high);
   --color-risk-high-bg: var(--color-risk-high-bg);
+  --radius-card: 1.25rem;
+  --radius-control: 1rem;
+  --shadow-soft: 0 1px 2px rgb(15 23 42 / 0.04), 0 4px 16px rgb(15 23 42 / 0.06);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --color-canvas: #0B1220;
+    --color-surface: #111A2E;
+    --color-ink: #E2E8F0;
+    --color-muted: #94A3B8;
+    --color-line: #1E293B;
+    --color-clinic: #7DB7E8;
+    --color-action: #2DD4BF;
+    --color-action-ink: #042F2E;
+    --color-action-strong: #0F766E;
+    --color-on-action-strong: #FFFFFF;
+    --color-progress: #2DD4BF;
+    --color-pastel-mint: #123B36;
+    --color-pastel-mint-ink: #A7F3D0;
+    --color-pastel-sky: #13324F;
+    --color-pastel-sky-ink: #BAE6FD;
+    --color-pastel-lavender: #26244A;
+    --color-pastel-lavender-ink: #C7D2FE;
+    --color-pastel-peach: #3D2618;
+    --color-pastel-peach-ink: #FED7AA;
+    --color-pastel-rose: #3F1D27;
+    --color-pastel-rose-ink: #FECDD3;
+    --color-pastel-lemon: #3A3214;
+    --color-pastel-lemon-ink: #FDE68A;
   }
 }
 
@@ -43,6 +120,12 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* WCAG 2.4.7/2.4.13: foco visible y grueso en todo control, sin depender del color de marca. */
+:focus-visible {
+  outline: 3px solid var(--color-clinic);
+  outline-offset: 2px;
 }
 
 /* WCAG 2.3.3: quien pide menos movimiento no ve pulsos, rebotes ni escalados. */

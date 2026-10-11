@@ -23,7 +23,7 @@ const UNAVAILABLE_MESSAGE =
   "El acceso con cuenta aún no está disponible. Tus registros siguen guardados en este celular.";
 
 const primaryButtonClassName =
-  "min-h-12 rounded-xl bg-brand hover:bg-brand-dark disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold text-lg transition-colors";
+  "min-h-12 rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold text-lg transition-colors";
 // Bordes con contraste ≥ 3:1 (WCAG 1.4.11) en claro y oscuro.
 const inputClassName =
   "min-h-12 w-full rounded-xl border-2 border-neutral-500 dark:border-neutral-400 bg-background px-4 text-lg focus:border-brand focus:outline-none";

@@ -71,16 +71,16 @@ export function ClinicalRecordsManager() {
   }
 
   return (
-    <section className="rounded-2xl border border-neutral-200 dark:border-neutral-800 px-6 py-6 flex flex-col gap-5">
+    <section className="rounded-card border border-line bg-surface shadow-soft px-6 py-6 flex flex-col gap-5">
       <div>
         <h2 className="text-xl font-bold">Mis registros</h2>
-        <p className="text-sm text-neutral-500">
+        <p className="text-sm text-muted">
           Si te equivocaste al registrar algo, puedes borrarlo y deshacerlo durante 30 días.
         </p>
       </div>
 
       {!hasRecords && (
-        <p className="text-neutral-500">Aún no tienes registros de densitometría ni de dolor.</p>
+        <p className="text-muted">Aún no tienes registros de densitometría ni de dolor.</p>
       )}
 
       <ul className="flex flex-col gap-2">
@@ -144,7 +144,7 @@ function RecordRow({
   onDelete: () => void;
 }) {
   return (
-    <li className="flex items-center justify-between gap-3 rounded-xl border border-neutral-200 dark:border-neutral-800 px-4 py-3">
+    <li className="flex items-center justify-between gap-3 rounded-control border border-line bg-surface px-4 py-3">
       <span>{label}</span>
       <button
         type="button"

@@ -47,7 +47,7 @@ export function SettingsScreen() {
       <OppositionSection />
       <AccountDeletionSection authStatus={authStatus} />
 
-      <p className="text-sm text-neutral-500">
+      <p className="text-sm text-muted">
         <Link href={PRIVACY_POLICY_PATH} className="text-brand font-semibold underline">
           Política de Privacidad
         </Link>{" "}

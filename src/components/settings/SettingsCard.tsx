@@ -12,7 +12,7 @@ export function SettingsCard({ id, title, description, children }: SettingsCardP
   return (
     <section
       aria-labelledby={id}
-      className="rounded-2xl border-2 border-neutral-200 dark:border-neutral-800 px-5 py-5 flex flex-col gap-3"
+      className="rounded-2xl border-2 border-line px-5 py-5 flex flex-col gap-3"
     >
       <h2 id={id} className="text-xl font-bold">
         {title}

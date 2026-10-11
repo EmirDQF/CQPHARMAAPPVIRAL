@@ -261,7 +261,7 @@ export function PatientProfileModal({ onClose }: PatientProfileModalProps) {
           <button
             type="submit"
             disabled={needsConsent && !hasConsented}
-            className="min-h-12 rounded-xl bg-brand hover:bg-brand-dark disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold text-lg transition-colors"
+            className="min-h-12 rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold text-lg transition-colors"
           >
             Guardar Perfil
           </button>

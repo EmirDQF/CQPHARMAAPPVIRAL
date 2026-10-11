@@ -55,7 +55,7 @@ export default async function BlogArticlePage({ params }: BlogArticlePageProps) 
         ))}
       </div>
 
-      <div className="rounded-xl bg-neutral-100 dark:bg-neutral-900 px-4 py-3 text-xs text-neutral-500">
+      <div className="rounded-xl bg-neutral-100 dark:bg-neutral-900 px-4 py-3 text-xs text-muted">
         Este contenido es informativo y no reemplaza un diagnóstico médico
         profesional.
       </div>

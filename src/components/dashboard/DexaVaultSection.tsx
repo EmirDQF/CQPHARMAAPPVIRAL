@@ -18,7 +18,7 @@ export function DexaVaultSection() {
         <>
           <section
             id="tendencia"
-            className="rounded-2xl border border-neutral-200 dark:border-neutral-800 px-6 py-6 scroll-mt-20"
+            className="rounded-card border border-line bg-surface shadow-soft px-6 py-6 scroll-mt-20"
           >
             <DexaTrendChart entries={entries} />
           </section>

@@ -75,7 +75,7 @@ export function ArticularTest() {
         <button
           type="button"
           onClick={() => setPhase("test")}
-          className="rounded-xl bg-brand hover:bg-brand-dark text-white font-semibold px-6 py-3 transition-colors"
+          className="rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] text-white font-semibold px-6 py-3 transition-colors"
         >
           Evaluar mi Salud Ósea Gratis
         </button>
@@ -147,7 +147,7 @@ export function ArticularTest() {
             type="button"
             onClick={handleAgeSexNext}
             disabled={!ageInput || !sex}
-            className="w-full rounded-xl bg-brand hover:bg-brand-dark disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold px-4 py-3 transition-colors"
+            className="w-full rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold px-4 py-3 transition-colors"
           >
             Siguiente
           </button>
@@ -166,7 +166,7 @@ export function ArticularTest() {
         <button
           type="button"
           onClick={handleBack}
-          className="text-sm text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300 self-start"
+          className="text-sm text-muted hover:text-neutral-700 dark:hover:text-neutral-300 self-start"
         >
           ← Atrás
         </button>

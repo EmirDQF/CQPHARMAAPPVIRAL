@@ -116,7 +116,7 @@ export function PatientDataStep({ onBack, onSubmit }: PatientDataStepProps) {
         <button
           type="submit"
           disabled={!isValid}
-          className="min-h-12 flex-[2] rounded-xl bg-brand hover:bg-brand-dark disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold text-lg transition-colors"
+          className="min-h-12 flex-[2] rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold text-lg transition-colors"
         >
           Confirmar Cita
         </button>

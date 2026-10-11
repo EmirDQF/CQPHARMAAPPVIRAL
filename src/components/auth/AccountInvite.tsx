@@ -65,7 +65,7 @@ export function AccountInvite({ moment, streakDays = 0 }: AccountInviteProps) {
             <button
               type="button"
               onClick={() => setIsAccessOpen(true)}
-              className="flex-1 min-h-12 rounded-xl bg-brand hover:bg-brand-dark text-white font-semibold transition-colors"
+              className="flex-1 min-h-12 rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] text-white font-semibold transition-colors"
             >
               {ACCOUNT_INVITE_COPY.accept}
             </button>

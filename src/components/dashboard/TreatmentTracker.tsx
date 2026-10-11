@@ -24,7 +24,7 @@ export function TreatmentTracker() {
   const bottles = buildBottleStatuses(state, bottlesState);
 
   return (
-    <section className="rounded-2xl border border-neutral-200 dark:border-neutral-800 px-6 py-6 flex flex-col gap-5">
+    <section className="rounded-card border border-line bg-surface shadow-soft px-6 py-6 flex flex-col gap-5">
       <h2 className="text-xl font-bold">Tus Frascos CQ Pharma</h2>
 
       <div className="flex flex-col gap-4">
@@ -34,7 +34,7 @@ export function TreatmentTracker() {
               <p className="font-semibold">{bottle.label}</p>
               <span
                 className={`text-sm font-semibold whitespace-nowrap ${
-                  bottle.needsRestock ? "text-risk-moderate" : "text-neutral-500"
+                  bottle.needsRestock ? "text-risk-moderate" : "text-muted"
                 }`}
               >
                 {bottle.servingsRemaining} tomas restantes
@@ -52,7 +52,7 @@ export function TreatmentTracker() {
         ))}
       </div>
 
-      <div className="flex flex-col gap-2 pt-2 border-t border-neutral-200 dark:border-neutral-800">
+      <div className="flex flex-col gap-2 pt-2 border-t border-line">
         <p className="text-sm font-semibold">Consejos clínicos de absorción</p>
         {ABSORPTION_TIPS.map((tip) => (
           <p key={tip} className="text-sm text-neutral-600 dark:text-neutral-300">

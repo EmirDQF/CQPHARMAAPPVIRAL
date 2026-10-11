@@ -8,7 +8,7 @@ export function ProgressBar({ currentStep, totalSteps }: ProgressBarProps) {
 
   return (
     <div className="w-full">
-      <div className="flex items-center justify-between mb-2 text-sm text-neutral-500">
+      <div className="flex items-center justify-between mb-2 text-sm text-muted">
         <span>
           Pregunta {Math.min(currentStep, totalSteps)} de {totalSteps}
         </span>

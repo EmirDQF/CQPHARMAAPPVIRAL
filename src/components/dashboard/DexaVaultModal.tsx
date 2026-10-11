@@ -194,7 +194,7 @@ export function DexaVaultModal({ isOpen, onClose }: DexaVaultModalProps) {
           </p>
           <button
             type="submit"
-            className="min-h-12 rounded-xl bg-brand hover:bg-brand-dark text-white font-semibold text-lg transition-colors"
+            className="min-h-12 rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] text-white font-semibold text-lg transition-colors"
           >
             Guardar Estudio
           </button>

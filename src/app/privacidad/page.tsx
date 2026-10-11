@@ -86,7 +86,7 @@ export default function PrivacidadPage() {
 
       <header className="flex flex-col gap-2">
         <h1 className="text-3xl font-extrabold">Política de Privacidad</h1>
-        <p className="text-sm text-neutral-500">
+        <p className="text-sm text-muted">
           Versión provisional {CONSENT_VERSION} · Ley N.º 29733 de Protección de Datos Personales
         </p>
         <p className="rounded-xl bg-amber-100 dark:bg-amber-900/40 px-4 py-2 text-sm font-semibold text-amber-900 dark:text-amber-100">

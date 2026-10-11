@@ -15,7 +15,7 @@ export function PainEvidenceSection() {
         </p>
       </div>
 
-      <div className="rounded-2xl border border-neutral-200 dark:border-neutral-800 px-6 py-6">
+      <div className="rounded-card border border-line bg-surface shadow-soft px-6 py-6">
         <BoneComparisonVisual />
       </div>
 

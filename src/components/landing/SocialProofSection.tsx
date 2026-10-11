@@ -12,7 +12,7 @@ export function SocialProofSection() {
   return (
     <section className="w-full max-w-4xl mx-auto px-4 py-16">
       <div
-        className={`rounded-2xl border border-neutral-200 dark:border-neutral-800 px-6 py-10 grid ${GRID_COLUMNS[stats.length] ?? "sm:grid-cols-3"} gap-8 text-center`}
+        className={`rounded-card border border-line bg-surface shadow-soft px-6 py-10 grid ${GRID_COLUMNS[stats.length] ?? "sm:grid-cols-3"} gap-8 text-center`}
       >
         {stats.map((stat) => (
           <div key={stat.label} className="flex flex-col gap-1">

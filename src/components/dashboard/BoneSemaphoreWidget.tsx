@@ -54,7 +54,7 @@ function DexaEmptyState({ onUploadClick }: DexaEmptyStateProps) {
         <button
           type="button"
           onClick={onUploadClick}
-          className="min-h-12 flex-1 rounded-xl bg-brand hover:bg-brand-dark text-white font-semibold px-4 transition-colors"
+          className="min-h-12 flex-1 rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] text-white font-semibold px-4 transition-colors"
         >
           Sube tu densitometría
         </button>

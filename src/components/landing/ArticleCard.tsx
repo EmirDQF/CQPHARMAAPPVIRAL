@@ -9,7 +9,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
   return (
     <Link
       href={`/blog/${article.slug}`}
-      className="flex flex-col gap-3 rounded-2xl border border-neutral-200 dark:border-neutral-800 p-6 h-full hover:border-brand transition-colors"
+      className="flex flex-col gap-3 rounded-card border border-line bg-surface shadow-soft p-6 h-full hover:border-brand transition-colors"
     >
       <div className="flex items-center gap-2 text-xs font-semibold">
         <span className="rounded-full bg-brand-light text-brand-dark px-3 py-1">

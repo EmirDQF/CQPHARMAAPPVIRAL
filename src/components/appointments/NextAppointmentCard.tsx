@@ -28,7 +28,7 @@ export function NextAppointmentCard() {
         <p className="font-semibold">Aún no tienes una cita agendada.</p>
         <Link
           href="/citas"
-          className="min-h-12 flex items-center justify-center rounded-xl bg-brand hover:bg-brand-dark text-white font-semibold px-5 transition-colors"
+          className="min-h-12 flex items-center justify-center rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] text-white font-semibold px-5 transition-colors"
         >
           Agendar mi cita
         </Link>

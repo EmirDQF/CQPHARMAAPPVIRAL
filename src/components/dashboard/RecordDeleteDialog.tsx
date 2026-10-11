@@ -23,12 +23,12 @@ export function RecordDeleteDialog({
       </h2>
       <p className="text-base">{recordLabel}</p>
       <p className="rounded-xl bg-risk-high-bg text-risk-high px-4 py-3 font-semibold">{warning}</p>
-      <p className="text-sm text-neutral-500">Si lo borras, podrás deshacerlo durante 30 días.</p>
+      <p className="text-sm text-muted">Si lo borras, podrás deshacerlo durante 30 días.</p>
       <div className="flex flex-col-reverse sm:flex-row gap-3">
         <button
           type="button"
           onClick={onCancel}
-          className="flex-1 min-h-12 rounded-xl bg-brand hover:bg-brand-dark text-white font-semibold"
+          className="flex-1 min-h-12 rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] text-white font-semibold"
         >
           Cancelar
         </button>

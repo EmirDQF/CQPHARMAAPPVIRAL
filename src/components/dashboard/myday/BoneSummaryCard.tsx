@@ -39,9 +39,14 @@ export function BoneSummaryCard({ scan, onOpenBoneTab }: BoneSummaryCardProps) {
         <h2 id="hueso-resumen" className="text-lg font-bold">Tu Semáforo Óseo</h2>
         <StatusIcon aria-hidden="true" className="size-6 shrink-0" />
       </div>
-      <p className="text-lg">
-        Peor T-score <strong className="text-2xl">{scan.worstTScore.toFixed(1)}</strong> · <strong>{scan.diagnosisLabel}</strong>
-      </p>
+      {scan.riskLevel ? (
+        <p className="text-lg">
+          Peor T-score <strong className="text-2xl tabular-nums">{scan.worstTScore.toFixed(1)}</strong> ·{" "}
+          <strong>{scan.diagnosisLabel}</strong>
+        </p>
+      ) : (
+        <p className="text-lg font-bold">{scan.diagnosisLabel}</p>
+      )}
       <button type="button" onClick={onOpenBoneTab} className={SECONDARY_BUTTON}>Ver mi detalle</button>
     </section>
   );

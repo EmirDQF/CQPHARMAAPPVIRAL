@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { CalendarClock, CalendarPlus, ChartLine, ScanLine, Stethoscope, TriangleAlert, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -27,6 +29,7 @@ function formatScanDate(isoDate: string): string {
   return new Date(`${isoDate}T00:00:00`).toLocaleDateString("es-PE", {
     day: "numeric",
     month: "long",
+    year: "numeric",
   });
 }
 
@@ -69,6 +72,39 @@ function DexaEmptyState({ onUploadClick }: DexaEmptyStateProps) {
   );
 }
 
+/**
+ * Con semáforo OMS, el peor T-score es el dato principal. Sin él (perfil que se lee con
+ * Z-score), el número pasa a segundo plano: en grande se leería como osteoporosis.
+ */
+function ScoreBlock({ scan }: { scan: BoneScanSummary }) {
+  if (!scan.riskLevel) {
+    return (
+      <div className="flex flex-col gap-1">
+        <p id="semaforo-oseo-heading" className="text-2xl font-bold">
+          {scan.diagnosisLabel}
+        </p>
+        <p className="text-sm text-muted">
+          T-score registrado: <span className="tabular-nums">{scan.worstTScore.toFixed(1)}</span> (en tu perfil no
+          se interpreta con el semáforo OMS)
+        </p>
+      </div>
+    );
+  }
+  return (
+    <div className="flex flex-wrap items-end gap-x-4 gap-y-2">
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-wide">Peor T-Score (lumbar / cuello femoral)</p>
+        <p id="semaforo-oseo-heading" className="text-6xl font-extrabold leading-none tabular-nums">
+          {scan.worstTScore.toFixed(1)}
+        </p>
+      </div>
+      <span className="mb-1 rounded-full border-2 border-current bg-surface/70 px-3 py-1 text-base font-bold uppercase">
+        {scan.diagnosisLabel}
+      </span>
+    </div>
+  );
+}
+
 export function BoneSemaphoreWidget({ scan, onUploadClick }: BoneSemaphoreWidgetProps) {
   if (!scan) return <DexaEmptyState onUploadClick={onUploadClick} />;
 
@@ -88,19 +124,7 @@ export function BoneSemaphoreWidget({ scan, onUploadClick }: BoneSemaphoreWidget
         </span>
       </div>
 
-      <div className="flex flex-wrap items-end gap-x-4 gap-y-2">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide">
-            Peor T-Score (lumbar / cuello femoral)
-          </p>
-          <p id="semaforo-oseo-heading" className="text-6xl font-extrabold leading-none tabular-nums">
-            {scan.worstTScore.toFixed(1)}
-          </p>
-        </div>
-        <span className="mb-1 rounded-full border-2 border-current bg-surface/70 px-3 py-1 text-base font-bold uppercase">
-          {scan.diagnosisLabel}
-        </span>
-      </div>
+      <ScoreBlock scan={scan} />
 
       <p className="text-base font-medium">{scan.diagnosisMessage}</p>
 

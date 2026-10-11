@@ -14,13 +14,29 @@
 import { openAsBlob } from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
 import { basename, join } from "node:path";
+import { z } from "zod";
 
 const BASE_URL = process.env.MIROFISH_URL ?? "http://localhost:5001";
 const POLL_INTERVAL_MS = 5_000;
 const POLL_TIMEOUT_MS = 60 * 60 * 1_000;
+const REQUEST_TIMEOUT_MS = 60_000; // una sola petición colgada no debe bloquear el proceso
 const DEFAULT_ROUNDS = 20; // MiroFish recomienda < 40 rondas: el costo de LLM crece rápido
 const OUTPUT_DIR = join("scripts", "mirofish", "out");
 const TERMINAL_RUN_STATES = new Set(["completed", "stopped", "failed"]);
+
+// Contratos mínimos de la API de MiroFish: un cambio en su forma falla con un mensaje claro.
+const ProjectSchema = z.object({ project_id: z.string().min(1) });
+const TaskStartSchema = z.object({ task_id: z.string().min(1) });
+const SimulationSchema = z.object({ simulation_id: z.string().min(1) });
+const PrepareSchema = z.object({ already_prepared: z.boolean().optional(), task_id: z.string().optional() });
+const ReportStartSchema = z.object({ report_id: z.string().min(1), status: z.string(), task_id: z.string().optional() });
+const StatusSchema = z.looseObject({
+  status: z.string().optional(),
+  runner_status: z.string().optional(),
+  progress: z.number().optional(),
+  message: z.string().optional(),
+  error: z.string().nullish(),
+});
 
 function parseArgs(argv) {
   const [briefPath, requirement, ...rest] = argv;
@@ -35,17 +51,20 @@ function parseArgs(argv) {
   return { briefPath, requirement, rounds };
 }
 
-async function callApi(path, { method = "GET", json, form } = {}) {
+async function callApi(path, { method = "GET", json, form, schema = StatusSchema } = {}) {
   const response = await fetch(`${BASE_URL}${path}`, {
     method,
     headers: json ? { "Content-Type": "application/json" } : undefined,
     body: json ? JSON.stringify(json) : form,
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
   });
   const payload = await response.json().catch(() => ({}));
   if (!response.ok || payload.success === false) {
     throw new Error(`${method} ${path} -> HTTP ${response.status}: ${payload.error ?? "sin detalle"}`);
   }
-  return payload.data;
+  const parsed = schema.safeParse(payload.data);
+  if (!parsed.success) throw new Error(`${method} ${path}: respuesta con forma inesperada (${parsed.error.issues[0]?.message})`);
+  return parsed.data;
 }
 
 async function pollUntil(label, fetchState, isDone) {
@@ -67,9 +86,13 @@ async function buildGraph(briefPath, requirement) {
   form.append("files", await openAsBlob(briefPath), basename(briefPath));
   form.append("simulation_requirement", requirement);
   form.append("project_name", `artikare-${basename(briefPath)}`);
-  const { project_id: projectId } = await callApi("/api/graph/ontology/generate", { method: "POST", form });
+  const { project_id: projectId } = await callApi("/api/graph/ontology/generate", { method: "POST", form, schema: ProjectSchema });
 
-  const { task_id: taskId } = await callApi("/api/graph/build", { method: "POST", json: { project_id: projectId } });
+  const { task_id: taskId } = await callApi("/api/graph/build", {
+    method: "POST",
+    json: { project_id: projectId },
+    schema: TaskStartSchema,
+  });
   await pollUntil("grafo", () => callApi(`/api/graph/task/${taskId}`), (t) => t.status === "completed");
   return projectId;
 }
@@ -78,8 +101,13 @@ async function runSimulation(projectId, rounds) {
   const { simulation_id: simulationId } = await callApi("/api/simulation/create", {
     method: "POST",
     json: { project_id: projectId },
+    schema: SimulationSchema,
   });
-  const prepared = await callApi("/api/simulation/prepare", { method: "POST", json: { simulation_id: simulationId } });
+  const prepared = await callApi("/api/simulation/prepare", {
+    method: "POST",
+    json: { simulation_id: simulationId },
+    schema: PrepareSchema,
+  });
   if (!prepared.already_prepared) {
     await pollUntil(
       "preparación",
@@ -103,7 +131,11 @@ async function runSimulation(projectId, rounds) {
 }
 
 async function generateReport(simulationId) {
-  const started = await callApi("/api/report/generate", { method: "POST", json: { simulation_id: simulationId } });
+  const started = await callApi("/api/report/generate", {
+    method: "POST",
+    json: { simulation_id: simulationId },
+    schema: ReportStartSchema,
+  });
   if (started.status !== "completed") {
     await pollUntil(
       "reporte",
@@ -114,14 +146,16 @@ async function generateReport(simulationId) {
       (r) => r.status === "completed",
     );
   }
-  const response = await fetch(`${BASE_URL}/api/report/${started.report_id}/download`);
+  const response = await fetch(`${BASE_URL}/api/report/${started.report_id}/download`, {
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+  });
   if (!response.ok) throw new Error(`Descarga del reporte -> HTTP ${response.status}`);
   return { reportId: started.report_id, markdown: await response.text() };
 }
 
 async function main() {
   const { briefPath, requirement, rounds } = parseArgs(process.argv.slice(2));
-  await callApi("/health").catch(() => {
+  await callApi("/health", { schema: z.unknown() }).catch(() => {
     throw new Error(`MiroFish no responde en ${BASE_URL}. Levántalo primero (ver .agents/skills/mirofish/SKILL.md).`);
   });
 

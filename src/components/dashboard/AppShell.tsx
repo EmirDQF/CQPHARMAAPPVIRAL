@@ -179,7 +179,7 @@ export function AppShell() {
 
       <nav
         aria-label="Navegación principal"
-        className="fixed bottom-0 inset-x-0 z-40 bg-surface/85 backdrop-blur-md border-t border-line/70 shadow-soft pb-[env(safe-area-inset-bottom)]"
+        className="fixed bottom-0 inset-x-0 z-40 bg-surface border-t border-line shadow-soft pb-[env(safe-area-inset-bottom)]"
       >
         <div className="max-w-2xl mx-auto grid grid-cols-5">
           {TABS.map((tab) => {

@@ -1,3 +1,4 @@
+import "server-only";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import type { AccountDeleter } from "@/lib/api/handleArcoDelete";
@@ -6,8 +7,9 @@ import { readPublicSupabaseEnv } from "@/lib/env";
 /**
  * Service role de Supabase: SOLO para rutas API del servidor (hoy, el borrado
  * de cuenta). Sin prefijo NEXT_PUBLIC_, Next nunca la incrusta en el cliente;
- * además este módulo se niega a correr en el navegador. Pendiente: sumar el
- * paquete `server-only` (requiere instalar dependencias; ver docs/ROADMAP.md).
+ * `server-only` rompe el build si un componente cliente lo importa, el guard
+ * de `window` lo frena en tiempo de ejecución y architecture.test.ts solo
+ * permite importarlo desde rutas API (src/app/api/**).
  */
 const serviceRoleKeySchema = z.string().min(20);
 

@@ -20,6 +20,7 @@ const EXPECTED_TABLES = [
   "appointments",
   "audit_log",
   "consent_proofs",
+  "arco_requests",
 ];
 
 function runSql(sql) {

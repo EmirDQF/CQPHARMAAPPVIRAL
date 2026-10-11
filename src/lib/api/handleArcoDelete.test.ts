@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { ARCO_RETRY_AFTER_SECONDS, type ArcoQuotaOutcome } from "./arcoRateLimit";
 import { ACCOUNT_DELETION_CONFIRMATION, handleArcoDelete, type AccountDeleter } from "./handleArcoDelete";
 import type { SyncRequester } from "./handleSyncBatch";
 
@@ -10,25 +11,37 @@ function fakeDeleter(error: { message: string } | null = null) {
   return { deleter: { deleteUser } satisfies AccountDeleter, deleteUser };
 }
 
+function quota(outcome: ArcoQuotaOutcome = "allowed") {
+  return vi.fn(async () => outcome);
+}
+
+type DeleteArgs = Parameters<typeof handleArcoDelete>[0];
+
+function runDelete(args: Omit<DeleteArgs, "consumeQuota"> & { consumeQuota?: DeleteArgs["consumeQuota"] }) {
+  return handleArcoDelete({ consumeQuota: quota(), ...args });
+}
+
 afterEach(() => {
   vi.restoreAllMocks();
 });
 
 describe("handleArcoDelete", () => {
-  it("sin sesión responde 401 y no borra nada", async () => {
+  it("sin sesión responde 401 y no borra nada ni consume cupo", async () => {
     const { deleter, deleteUser } = fakeDeleter();
+    const consumeQuota = quota();
 
-    await expect(handleArcoDelete({ requester: null, body: confirmedBody, deleter })).resolves.toMatchObject({
+    await expect(runDelete({ requester: null, body: confirmedBody, deleter, consumeQuota })).resolves.toMatchObject({
       status: 401,
     });
     expect(deleteUser).not.toHaveBeenCalled();
+    expect(consumeQuota).not.toHaveBeenCalled();
   });
 
   it("sin la confirmación explícita responde 400 y no borra nada", async () => {
     const { deleter, deleteUser } = fakeDeleter();
 
     for (const body of [{}, { confirmacion: "borrar" }, null]) {
-      await expect(handleArcoDelete({ requester, body, deleter })).resolves.toMatchObject({ status: 400 });
+      await expect(runDelete({ requester, body, deleter })).resolves.toMatchObject({ status: 400 });
     }
     expect(deleteUser).not.toHaveBeenCalled();
   });
@@ -37,7 +50,7 @@ describe("handleArcoDelete", () => {
     const { deleter, deleteUser } = fakeDeleter();
 
     await expect(
-      handleArcoDelete({ requester, body: { ...confirmedBody, userId: "otro" }, deleter })
+      runDelete({ requester, body: { ...confirmedBody, userId: "otro" }, deleter })
     ).resolves.toEqual({ status: 200, data: { deleted: true } });
     expect(deleteUser).toHaveBeenCalledWith(requester.id);
   });
@@ -45,13 +58,31 @@ describe("handleArcoDelete", () => {
   it("una sesión anónima también puede borrar lo suyo", async () => {
     const { deleter, deleteUser } = fakeDeleter();
 
-    await handleArcoDelete({ requester: { ...requester, isAnonymous: true }, body: confirmedBody, deleter });
+    await runDelete({ requester: { ...requester, isAnonymous: true }, body: confirmedBody, deleter });
 
     expect(deleteUser).toHaveBeenCalledWith(requester.id);
   });
 
+  it("al superar el límite por hora responde 429 con Retry-After y no borra", async () => {
+    const { deleter, deleteUser } = fakeDeleter();
+
+    await expect(
+      runDelete({ requester, body: confirmedBody, deleter, consumeQuota: quota("limited") })
+    ).resolves.toEqual({ status: 429, error: expect.any(String), retryAfterSeconds: ARCO_RETRY_AFTER_SECONDS });
+    expect(deleteUser).not.toHaveBeenCalled();
+  });
+
+  it("si el límite no se puede verificar responde 503 y no borra", async () => {
+    const { deleter, deleteUser } = fakeDeleter();
+
+    await expect(
+      runDelete({ requester, body: confirmedBody, deleter, consumeQuota: quota("unavailable") })
+    ).resolves.toMatchObject({ status: 503 });
+    expect(deleteUser).not.toHaveBeenCalled();
+  });
+
   it("sin service role configurada responde 503", async () => {
-    await expect(handleArcoDelete({ requester, body: confirmedBody, deleter: null })).resolves.toMatchObject({
+    await expect(runDelete({ requester, body: confirmedBody, deleter: null })).resolves.toMatchObject({
       status: 503,
     });
   });
@@ -60,7 +91,7 @@ describe("handleArcoDelete", () => {
     const errorLog = vi.spyOn(console, "error").mockImplementation(() => {});
     const { deleter } = fakeDeleter({ message: "caída" });
 
-    await expect(handleArcoDelete({ requester, body: confirmedBody, deleter })).resolves.toMatchObject({
+    await expect(runDelete({ requester, body: confirmedBody, deleter })).resolves.toMatchObject({
       status: 503,
     });
     expect(JSON.stringify(errorLog.mock.calls)).not.toContain(requester.id);

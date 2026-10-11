@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { beforeAll, describe, expect, it } from "vitest";
 import { ACCOUNT_DELETION_CONFIRMATION, handleArcoDelete, type AccountDeleter } from "@/lib/api/handleArcoDelete";
+import { ARCO_HOURLY_LIMITS, ARCO_RETRY_AFTER_SECONDS, consumeArcoQuota } from "@/lib/api/arcoRateLimit";
 import { handleArcoExport } from "@/lib/api/handleArcoExport";
 import {
   createGuestPatient,
@@ -44,6 +45,7 @@ describe("ARCO: acceso (Supabase local)", () => {
     const result = await handleArcoExport({
       client: patientA.client,
       requester: { id: patientA.userId, isAnonymous: false },
+      consumeQuota: () => consumeArcoQuota(patientA.client, "export"),
     });
 
     expect(result.status).toBe(200);
@@ -60,11 +62,30 @@ describe("ARCO: acceso (Supabase local)", () => {
     const painId = (await patient.client.from("pain_logs").select("id").single()).data?.id;
     await patient.client.rpc("soft_delete_record", { p_table: "pain_logs", p_id: painId });
 
-    const result = await handleArcoExport({ client: patient.client, requester: { id: patient.userId, isAnonymous: true } });
+    const result = await handleArcoExport({
+      client: patient.client,
+      requester: { id: patient.userId, isAnonymous: true },
+      consumeQuota: () => consumeArcoQuota(patient.client, "export"),
+    });
 
     expect(result.status === 200 && result.data.papelera).toEqual([
       expect.objectContaining({ table_name: "pain_logs", record_id: painId }),
     ]);
+  });
+
+  it("la exportación 11 de la hora responde 429 con el cupo real de la base", async () => {
+    const patient = await createGuestPatient(status);
+    const exportOnce = () =>
+      handleArcoExport({
+        client: patient.client,
+        requester: { id: patient.userId, isAnonymous: true },
+        consumeQuota: () => consumeArcoQuota(patient.client, "export"),
+      });
+
+    for (let attempt = 0; attempt < ARCO_HOURLY_LIMITS.export; attempt += 1) {
+      expect((await exportOnce()).status).toBe(200);
+    }
+    await expect(exportOnce()).resolves.toMatchObject({ status: 429, retryAfterSeconds: ARCO_RETRY_AFTER_SECONDS });
   });
 });
 
@@ -81,6 +102,7 @@ describe("ARCO: cancelación (Supabase local)", () => {
       requester: { id: patient.userId, isAnonymous: false },
       body: { confirmacion: ACCOUNT_DELETION_CONFIRMATION, userId: other.userId },
       deleter: adminDeleter(),
+      consumeQuota: () => consumeArcoQuota(patient.client, "delete"),
     });
 
     expect(result).toEqual({ status: 200, data: { deleted: true } });
@@ -102,6 +124,7 @@ describe("ARCO: cancelación (Supabase local)", () => {
       requester: { id: patient.userId, isAnonymous: false },
       body: {},
       deleter: adminDeleter(),
+      consumeQuota: () => consumeArcoQuota(patient.client, "delete"),
     });
 
     expect(result.status).toBe(400);

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ARCO_RETRY_AFTER_SECONDS, type ArcoQuotaOutcome } from "./arcoRateLimit";
 import type { SyncRequester } from "./handleSyncBatch";
 
 /**
@@ -20,20 +21,38 @@ export interface AccountDeleter {
 
 export type ArcoDeleteResult =
   | { status: 200; data: { deleted: true } }
+  | { status: 429; error: string; retryAfterSeconds: number }
   | { status: 400 | 401 | 503; error: string };
 
 interface ArcoDeleteRequest {
   requester: SyncRequester | null;
   body: unknown;
   deleter: AccountDeleter | null;
+  /** Cupo por usuario en la base (arcoRateLimit.ts); se consume solo con una petición válida. */
+  consumeQuota: () => Promise<ArcoQuotaOutcome>;
 }
 
-export async function handleArcoDelete({ requester, body, deleter }: ArcoDeleteRequest): Promise<ArcoDeleteResult> {
+export async function handleArcoDelete({
+  requester,
+  body,
+  deleter,
+  consumeQuota,
+}: ArcoDeleteRequest): Promise<ArcoDeleteResult> {
   if (!requester) return { status: 401, error: "Se requiere una sesión para borrar la cuenta" };
   if (!accountDeletionBodySchema.safeParse(body).success) {
     return { status: 400, error: "Falta la confirmación explícita del borrado" };
   }
   if (!deleter) return { status: 503, error: "El borrado de cuentas no está configurado" };
+
+  const quota = await consumeQuota();
+  if (quota === "limited") {
+    return {
+      status: 429,
+      error: "Hiciste varias solicitudes de borrado seguidas; inténtalo en una hora",
+      retryAfterSeconds: ARCO_RETRY_AFTER_SECONDS,
+    };
+  }
+  if (quota === "unavailable") return { status: 503, error: "No se pudo borrar la cuenta por el momento" };
 
   const { error } = await deleter.deleteUser(requester.id);
   if (error) {

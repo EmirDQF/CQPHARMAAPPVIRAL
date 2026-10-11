@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { ARCO_HOURLY_LIMITS } from "../api/arcoRateLimit";
 import { APPOINTMENT_CODE_ALPHABET, APPOINTMENT_CODE_PATTERN } from "../appointments/generateCode";
 import {
   ARTICULAR_AGE_MAX,
@@ -139,6 +140,12 @@ describe("paridad constantes clínicas ↔ SQL", () => {
   it("create_appointment usa el alfabeto del código y APPOINTMENT_HOURLY_LIMIT", () => {
     expect(sql).toContain(`alphabet constant text := '${APPOINTMENT_CODE_ALPHABET.toLowerCase()}'`);
     expect(sql).toContain(`if recent_count >= ${APPOINTMENT_HOURLY_LIMIT} then`);
+  });
+
+  it("consume_arco_quota usa ARCO_HOURLY_LIMITS", () => {
+    expect(sql).toContain(
+      `hourly_limit := case p_kind when 'export' then ${ARCO_HOURLY_LIMITS.export} when 'delete' then ${ARCO_HOURLY_LIMITS.delete} end;`
+    );
   });
 
   it("teléfono de cita y peso del perfil replican los límites de Zod", () => {

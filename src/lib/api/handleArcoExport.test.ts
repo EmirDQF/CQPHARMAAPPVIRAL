@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { RepositoryClient } from "@/lib/repositories/supabaseRows";
+import { ARCO_RETRY_AFTER_SECONDS, type ArcoQuotaOutcome } from "./arcoRateLimit";
 import { ACCOUNT_EXPORT_SECTIONS, handleArcoExport } from "./handleArcoExport";
 import type { SyncRequester } from "./handleSyncBatch";
 
@@ -27,15 +28,35 @@ function stubClient(rowsByTable: Record<string, unknown[]>, failing: string | nu
   return { client: client as unknown as RepositoryClient, selectedTables };
 }
 
+const allowQuota = async (): Promise<ArcoQuotaOutcome> => "allowed";
+
 afterEach(() => {
   vi.restoreAllMocks();
 });
 
 describe("handleArcoExport", () => {
+  it("al superar el límite por hora responde 429 con Retry-After y no lee nada", async () => {
+    const { client, selectedTables } = stubClient({});
+
+    await expect(
+      handleArcoExport({ client, requester, consumeQuota: async () => "limited" })
+    ).resolves.toEqual({ status: 429, error: expect.any(String), retryAfterSeconds: ARCO_RETRY_AFTER_SECONDS });
+    expect(selectedTables).toEqual([]);
+  });
+
+  it("si el límite no se puede verificar responde 503 y no lee nada", async () => {
+    const { client, selectedTables } = stubClient({});
+
+    await expect(
+      handleArcoExport({ client, requester, consumeQuota: async () => "unavailable" })
+    ).resolves.toMatchObject({ status: 503 });
+    expect(selectedTables).toEqual([]);
+  });
+
   it("sin sesión responde 401 y no lee nada", async () => {
     const { client, selectedTables } = stubClient({});
 
-    await expect(handleArcoExport({ client, requester: null })).resolves.toEqual({
+    await expect(handleArcoExport({ client, consumeQuota: allowQuota,requester: null })).resolves.toEqual({
       status: 401,
       error: expect.any(String),
     });
@@ -45,7 +66,7 @@ describe("handleArcoExport", () => {
   it("entrega cada tabla propia con un nombre legible, más la papelera", async () => {
     const { client, selectedTables } = stubClient({ pain_logs: [{ log_date: "2026-10-01", pain_level: 3 }] });
 
-    const result = await handleArcoExport({ client, requester });
+    const result = await handleArcoExport({ client, consumeQuota: allowQuota,requester });
 
     expect(result.status).toBe(200);
     if (result.status !== 200) return;
@@ -59,14 +80,14 @@ describe("handleArcoExport", () => {
     const errorLog = vi.spyOn(console, "error").mockImplementation(() => {});
     const { client } = stubClient({ pain_logs: [{ pain_level: 9 }] }, "dexa_scans");
 
-    await expect(handleArcoExport({ client, requester })).resolves.toEqual({ status: 503, error: expect.any(String) });
+    await expect(handleArcoExport({ client, consumeQuota: allowQuota,requester })).resolves.toEqual({ status: 503, error: expect.any(String) });
     expect(JSON.stringify(errorLog.mock.calls)).not.toContain("pain_level");
   });
 
   it("una sesión anónima también puede pedir lo suyo", async () => {
     const { client } = stubClient({});
 
-    const result = await handleArcoExport({ client, requester: { ...requester, isAnonymous: true } });
+    const result = await handleArcoExport({ client, consumeQuota: allowQuota,requester: { ...requester, isAnonymous: true } });
 
     expect(result.status === 200 && result.data.cuenta).toEqual({ id: requester.id, tipo: "invitado" });
   });

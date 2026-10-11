@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative, sep } from "node:path";
 import { describe, expect, it } from "vitest";
-import { findSupabaseImportViolations, type SourceFile } from "./architecture";
+import { findAdminImportViolations, findSupabaseImportViolations, type SourceFile } from "./architecture";
 
 const ROOT = process.cwd();
 const CODE_FILE = /\.(ts|tsx|js|jsx|mjs|cjs)$/;
@@ -58,8 +58,37 @@ describe("findSupabaseImportViolations", () => {
   });
 });
 
+// Igual que arriba: la ruta se arma por partes para no detectarse a sí mismo.
+const ADMIN = ["@/lib/supabase", "admin"].join("/");
+
+describe("findAdminImportViolations", () => {
+  it("flags the service role imported from components, hooks or shared lib code", () => {
+    const files: SourceFile[] = [
+      { path: "src/components/settings/X.tsx", content: `"use client";\nimport { createAccountDeleter } from "${ADMIN}";` },
+      { path: "src/lib/privacy/y.ts", content: `const admin = await import("../supabase/${"admin"}");` },
+    ];
+    expect(findAdminImportViolations(files)).toEqual(["src/components/settings/X.tsx", "src/lib/privacy/y.ts"]);
+  });
+
+  it("allows API routes and ignores mentions that are not imports", () => {
+    const files: SourceFile[] = [
+      { path: "src/app/api/arco/delete/route.ts", content: `import { createAccountDeleter } from "${ADMIN}";` },
+      { path: "src/lib/api/handleArcoDelete.ts", content: `/** La service role vive en src/lib/supabase/${"admin"}.ts */` },
+    ];
+    expect(findAdminImportViolations(files)).toEqual([]);
+  });
+});
+
 describe("arquitectura del repositorio", () => {
   it("solo src/lib/repositories/** y src/lib/supabase/** importan Supabase", () => {
     expect(findSupabaseImportViolations(readSourceFiles())).toEqual([]);
+  });
+
+  it("solo las rutas API importan la service role", () => {
+    expect(findAdminImportViolations(readSourceFiles())).toEqual([]);
+  });
+
+  it("el módulo de la service role se declara server-only", () => {
+    expect(readFileSync(join(ROOT, "src/lib/supabase/admin.ts"), "utf8")).toMatch(/^import "server-only";$/m);
   });
 });

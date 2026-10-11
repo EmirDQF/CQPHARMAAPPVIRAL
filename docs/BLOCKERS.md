@@ -1,7 +1,20 @@
 # BLOQUEOS — requieren al usuario
 
-| # | Ítem | Qué pasó | Qué se probó | Decisión / acción del usuario |
-|---|---|---|---|---|
-| B1 | iOS (`npx cap add ios`) | Este equipo es Windows (MINGW64); Xcode y CocoaPods solo existen en macOS. | Nada: no hay forma soportada de generar ni compilar el proyecto iOS en Windows. | En una Mac: `npm ci && npx cap add ios && npx cap sync ios`, abrir en Xcode, firmar con la cuenta de Apple Developer. |
-| B2 | `appId` definitivo | Se usó `com.artikare.app` en `capacitor.config.ts`. Cambiarlo después de publicar en Play es imposible. | — | Confirmar el identificador (p. ej. dominio propio invertido) antes de la primera subida a Google Play. |
-| B3 | Dominio de producción | El WebView carga `CAP_SERVER_URL` (por defecto `https://artikare.com`). | — | Desplegar la web y fijar `CAP_SERVER_URL` antes de `npx cap sync`. |
+Ningún bloqueo técnico abierto: todo lo que depende del código está hecho y en verde (ver `docs/RELEASE.md`).
+Lo que sigue solo puede hacerlo el usuario.
+
+| # | Ítem | Estado | Acción del usuario |
+|---|---|---|---|
+| B1 | iOS (`npx cap add ios`) | BLOQUEADO: este equipo es Windows; Xcode y CocoaPods solo existen en macOS. | En una Mac: `npm ci && npx cap add ios && npx cap sync ios`, abrir en Xcode y firmar con Apple Developer. |
+| B2 | `appId` definitivo | ABIERTO: se usa `com.artikare.app` (`src/lib/native/appIdentity.ts` = `capacitor.config.ts`, verificado por test). No se puede cambiar tras publicar en Play. | Confirmarlo antes de la primera subida a Google Play. |
+| B3 | Dominio de producción | ABIERTO: WebView, App Links y shell offline usan `CAP_SERVER_URL` (por defecto `https://artikare.com`). | Desplegar la web y fijar `CAP_SERVER_URL` y `NEXT_PUBLIC_SITE_URL` antes de `npm run build:android`. |
+| B4 | Huella SHA-256 de firma | ABIERTO: `/.well-known/assetlinks.json` responde `[]` hasta configurarla (nunca se inventa). | Definir `ANDROID_SHA256_FINGERPRINT` con la huella del keystore de subida y la de Play App Signing. |
+| B5 | Keystore de release | ABIERTO: `npm run build:android` se detiene con mensaje claro sin él. | Crear el keystore y `android/keystore.properties` (ignorado por git) o variables `ANDROID_KEYSTORE_*`. |
+| B6 | pg_cron en producción | ABIERTO: la migración programa la purga diaria solo si el proyecto ofrece pg_cron. | Activar pg_cron en el panel de Supabase si no aparece `daily-soft-delete-purge` en `cron.job`. |
+
+## Resueltos (técnicos)
+
+- Rate limit ARCO en base de datos (`d25c6ef`) · `server-only` en la service role (`d25c6ef`).
+- Purga diaria de lo borrado en suave e índices parciales (`afac653`).
+- Shell offline del WebView y recordatorios nativos que no se reofrecen (`8b02222`, `f8c8094`, `55a37d1`).
+- Deep links, assetlinks y compartir nativo (`0ffa8c5`) · pipeline `preflight` / `verify-env` / `build:android` (`2f4319a`).

@@ -32,6 +32,17 @@
                 <data android:scheme="https" android:host="${appLinkHost}" android:pathPrefix="/blog" />
             </intent-filter>
 
+            <!-- Esquema propio (artikare://test, artikare://blog/<slug>) en un filtro aparte: un
+                 esquema no http(s) dentro del filtro verificado rompería la verificación. No es
+                 verificable, así que resolveDeepLink le abre solo las mismas rutas públicas. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="artikare" android:host="test" />
+                <data android:scheme="artikare" android:host="blog" />
+            </intent-filter>
+
         </activity>
 
         <provider

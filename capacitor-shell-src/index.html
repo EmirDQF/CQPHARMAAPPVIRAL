@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'unsafe-inline'; script-src 'self'" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'unsafe-inline'; script-src __SHELL_SCRIPT_HASH__" />
     <title>Sin conexión | Artikare</title>
     <style>
       body{font-family:system-ui,sans-serif;margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#fff;color:#0f172a;padding:16px;text-align:center;font-size:18px;line-height:1.5}
@@ -19,8 +19,9 @@
       <p id="estado" role="status">Revisa tu conexión a internet e inténtalo de nuevo.</p>
       <button id="reintentar" type="button">Reintentar</button>
     </main>
-    <!-- shell-config.js lo genera scripts/write-shell-config.mjs; si falta, Reintentar solo recarga. -->
-    <script src="shell-config.js"></script>
-    <script src="offline.js"></script>
+    <!-- Plantilla: scripts/build-shell.mjs incrusta aquí la config y offline.js y fija el hash
+         de la CSP. Con server.url, Capacitor 8 solo sirve localmente la URL exacta del
+         errorPath: un <script src> iría por proxy al servidor caído y nunca cargaría. -->
+    <script>__SHELL_SCRIPT__</script>
   </body>
 </html>

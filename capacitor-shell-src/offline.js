@@ -1,7 +1,8 @@
 // Pantalla de respaldo del WebView nativo (server.errorPath de Capacitor 8):
 // se muestra cuando no hay red o el servidor no responde. Es HTML estático sin
 // acceso a plugins ni datos de salud. "Reintentar" y el evento `online` vuelven
-// a la app remota (shell-config.js, generado desde CAP_ENV + CAP_SERVER_URL);
+// a la app remota (ARTIKARE_SHELL_CONFIG, que scripts/build-shell.mjs incrusta
+// antes de este código en index.html, desde CAP_ENV + CAP_SERVER_URL);
 // sin una URL válida solo recarga. http solo a loopback (desarrollo por USB con
 // adb reverse); el release nunca genera http y su manifest no admite cleartext. Se evalúa también en src/lib/native/offlineShell.test.ts.
 (function (module) {

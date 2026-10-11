@@ -47,7 +47,8 @@ next-env.d.ts
 /playwright/.cache/
 
 # capacitor: config generada del shell sin conexión (scripts/write-shell-config.mjs)
-/capacitor-shell/shell-config.js
+# Generado por scripts/build-shell.mjs desde capacitor-shell-src/
+/capacitor-shell/
 
 # android: firma de release del usuario (nunca se versiona)
 /android/keystore.properties

@@ -15,6 +15,8 @@ const eslintConfig = defineConfig([
     // Salida de Gradle y del cap sync (generada, ignorada por git).
     "android/**/build/**",
     "android/app/src/main/assets/**",
+    // Shell offline generado por scripts/build-shell.mjs (fuente: capacitor-shell-src/).
+    "capacitor-shell/**",
   ]),
 ]);
 

@@ -80,7 +80,7 @@ export function reversePort(env, serial) {
 
 /** Hornea el servidor de CAP_ENV en el proyecto Android (shell offline + cap sync). */
 export function syncCapacitor(env) {
-  run("node", [...NODE_TS_FLAGS, join("scripts", "write-shell-config.mjs")], { env });
+  run("node", [...NODE_TS_FLAGS, join("scripts", "build-shell.mjs")], { env });
   run("npx", ["cap", "sync", "android"], { env });
 }
 

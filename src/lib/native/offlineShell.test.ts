@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 /**
- * capacitor-shell/offline.js es HTML estático del WebView (sin bundler ni
+ * capacitor-shell-src/offline.js es HTML estático del WebView (sin bundler ni
  * plugins): se carga como texto y se evalúa con dependencias simuladas.
  */
 interface ShellApi {
@@ -20,7 +20,7 @@ interface FakeWindow {
   addEventListener: (type: string, listener: () => void) => void;
 }
 
-const SOURCE = readFileSync(join(process.cwd(), "capacitor-shell", "offline.js"), "utf8");
+const SOURCE = readFileSync(join(process.cwd(), "capacitor-shell-src", "offline.js"), "utf8");
 
 function loadShell(): ShellApi {
   const shellModule = { exports: {} as ShellApi };

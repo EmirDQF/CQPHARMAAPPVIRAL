@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
 /*
  * Sistema de diseño "Clínico amable" (docs/DESIGN.md). Los valores --color-*
@@ -31,9 +33,6 @@
   --color-pastel-lemon: #FBF3CF;
   --color-pastel-lemon-ink: #713F12;
 
-  --background: var(--color-canvas);
-  --foreground: var(--color-ink);
-
   --color-brand: #0f766e;
   --color-brand-dark: #115e59;
   --color-brand-light: #ccfbf1;
@@ -44,6 +43,26 @@
   --color-risk-moderate-bg: #fef3c7;
   --color-risk-high: #b91c1c;
   --color-risk-high-bg: #fee2e2;
+  /* Tokens shadcn/ui mapeados al sistema "Clínico amable": siguen el modo oscuro del sistema. */
+  --background: var(--color-canvas);
+  --foreground: var(--color-ink);
+  --card: var(--color-surface);
+  --card-foreground: var(--color-ink);
+  --popover: var(--color-surface);
+  --popover-foreground: var(--color-ink);
+  --primary: var(--color-action-strong);
+  --primary-foreground: var(--color-on-action-strong);
+  --secondary: var(--color-pastel-sky);
+  --secondary-foreground: var(--color-pastel-sky-ink);
+  --muted: var(--color-canvas);
+  --muted-foreground: var(--color-muted);
+  --accent: var(--color-pastel-mint);
+  --accent-foreground: var(--color-pastel-mint-ink);
+  --destructive: var(--color-risk-high);
+  --border: var(--color-line);
+  --input: var(--color-line);
+  --ring: var(--color-clinic);
+  --radius: 1rem;
 }
 
 @theme inline {
@@ -86,6 +105,29 @@
   --shadow-soft: 0 1px 2px rgb(15 23 42 / 0.04), 0 4px 16px rgb(15 23 42 / 0.06);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-geist-sans);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
 /* Confeti suave de la celebración de logros (150–250 ms por pieza, escalonado). Sin movimiento con prefers-reduced-motion. */
@@ -148,8 +190,6 @@
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
@@ -168,5 +208,17 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
   }
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { CalendarPlus, Printer } from "lucide-react";
 import { useState, useSyncExternalStore } from "react";
 import { NextAppointmentCard } from "@/components/appointments/NextAppointmentCard";
 import { AccountBackupOffer } from "@/components/auth/AccountBackupOffer";
@@ -142,17 +143,19 @@ export function AppShell() {
             {nextAppointment && (
               <Link
                 href="/citas"
-                className="min-h-12 flex items-center justify-center rounded-xl border-2 border-brand text-clinic font-semibold px-5 transition-colors hover:bg-pastel-mint"
+                className="min-h-12 flex items-center justify-center gap-2 rounded-control border-2 border-brand text-clinic font-semibold px-5 transition-all hover:bg-pastel-mint active:scale-[0.98]"
               >
+                <CalendarPlus aria-hidden="true" className="size-5" />
                 Agendar otra cita
               </Link>
             )}
             <ClinicalReportExport />
             <Link
               href="/app/reporte-medico"
-              className="min-h-12 flex items-center justify-center rounded-xl bg-neutral-100 dark:bg-neutral-800 font-semibold px-5 transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-700"
+              className="min-h-12 flex items-center justify-center gap-2 rounded-control border border-line bg-surface text-center text-clinic shadow-soft font-semibold px-5 py-2 transition-all hover:bg-pastel-sky active:scale-[0.98]"
             >
-              <span aria-hidden="true">🖨️ </span>Ver Ficha Imprimible para tu Médico
+              <Printer aria-hidden="true" className="size-5" />
+              Ver Ficha Imprimible para tu Médico
             </Link>
             <ClinicalRecordsManager />
           </>

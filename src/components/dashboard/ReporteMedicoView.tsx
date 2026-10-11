@@ -1,6 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { Activity, ArrowLeft, CalendarPlus, ClipboardList, Printer, Stethoscope, TriangleAlert, Upload, UserRound, type LucideIcon } from "lucide-react";
+import type { ReactNode } from "react";
+import { Button } from "@/components/ui/button";
 import { AccountInvite } from "@/components/auth/AccountInvite";
 import { useMemo, useState, useSyncExternalStore } from "react";
 import { appointmentsStore, getNextUpcomingAppointment } from "@/lib/appointments/store";
@@ -22,11 +25,34 @@ const MENOPAUSAL_STATUS_LABEL: Record<MenopausalStatus, string> = {
   "no-aplica": "No aplica / No sabe",
 };
 
-const semaphoreEmoji: Record<RiskLevel, string> = {
-  bajo: "🟢",
-  moderado: "🟡",
-  alto: "🔴",
+const semaphoreDot: Record<RiskLevel, string> = {
+  bajo: "bg-risk-low",
+  moderado: "bg-risk-moderate",
+  alto: "bg-risk-high",
 };
+
+const semaphoreText: Record<RiskLevel, string> = {
+  bajo: "text-risk-low",
+  moderado: "text-risk-moderate",
+  alto: "text-risk-high",
+};
+
+const SECTION_CARD =
+  "rounded-card border border-line bg-surface shadow-soft print:shadow-none print:border-2 print:border-black px-5 py-5";
+
+interface SectionTitleProps {
+  icon: LucideIcon;
+  children: ReactNode;
+}
+
+function SectionTitle({ icon: Icon, children }: SectionTitleProps) {
+  return (
+    <h2 className="flex items-center gap-2 font-bold text-clinic print:text-black">
+      <Icon aria-hidden="true" className="size-5 shrink-0 print:hidden" />
+      {children}
+    </h2>
+  );
+}
 
 function formatScanDate(isoDate: string): string {
   return new Date(`${isoDate}T00:00:00`).toLocaleDateString("es-PE", {
@@ -113,29 +139,31 @@ export function ReporteMedicoView() {
     <div className="flex flex-col min-h-dvh bg-background text-foreground">
       <div className="w-full max-w-2xl mx-auto px-4 py-6 flex flex-col gap-6 print:px-0 print:py-0 print:max-w-none">
         <div className="flex items-center justify-between gap-3 print:hidden">
-          <Link href="/app" className="text-sm font-semibold text-clinic">
-            ← Volver a mi panel
-          </Link>
-          <button
-            type="button"
-            onClick={() => window.print()}
-            className="min-h-12 rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] text-white font-semibold px-5 transition-colors"
+          <Link
+            href="/app"
+            className="min-h-12 inline-flex items-center gap-1.5 rounded-control px-2 text-sm font-semibold text-clinic hover:bg-pastel-sky"
           >
-            <span aria-hidden="true">🖨️ </span>Imprimir / Guardar en PDF
-          </button>
+            <ArrowLeft aria-hidden="true" className="size-4" />
+            Volver a mi panel
+          </Link>
+          <Button type="button" size="touch" onClick={() => window.print()} className="shrink whitespace-normal text-center">
+            <Printer aria-hidden="true" />
+            Imprimir / Guardar en PDF
+          </Button>
         </div>
 
-        <header className="border-b-2 border-neutral-900 dark:border-neutral-100 print:border-black pb-4">
-          <p className="text-lg font-bold">Artikare • Respaldo Clínico CQ Pharma</p>
-          <p className="text-neutral-600 dark:text-neutral-300 print:text-black">
-            Reporte Osteoarticular
-          </p>
+        <header className="border-b-2 border-clinic print:border-black pb-4">
+          <p className="text-lg font-bold text-clinic print:text-black">Artikare • Respaldo Clínico CQ Pharma</p>
+          <h1 className="text-2xl font-extrabold tracking-tight">Reporte Osteoarticular</h1>
           <p className="text-xs text-muted print:text-black mt-1">
             Generado el {formatGeneratedDate()}
           </p>
         </header>
 
-        <section className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
+        <section className={`${SECTION_CARD} grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm`}>
+          <div className="sm:col-span-2 mb-1">
+            <SectionTitle icon={UserRound}>Datos del paciente</SectionTitle>
+          </div>
           <p>
             <span className="font-semibold">Paciente: </span>
             {patientName}
@@ -168,51 +196,55 @@ export function ReporteMedicoView() {
             <span className="font-semibold">Teléfono de contacto: </span>
             {patientPhone ?? "No registrado"}
           </p>
-          <p className="col-span-2">
+          <p className="sm:col-span-2">
             <span className="font-semibold">Alergias conocidas: </span>
             {profile.allergies.trim().length > 0 ? profile.allergies : "Ninguna reportada"}
           </p>
         </section>
 
         {scan ? (
-          <section className="rounded-2xl border-2 border-neutral-300 dark:border-neutral-700 print:border-black px-6 py-5 flex flex-col gap-2">
-            <div className="flex items-center justify-between">
+          <section className={`${SECTION_CARD} flex flex-col gap-2`}>
+            <div className="flex items-center justify-between gap-3">
               <p className="text-sm font-semibold">
                 Densitometría más reciente: {formatScanDate(scan.scanDate)}
               </p>
-              <span className="text-2xl" aria-hidden="true">
-                {scan.riskLevel ? semaphoreEmoji[scan.riskLevel] : "🩺"}
-              </span>
+              {scan.riskLevel ? (
+                <span aria-hidden="true" className={`size-5 shrink-0 rounded-full ${semaphoreDot[scan.riskLevel]}`} />
+              ) : (
+                <Stethoscope aria-hidden="true" className="size-5 shrink-0 text-muted" />
+              )}
             </div>
             <p className="text-xs font-medium uppercase tracking-wide">
               Peor T-Score (lumbar / cuello femoral)
             </p>
             <p className="text-4xl font-extrabold">{scan.worstTScore.toFixed(1)}</p>
-            <p className="font-semibold uppercase">{scan.diagnosisLabel}</p>
+            <p className={`font-bold uppercase print:text-black ${scan.riskLevel ? semaphoreText[scan.riskLevel] : ""}`}>
+              {scan.diagnosisLabel}
+            </p>
             <p className="text-sm">{scan.diagnosisMessage}</p>
             {scan.profileNote && (
-              <p role="note" className="text-sm font-semibold">
-                <span aria-hidden="true">⚠️ </span>
-                <span className="sr-only">Aviso: </span>
-                {scan.profileNote}
+              <p role="note" className="flex items-start gap-2 text-sm font-semibold">
+                <TriangleAlert aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+                <span>
+                  <span className="sr-only">Aviso: </span>
+                  {scan.profileNote}
+                </span>
               </p>
             )}
           </section>
         ) : (
-          <section className="rounded-2xl border-2 border-dashed border-neutral-300 dark:border-neutral-700 print:border-black px-6 py-5 flex flex-col gap-3">
+          <section className="rounded-card border-2 border-dashed border-line bg-surface print:border-black px-5 py-5 flex flex-col gap-3">
             <p className="font-bold">Sin densitometría registrada</p>
             <div className="flex flex-col sm:flex-row gap-3 print:hidden">
-              <button
-                type="button"
-                onClick={() => setIsDexaModalOpen(true)}
-                className="min-h-12 flex-1 rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] text-white font-semibold px-4 transition-colors"
-              >
+              <Button type="button" size="touch" onClick={() => setIsDexaModalOpen(true)} className="flex-1">
+                <Upload aria-hidden="true" />
                 Sube tu densitometría
-              </button>
+              </Button>
               <Link
                 href="/citas"
-                className="min-h-12 flex-1 flex items-center justify-center rounded-xl border-2 border-brand text-clinic font-semibold px-4 transition-colors hover:bg-pastel-mint"
+                className="min-h-12 flex-1 flex items-center justify-center gap-2 rounded-control border-2 border-brand text-clinic font-semibold px-4 transition-all hover:bg-pastel-mint active:scale-[0.98]"
               >
+                <CalendarPlus aria-hidden="true" className="size-5" />
                 Agendar densitometría
               </Link>
             </div>
@@ -223,7 +255,8 @@ export function ReporteMedicoView() {
           <PainTrendChart />
         </div>
 
-        <section className="rounded-2xl border-2 border-neutral-300 dark:border-neutral-700 print:border-black px-6 py-5">
+        <section className={`${SECTION_CARD} flex flex-col gap-1`}>
+          <SectionTitle icon={Activity}>Seguimiento de 30 días</SectionTitle>
           <p className="text-sm font-semibold">
             Adherencia a suplementación CQ Pharma (30 días): {summary.adherencePercent}%
           </p>
@@ -235,8 +268,8 @@ export function ReporteMedicoView() {
           </p>
         </section>
 
-        <section className="rounded-2xl border-2 border-neutral-300 dark:border-neutral-700 print:border-black px-6 py-5 flex flex-col gap-2">
-          <p className="font-bold">Observaciones para el especialista</p>
+        <section className={`${SECTION_CARD} flex flex-col gap-2`}>
+          <SectionTitle icon={ClipboardList}>Observaciones para el especialista</SectionTitle>
           <ul className="list-disc pl-5 flex flex-col gap-1 text-sm">
             {observations.map((observation) => (
               <li key={observation}>{observation}</li>
@@ -244,7 +277,7 @@ export function ReporteMedicoView() {
           </ul>
         </section>
 
-        <p className="text-xs text-neutral-400 print:text-black">
+        <p className="text-xs text-muted print:text-black">
           Este reporte es generado por el paciente a partir de su seguimiento en la app Artikare
           y no reemplaza una evaluación clínica presencial.
         </p>

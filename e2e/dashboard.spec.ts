@@ -92,13 +92,13 @@ test("el pastillero anota la toma, permite deshacer sin límite de tiempo y la g
   // La racha cuenta días completos: se anotan y confirman todas las tomas de hoy.
   while ((await take.count()) > 0) await take.first().click();
   for (let index = 0; index < doseCount; index += 1) await pillbox.getByRole("button", { name: "Listo" }).first().click();
-  await expect(pillbox.getByText("✓ Tomada", { exact: true })).toHaveCount(doseCount);
+  await expect(pillbox.getByText("Tomada", { exact: true })).toHaveCount(doseCount);
   await expect(pillbox.getByRole("status")).toContainText("Toma guardada");
   await expect(page.getByText("1 día seguido")).toBeVisible();
   await expect(page.getByRole("img", { name: /Progreso de hoy: 2 de 3/ })).toBeVisible();
 
   await page.reload();
-  await expect(pillbox.getByText("✓ Tomada", { exact: true })).toHaveCount(doseCount);
+  await expect(pillbox.getByText("Tomada", { exact: true })).toHaveCount(doseCount);
   expect(errors).toEqual([]);
 });
 
@@ -106,10 +106,10 @@ test("una toma anotada se guarda aunque se recargue sin pulsar Listo", async ({ 
   await page.goto("/app");
   const pillbox = page.locator("section#pastillero");
   await pillbox.getByRole("button", { name: "Ya me la tomé" }).first().click();
-  await expect(pillbox.getByText("✓ Anotada")).toHaveCount(1);
+  await expect(pillbox.getByText("Anotada. ¿Todo bien?")).toHaveCount(1);
 
   await page.reload();
-  await expect(pillbox.getByText("✓ Tomada", { exact: true })).toHaveCount(1);
+  await expect(pillbox.getByText("Tomada", { exact: true })).toHaveCount(1);
 });
 
 test("el diario de dolor guarda el registro de hoy", async ({ page }) => {

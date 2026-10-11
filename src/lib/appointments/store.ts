@@ -17,16 +17,35 @@ export function bookAppointment(
   return appointment;
 }
 
+function compareBySchedule(a: Appointment, b: Appointment): number {
+  return a.date.localeCompare(b.date) || a.slot.localeCompare(b.slot);
+}
+
+/** Citas de hoy en adelante (fecha de Lima), la más próxima primero. */
+export function getUpcomingAppointments(
+  appointments: readonly Appointment[],
+  now: Date = new Date()
+): Appointment[] {
+  const today = toLimaIsoDate(now);
+  return appointments.filter((appointment) => appointment.date >= today).sort(compareBySchedule);
+}
+
+/** Citas anteriores a hoy (fecha de Lima), la más reciente primero. */
+export function getPastAppointments(
+  appointments: readonly Appointment[],
+  now: Date = new Date()
+): Appointment[] {
+  const today = toLimaIsoDate(now);
+  return appointments
+    .filter((appointment) => appointment.date < today)
+    .sort((a, b) => compareBySchedule(b, a));
+}
+
 export function getNextUpcomingAppointment(
-  appointments: Appointment[]
+  appointments: readonly Appointment[],
+  now: Date = new Date()
 ): Appointment | null {
-  const today = toLimaIsoDate();
-  const upcoming = appointments
-    .filter((appointment) => appointment.date >= today)
-    .sort(
-      (a, b) => a.date.localeCompare(b.date) || a.slot.localeCompare(b.slot)
-    );
-  return upcoming[0] ?? null;
+  return getUpcomingAppointments(appointments, now)[0] ?? null;
 }
 
 export const appointmentsStore = store;

@@ -1,4 +1,17 @@
 import Link from "next/link";
+import {
+  TriangleAlert,
+  CalendarClock,
+  CalendarPlus,
+  CircleCheck,
+  ChartLine,
+  OctagonAlert,
+  ScanLine,
+  Stethoscope,
+  Upload,
+  type LucideIcon,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 import type { BoneScanSummary } from "@/lib/dashboard/types";
 import type { RiskLevel } from "@/lib/types";
 
@@ -7,21 +20,24 @@ interface BoneSemaphoreWidgetProps {
   onUploadClick: () => void;
 }
 
+// Colores del semáforo OMS: inalterables (verde T ≥ -1.0, ámbar -2.5 < T < -1.0, rojo T ≤ -2.5).
 const semaphoreStyles: Record<RiskLevel, string> = {
   bajo: "bg-risk-low-bg text-risk-low border-risk-low",
   moderado: "bg-risk-moderate-bg text-risk-moderate border-risk-moderate",
   alto: "bg-risk-high-bg text-risk-high border-risk-high",
 };
 
-const semaphoreEmoji: Record<RiskLevel, string> = {
-  bajo: "🟢",
-  moderado: "🟡",
-  alto: "🔴",
+const semaphoreIcon: Record<RiskLevel, LucideIcon> = {
+  bajo: CircleCheck,
+  moderado: TriangleAlert,
+  alto: OctagonAlert,
 };
 
 // Sin T-score aplicable no hay color OMS: tarjeta neutra con derivación médica.
-const Z_SCORE_STYLE = "bg-background text-foreground border-neutral-300 dark:border-neutral-700";
-const Z_SCORE_EMOJI = "🩺";
+const Z_SCORE_STYLE = "bg-surface text-ink border-line";
+
+const SECONDARY_LINK =
+  "min-h-12 flex items-center justify-center gap-2 rounded-control font-semibold px-4 transition-all active:scale-[0.98]";
 
 function formatScanDate(isoDate: string): string {
   return new Date(`${isoDate}T00:00:00`).toLocaleDateString("es-PE", {
@@ -39,29 +55,29 @@ function DexaEmptyState({ onUploadClick }: DexaEmptyStateProps) {
   return (
     <section
       aria-labelledby="semaforo-vacio-heading"
-      className="rounded-2xl border-2 border-dashed border-neutral-300 dark:border-neutral-700 px-6 py-6 flex flex-col gap-4"
+      className="rounded-card border-2 border-dashed border-line bg-surface px-5 py-6 flex flex-col gap-4"
     >
-      <div className="flex flex-col gap-1">
-        <h2 id="semaforo-vacio-heading" className="text-xl font-bold">
-          Sin densitometría registrada
-        </h2>
-        <p className="text-sm text-neutral-600 dark:text-neutral-300">
-          Tu Semáforo Óseo se activa cuando registras los T-score de tu densitometría
-          (columna lumbar y cuello femoral).
-        </p>
+      <div className="flex items-start gap-3">
+        <span aria-hidden="true" className="grid size-12 shrink-0 place-items-center rounded-control bg-pastel-sky text-pastel-sky-ink">
+          <ScanLine className="size-6" />
+        </span>
+        <div className="flex flex-col gap-1">
+          <h2 id="semaforo-vacio-heading" className="text-xl font-bold text-clinic">
+            Sin densitometría registrada
+          </h2>
+          <p className="text-sm text-muted">
+            Tu Semáforo Óseo se activa cuando registras los T-score de tu densitometría
+            (columna lumbar y cuello femoral).
+          </p>
+        </div>
       </div>
       <div className="flex flex-col sm:flex-row gap-3">
-        <button
-          type="button"
-          onClick={onUploadClick}
-          className="min-h-12 flex-1 rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] text-white font-semibold px-4 transition-colors"
-        >
+        <Button type="button" size="touch" onClick={onUploadClick} className="flex-1">
+          <Upload aria-hidden="true" />
           Sube tu densitometría
-        </button>
-        <Link
-          href="/citas"
-          className="min-h-12 flex-1 flex items-center justify-center rounded-xl border-2 border-brand text-clinic font-semibold px-4 transition-colors hover:bg-pastel-mint"
-        >
+        </Button>
+        <Link href="/citas" className={`${SECONDARY_LINK} flex-1 border-2 border-brand text-clinic hover:bg-pastel-mint`}>
+          <CalendarPlus aria-hidden="true" className="size-5" />
           Agendar densitometría
         </Link>
       </div>
@@ -72,62 +88,68 @@ function DexaEmptyState({ onUploadClick }: DexaEmptyStateProps) {
 export function BoneSemaphoreWidget({ scan, onUploadClick }: BoneSemaphoreWidgetProps) {
   if (!scan) return <DexaEmptyState onUploadClick={onUploadClick} />;
 
+  const StatusIcon = scan.riskLevel ? semaphoreIcon[scan.riskLevel] : Stethoscope;
+
   return (
     <section
       aria-labelledby="semaforo-oseo-heading"
-      className={`rounded-2xl border-2 px-6 py-6 flex flex-col gap-4 ${scan.riskLevel ? semaphoreStyles[scan.riskLevel] : Z_SCORE_STYLE}`}
+      className={`rounded-card border-2 shadow-soft px-5 py-6 flex flex-col gap-4 ${scan.riskLevel ? semaphoreStyles[scan.riskLevel] : Z_SCORE_STYLE}`}
     >
       <div className="flex items-center justify-between gap-4">
         <p className="text-sm font-semibold">
           Tu última densitometría: {formatScanDate(scan.scanDate)}
         </p>
-        <span className="text-2xl" aria-hidden="true">
-          {scan.riskLevel ? semaphoreEmoji[scan.riskLevel] : Z_SCORE_EMOJI}
+        <span aria-hidden="true" className="grid size-11 shrink-0 place-items-center rounded-full bg-surface/80">
+          <StatusIcon className="size-6" />
         </span>
       </div>
 
-      <div className="flex items-end gap-4">
+      <div className="flex flex-wrap items-end gap-x-4 gap-y-2">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide">
             Peor T-Score (lumbar / cuello femoral)
           </p>
-          <p id="semaforo-oseo-heading" className="text-6xl font-extrabold leading-none">
+          <p id="semaforo-oseo-heading" className="text-6xl font-extrabold leading-none tabular-nums">
             {scan.worstTScore.toFixed(1)}
           </p>
         </div>
-        <span className="text-lg font-bold uppercase pb-1">{scan.diagnosisLabel}</span>
+        <span className="mb-1 rounded-full border-2 border-current bg-surface/70 px-3 py-1 text-base font-bold uppercase">
+          {scan.diagnosisLabel}
+        </span>
       </div>
 
       <p className="text-base font-medium">{scan.diagnosisMessage}</p>
 
-      {scan.profileNote && (
-        <p
-          role="note"
-          className="rounded-xl border-2 border-current bg-white/80 dark:bg-black/30 px-4 py-3 font-semibold"
-        >
-          <span aria-hidden="true">⚠️ </span>
-          <span className="sr-only">Aviso: </span>
-          {scan.profileNote}
-        </p>
-      )}
-
       {scan.riskLevel === "alto" && (
         <Link
           href="/citas"
-          className="min-h-12 flex items-center justify-center rounded-xl bg-risk-high text-white text-center font-semibold px-4 py-2"
+          className={`${SECONDARY_LINK} bg-risk-high text-white text-center shadow-sm hover:bg-risk-high/90 py-2`}
         >
+          <Stethoscope aria-hidden="true" className="size-5 shrink-0" />
           Agendar evaluación reumatológica
         </Link>
       )}
 
-      <div className="flex flex-wrap gap-3 pt-1">
-        <a
-          href="#tendencia"
-          className="min-h-12 flex items-center justify-center rounded-xl bg-white/70 dark:bg-black/20 border border-current px-4 text-sm font-semibold"
+      {scan.profileNote && (
+        <p
+          role="note"
+          className="flex items-start gap-2 rounded-control border-2 border-current bg-surface/80 px-4 py-3 font-semibold"
         >
+          <TriangleAlert aria-hidden="true" className="mt-0.5 size-5 shrink-0" />
+          <span>
+            <span className="sr-only">Aviso: </span>
+            {scan.profileNote}
+          </span>
+        </p>
+      )}
+
+      <div className="flex flex-wrap gap-3 pt-1">
+        <a href="#tendencia" className={`${SECONDARY_LINK} border border-current bg-surface/70 text-sm hover:bg-surface`}>
+          <ChartLine aria-hidden="true" className="size-4" />
           Ver Gráfico Comparativo
         </a>
-        <span className="min-h-12 flex items-center justify-center rounded-xl px-4 text-sm font-semibold">
+        <span className="min-h-12 flex items-center justify-center gap-2 px-2 text-sm font-semibold">
+          <CalendarClock aria-hidden="true" className="size-4" />
           Próximo control: {scan.nextControlMonths} meses
         </span>
       </div>

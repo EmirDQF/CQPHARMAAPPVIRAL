@@ -68,6 +68,17 @@ android {
             }
         }
     }
+    // Ni llamando a gradlew directamente sale un AAB/APK de release sin firma.
+    def missingSigning = ["storePassword": "ANDROID_KEYSTORE_PASSWORD", "keyAlias": "ANDROID_KEY_ALIAS",
+                          "keyPassword": "ANDROID_KEY_PASSWORD"].findAll { property, envName -> !signingValue(property, envName) }
+    tasks.matching { it.name == "preReleaseBuild" }.configureEach { task ->
+        task.doFirst {
+            if (!releaseStoreFile || !file(releaseStoreFile).exists() || !missingSigning.isEmpty()) {
+                throw new GradleException("Release bloqueado: falta la firma del usuario. Crea android/keystore.properties " +
+                    "(ignorado por git) o define ANDROID_KEYSTORE_*. Ver docs/RELEASE.md.")
+            }
+        }
+    }
     buildTypes {
         release {
             if (releaseStoreFile) {

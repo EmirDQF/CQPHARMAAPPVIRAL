@@ -12,7 +12,8 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:db": "supabase test db && vitest run -c vitest.integration.config.ts",
-    "db:rollback-check": "node scripts/db-rollback-check.mjs && supabase test db"
+    "db:rollback-check": "node scripts/db-rollback-check.mjs && supabase test db",
+    "cap:sync": "node scripts/write-shell-config.mjs && cap sync android"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.3",

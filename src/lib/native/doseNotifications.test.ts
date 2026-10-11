@@ -56,6 +56,17 @@ describe("enableNativeDoseReminders", () => {
     });
   });
 
+  it("schedules locally without touching the network, so reminders keep working offline", async () => {
+    const fetchSpy = vi.fn(() => Promise.reject(new Error("sin red")));
+    vi.stubGlobal("fetch", fetchSpy);
+
+    await expect(enableNativeDoseReminders(new Date("2026-10-10T17:00:00.000Z"))).resolves.toBe("granted");
+
+    expect(fetchSpy).not.toHaveBeenCalled();
+    expect(plugin.schedule).toHaveBeenCalledTimes(1);
+    vi.unstubAllGlobals();
+  });
+
   it("schedules nothing when the patient denies permission", async () => {
     plugin.requestPermissions.mockResolvedValue({ display: "denied" });
 

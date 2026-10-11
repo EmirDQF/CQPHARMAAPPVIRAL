@@ -45,3 +45,6 @@ next-env.d.ts
 /test-results/
 /playwright-report/
 /playwright/.cache/
+
+# capacitor: config generada del shell sin conexión (scripts/write-shell-config.mjs)
+/capacitor-shell/shell-config.js

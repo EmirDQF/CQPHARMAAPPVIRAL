@@ -6,6 +6,9 @@ import { NextAppointmentCard } from "@/components/appointments/NextAppointmentCa
 import { AccountBackupOffer } from "@/components/auth/AccountBackupOffer";
 import { AccountInvite } from "@/components/auth/AccountInvite";
 import { usePillboxReminders } from "@/hooks/usePillboxReminders";
+import { useRewards } from "@/hooks/useRewards";
+import { AchievementsShowcase } from "@/components/rewards/AchievementsShowcase";
+import { RewardCelebration } from "@/components/rewards/RewardCelebration";
 import { appointmentsStore, getNextUpcomingAppointment } from "@/lib/appointments/store";
 import { calculateStreakDays, pillboxStore } from "@/lib/dashboard/pillbox";
 import { ClinicalRecordsManager } from "./ClinicalRecordsManager";
@@ -20,7 +23,7 @@ import { ReminderOffer } from "./ReminderOffer";
 import { RestockAlert } from "./RestockAlert";
 import { TreatmentTracker } from "./TreatmentTracker";
 
-type TabId = "hoy" | "hueso" | "tratamiento" | "reumatologo";
+type TabId = "hoy" | "hueso" | "tratamiento" | "logros" | "reumatologo";
 
 interface TabDefinition {
   id: TabId;
@@ -32,12 +35,14 @@ const TABS: TabDefinition[] = [
   { id: "hoy", label: "Hoy", icon: "📅" },
   { id: "hueso", label: "Mi Hueso", icon: "🦴" },
   { id: "tratamiento", label: "Tratamiento", icon: "💊" },
+  { id: "logros", label: "Logros", icon: "🏅" },
   { id: "reumatologo", label: "Reumatólogo", icon: "🩺" },
 ];
 
 export function AppShell() {
   const [activeTab, setActiveTab] = useState<TabId>("hoy");
   const reminders = usePillboxReminders();
+  const rewards = useRewards();
 
   const pillboxState = useSyncExternalStore(
     pillboxStore.subscribe,
@@ -80,7 +85,17 @@ export function AppShell() {
 
         {activeTab === "hoy" && (
           <>
-            <MyDay firstName={patientFirstName} onOpenBoneTab={() => setActiveTab("hueso")} />
+            <MyDay
+              firstName={patientFirstName}
+              onOpenBoneTab={() => setActiveTab("hueso")}
+              celebration={
+                <RewardCelebration
+                  celebrations={rewards.celebrations}
+                  onDismiss={rewards.dismissCelebrations}
+                  onOpenAchievements={() => setActiveTab("logros")}
+                />
+              }
+            />
             {reminders.shouldOffer && reminders.support && (
               <ReminderOffer
                 support={reminders.support}
@@ -95,6 +110,8 @@ export function AppShell() {
         )}
 
         {activeTab === "hueso" && <DexaVaultSection />}
+
+        {activeTab === "logros" && <AchievementsShowcase rewards={rewards} />}
 
         {activeTab === "tratamiento" && (
           <>
@@ -130,7 +147,7 @@ export function AppShell() {
         aria-label="Navegación principal"
         className="fixed bottom-0 inset-x-0 z-40 bg-background border-t border-line pb-[env(safe-area-inset-bottom)]"
       >
-        <div className="max-w-2xl mx-auto grid grid-cols-4">
+        <div className="max-w-2xl mx-auto grid grid-cols-5">
           {TABS.map((tab) => (
             <button
               key={tab.id}

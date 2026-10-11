@@ -88,6 +88,25 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* Confeti suave de la celebración de logros (150–250 ms por pieza, escalonado). Sin movimiento con prefers-reduced-motion. */
+@theme {
+  --animate-confetti: confetti-fall 1.2s ease-out both;
+
+  @keyframes confetti-fall {
+    from {
+      transform: translateY(-6px) rotate(0deg);
+      opacity: 0;
+    }
+    25% {
+      opacity: 1;
+    }
+    to {
+      transform: translateY(36px) rotate(150deg);
+      opacity: 0;
+    }
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --color-canvas: #0B1220;

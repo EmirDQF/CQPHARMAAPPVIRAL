@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useSyncExternalStore, type ReactNode } from "react";
 import { useDeferredDose } from "@/hooks/useDeferredDose";
 import { useHydrated } from "@/hooks/useHydrated";
 import { useMinuteClock } from "@/hooks/useMinuteClock";
@@ -21,10 +21,12 @@ import { NextActionCard } from "./NextActionCard";
 interface MyDayProps {
   firstName: string | null;
   onOpenBoneTab: () => void;
+  /** Celebración de logro nuevo: va justo después del saludo. */
+  celebration?: ReactNode;
 }
 
 /** Pantalla principal de /app, escaneable en 5 segundos. La bandera roja la pinta AppShell por encima. */
-export function MyDay({ firstName, onOpenBoneTab }: MyDayProps) {
+export function MyDay({ firstName, onOpenBoneTab, celebration }: MyDayProps) {
   const isHydrated = useHydrated();
   const now = useMinuteClock();
   const pillbox = useSyncExternalStore(pillboxStore.subscribe, pillboxStore.getSnapshot, pillboxStore.getServerSnapshot);
@@ -50,6 +52,7 @@ export function MyDay({ firstName, onOpenBoneTab }: MyDayProps) {
   return (
     <div className="flex flex-col gap-5">
       <DayHeader firstName={firstName} streak={calculateStreak(pillbox, now)} hasHistory={hasHistory} now={now} />
+      {celebration}
       <section aria-label="Tu progreso de hoy" className="rounded-card bg-pastel-mint text-pastel-mint-ink px-5 py-5">
         <DayProgressRing progress={buildDayProgress(doneOrPending, checkInDone)} />
       </section>

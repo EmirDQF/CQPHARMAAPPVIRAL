@@ -54,3 +54,6 @@ next-env.d.ts
 /android/keystore.properties
 *.jks
 *.keystore
+
+# Reportes locales de simulaciones MiroFish
+scripts/mirofish/out/

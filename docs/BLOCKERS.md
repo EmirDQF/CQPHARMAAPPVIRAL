@@ -12,6 +12,8 @@ Lo que sigue solo puede hacerlo el usuario.
 | B5 | Keystore de release | HECHO por el usuario: existe `android/keystore.properties` → `.keystore` ignorado por git (`CN=Artikare, O=CQ Pharma, C=PE`). Sin él, Gradle bloquea cualquier release (`8e9656c`). | **Respaldarlo fuera del equipo** (si se pierde no se puede actualizar la app sin el proceso de reseteo de clave de Play). |
 | B6 | pg_cron en producción | ABIERTO: la migración programa la purga diaria solo si el proyecto ofrece pg_cron. | Activar pg_cron en el panel de Supabase si no aparece `daily-soft-delete-purge` en `cron.job`. |
 
+| B7 | MCP Headroom | NO INSTALADO: `npm view @headroomlabs/mcp-server` → 404 (2026-10-11), no se puede verificar. El proyecto real (github.com/headroomlabs-ai/headroom) se distribuye por PyPI como `headroom-ai` y su MCP es `headroom mcp serve`; la instalación con `uv` fue bloqueada por el clasificador de permisos. | Si se quiere: `uv tool install --python 3.13 "headroom-ai[all]"` y `claude mcp add headroom --env HEADROOM_BEACON=off -- headroom mcp serve`. |
+
 ## Resueltos (técnicos)
 
 - Rate limit ARCO en base de datos (`d25c6ef`) · `server-only` en la service role (`d25c6ef`).

@@ -26,3 +26,5 @@ Bloqueos que requieren al usuario: `docs/BLOCKERS.md` · Informe con los candado
 - Constantes de política aún sin uso en `constants.ts` (`STREAK_MILESTONES`, `UNDO_WINDOW_MS`, `MAX_DAILY_NOTIFICATIONS`, `STREAK_BENEFIT_ENABLED`): decisión de producto.
 
 SIGUIENTE: desplegar la web con dominio HTTPS y variables de producción → `npm run build:android` → primera subida a Google Play (pista interna) → huella de Play App Signing en `ANDROID_SHA256_FINGERPRINT`.
+
+- [x] V1-V7 Redise�o Cl�nico Amable: tokens accesibles WCAG AA, dashboard Mi D�a, recompensas �ticas, CLS contenido en DayHeader y 17/17 E2E.

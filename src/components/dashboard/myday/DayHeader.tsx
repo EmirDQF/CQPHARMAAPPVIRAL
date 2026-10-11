@@ -34,7 +34,7 @@ export function DayHeader({ firstName, streak, hasHistory, now }: DayHeaderProps
         {isReturning && <p className="font-medium">Qué bueno verte de nuevo. Retomamos hoy, con calma.</p>}
       </div>
       {streak ? (
-        <ul className="flex flex-wrap gap-2 text-sm" aria-label="Tu constancia">
+        <ul className="min-h-20 flex flex-wrap content-start gap-2 text-sm" aria-label="Tu constancia">
           <li className="rounded-full bg-pastel-peach text-pastel-peach-ink px-4 py-2 font-bold">
             <span aria-hidden="true">🔥 </span>
             {streakLabel(streak.days)}
@@ -45,7 +45,7 @@ export function DayHeader({ firstName, streak, hasHistory, now }: DayHeaderProps
           </li>
         </ul>
       ) : (
-        <div aria-hidden="true" className="flex flex-wrap gap-2 text-sm motion-safe:animate-pulse">
+        <div aria-hidden="true" className="min-h-20 flex flex-wrap content-start gap-2 text-sm motion-safe:animate-pulse">
           <span className="h-9 w-40 rounded-full bg-pastel-peach" />
           <span className="h-9 w-36 rounded-full bg-pastel-lavender" />
         </div>

@@ -13,11 +13,14 @@
     "test:e2e": "playwright test",
     "test:db": "supabase test db && vitest run -c vitest.integration.config.ts",
     "db:rollback-check": "node scripts/db-rollback-check.mjs && supabase test db",
-    "cap:sync": "node scripts/write-shell-config.mjs && cap sync android",
+    "cap:sync": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/cap-sync.mjs",
     "verify-env": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/verify-env.ts",
     "verify:android-release": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/verify-android-release.ts",
     "preflight": "npm run typecheck && npm run lint && npm test && npm run verify-env",
-    "build:android": "npm run preflight && npm run verify-env -- --strict && next build && npm run cap:sync && node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/gradle.mjs bundleRelease"
+    "build:android": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/build-android-release.mjs",
+    "mobile:dev": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/mobile-dev.mjs",
+    "mobile:install": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/mobile-install.mjs",
+    "mobile:verify": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/mobile-verify.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.3",

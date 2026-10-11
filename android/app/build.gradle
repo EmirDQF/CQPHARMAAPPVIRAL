@@ -1,5 +1,32 @@
 apply plugin: 'com.android.application'
 
+// capacitor.config.json lo genera `cap sync` según CAP_ENV (src/lib/env/capacitorEnv.ts).
+def capacitorConfigFile = file("src/main/assets/capacitor.config.json")
+def readCapacitorServer = {
+    capacitorConfigFile.exists() ? (new groovy.json.JsonSlurper().parse(capacitorConfigFile).server ?: [:]) : [:]
+}
+ext.capacitorServerHost = {
+    def url = readCapacitorServer().url
+    url ? (new URI(url).host ?: "localhost") : "localhost"
+}
+
+// Guardia anti-contaminación (como verify-android-release --generated): ninguna tarea
+// release empaqueta un sync de desarrollo, aunque se llame a gradlew directamente.
+def assertReleaseCapacitorServer = {
+    def server = readCapacitorServer()
+    def url = server.url ? new URI(server.url) : null
+    def host = url?.host ?: ""
+    def isLocalHost = host == "localhost" || host ==~ /^[0-9.]+$/ || host.startsWith("[") ||
+        host ==~ /.*\.(localhost|local|internal|lan)$/
+    if (url?.scheme != "https" || server.cleartext == true || isLocalHost) {
+        throw new GradleException("Release bloqueado: capacitor.config.json no apunta a un servidor https público " +
+            "(¿quedó un sync de CAP_ENV=dev?). Usa npm run build:android.")
+    }
+}
+tasks.matching { it.name == "preReleaseBuild" }.configureEach { task ->
+    task.doFirst { assertReleaseCapacitorServer() }
+}
+
 android {
     namespace = "com.artikare.app"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -10,8 +37,9 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        // Host de los App Links: el mismo dominio que carga el WebView (capacitor.config.ts).
-        manifestPlaceholders = [appLinkHost: new URI(System.getenv("CAP_SERVER_URL") ?: "https://artikare.com").host]
+        // Host de los App Links: el mismo servidor que cap sync horneó en el APK
+        // (CAP_SERVER_URL de release). Sin sync todavía, "localhost": nunca un dominio inventado.
+        manifestPlaceholders = [appLinkHost: capacitorServerHost()]
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
              // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61

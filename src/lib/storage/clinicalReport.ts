@@ -23,15 +23,21 @@ function averageStiffnessMinutes(entries: PainLogEntry[]): number {
   return total / entries.length;
 }
 
-/** Solo los registros reales del paciente en los últimos 30 días de Lima, del más antiguo al más reciente. */
-export function selectLast30DaysEntries(
-  entries: PainLogEntry[],
+/** Solo los registros reales del paciente en los últimos `days` días de Lima, del más antiguo al más reciente. */
+export function selectLastDaysEntries(
+  entries: readonly PainLogEntry[],
+  days: number,
   referenceDate: Date = new Date()
 ): PainLogEntry[] {
-  const window = new Set(lastNIsoDates(REPORT_WINDOW_DAYS, referenceDate));
+  const window = new Set(lastNIsoDates(days, referenceDate));
   return entries
     .filter((entry) => window.has(entry.date))
     .sort((a, b) => a.date.localeCompare(b.date));
+}
+
+/** Solo los registros reales del paciente en los últimos 30 días de Lima. */
+export function selectLast30DaysEntries(entries: PainLogEntry[], referenceDate: Date = new Date()): PainLogEntry[] {
+  return selectLastDaysEntries(entries, REPORT_WINDOW_DAYS, referenceDate);
 }
 
 export function calculateStiffnessReductionPercent(entries: PainLogEntry[]): number | null {

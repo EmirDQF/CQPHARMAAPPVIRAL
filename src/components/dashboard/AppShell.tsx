@@ -10,17 +10,14 @@ import { appointmentsStore, getNextUpcomingAppointment } from "@/lib/appointment
 import { calculateStreakDays, pillboxStore } from "@/lib/dashboard/pillbox";
 import { ClinicalRecordsManager } from "./ClinicalRecordsManager";
 import { ClinicalReportExport } from "./ClinicalReportExport";
-import { DailyCompletionCelebration } from "./DailyCompletionCelebration";
 import { DailyReinforcementBanner } from "./DailyReinforcementBanner";
 import { DexaVaultSection } from "./DexaVaultSection";
+import { MyDay } from "./myday/MyDay";
 import { InstallPwaBanner } from "./InstallPwaBanner";
-import { PainCheckIn } from "./PainCheckIn";
-import { PainTrendChart } from "./PainTrendChart";
 import { PatientProfileLauncher } from "./PatientProfileLauncher";
 import { RedFlagBanner } from "./RedFlagBanner";
 import { ReminderOffer } from "./ReminderOffer";
 import { RestockAlert } from "./RestockAlert";
-import { SmartPillbox } from "./SmartPillbox";
 import { TreatmentTracker } from "./TreatmentTracker";
 
 type TabId = "hoy" | "hueso" | "tratamiento" | "reumatologo";
@@ -59,31 +56,17 @@ export function AppShell() {
 
   return (
     <div className="flex flex-col min-h-dvh">
-      <header className="sticky top-0 z-30 bg-background/95 backdrop-blur border-b border-line px-4 py-4 flex flex-col gap-3">
+      <header className="sticky top-0 z-30 bg-background/95 backdrop-blur border-b border-line px-4 py-3 flex flex-col gap-3">
         <div className="flex items-center justify-between gap-3">
-          <div>
-            <p className="text-lg font-bold">
-              Hola{patientFirstName ? `, ${patientFirstName}` : ""} 👋
-            </p>
-            <p className="text-sm text-muted">Tu salud ósea, en un solo lugar.</p>
-          </div>
+          <p className="text-lg font-extrabold text-clinic">
+            <span aria-hidden="true">🦴 </span>Artikare
+          </p>
           <div className="flex items-center gap-2">
-            <div
-              className="flex items-center gap-1.5 rounded-full bg-brand-light dark:bg-brand-dark/30 px-3 py-2"
-              aria-label={`Racha activa: ${streakDays} días`}
-            >
-              <span className="text-xl animate-pulse" aria-hidden="true">
-                🔥
-              </span>
-              <span className="font-bold text-brand-dark dark:text-brand-light">
-                {streakDays}
-              </span>
-            </div>
             <PatientProfileLauncher />
             <Link
               href="/app/ajustes"
               aria-label="Ajustes y privacidad"
-              className="min-h-12 min-w-12 flex items-center justify-center rounded-full text-xl bg-neutral-100 dark:bg-neutral-800"
+              className="min-h-12 min-w-12 flex items-center justify-center rounded-full text-xl bg-pastel-sky"
             >
               <span aria-hidden="true">⚙️</span>
             </Link>
@@ -97,8 +80,7 @@ export function AppShell() {
 
         {activeTab === "hoy" && (
           <>
-            <PainCheckIn />
-            <SmartPillbox />
+            <MyDay firstName={patientFirstName} onOpenBoneTab={() => setActiveTab("hueso")} />
             {reminders.shouldOffer && reminders.support && (
               <ReminderOffer
                 support={reminders.support}
@@ -106,9 +88,7 @@ export function AppShell() {
                 onSnooze={reminders.snooze}
               />
             )}
-            <DailyCompletionCelebration />
             <DailyReinforcementBanner />
-            <PainTrendChart />
             <AccountBackupOffer />
             <AccountInvite moment="racha" streakDays={streakDays} />
           </>

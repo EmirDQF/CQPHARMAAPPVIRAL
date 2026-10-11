@@ -19,10 +19,10 @@ const STIFFNESS_OPTIONS: { value: StiffnessBucket; label: string }[] = [
 ];
 
 function optionClassName(isSelected: boolean): string {
-  return `min-h-12 rounded-xl border-2 font-bold text-lg transition-colors ${
+  return `min-h-12 rounded-control border-2 font-bold text-lg transition-colors duration-150 ${
     isSelected
-      ? "border-brand bg-brand-light text-brand-dark"
-      : "border-neutral-200 dark:border-neutral-700 hover:border-brand/50"
+      ? "border-progress bg-pastel-mint text-pastel-mint-ink"
+      : "border-line bg-surface hover:border-progress"
   }`;
 }
 
@@ -84,14 +84,19 @@ export function PainCheckIn() {
   }
 
   return (
-    <section className="rounded-card border border-line bg-surface shadow-soft px-6 py-6 flex flex-col gap-5">
+    <section
+      id="chequeo"
+      className="rounded-card border border-line bg-surface shadow-soft px-5 py-5 flex flex-col gap-5 scroll-mt-24"
+    >
       <div>
-        <h2 className="text-xl font-bold">¿Cómo amanecieron tus articulaciones hoy?</h2>
-        <p className="text-sm text-muted">Check-in diario · 10 segundos</p>
+        <h2 className="text-xl font-bold text-clinic">¿Cómo amanecieron tus articulaciones hoy?</h2>
+        <p className="text-sm text-muted">Chequeo diario · 10 segundos</p>
       </div>
 
       <div>
-        <p className="text-sm font-medium mb-2">Nivel de dolor (0 = sin dolor, 10 = el peor)</p>
+        <p className="text-sm font-medium mb-2">
+          Nivel de dolor <span aria-hidden="true">😌</span> 0 = sin dolor · <span aria-hidden="true">😣</span> 10 = el peor
+        </p>
         <div className="grid grid-cols-5 sm:grid-cols-10 gap-2">
           <button
             type="button"
@@ -136,7 +141,7 @@ export function PainCheckIn() {
         type="button"
         onClick={handleSave}
         disabled={painLevel === null || stiffness === null}
-        className="min-h-12 rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold text-lg transition-colors"
+        className="min-h-14 rounded-control bg-action-strong hover:bg-brand-dark active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed text-on-action-strong font-bold text-lg transition-[background-color,transform] duration-150"
       >
         {todayEntry ? "✓ Registrado hoy — actualizar" : "Guardar registro de hoy"}
       </button>
@@ -168,7 +173,7 @@ export function PainCheckIn() {
 
       {hasJustSaved && (
         // Se celebra la constancia del registro, nunca un efecto atribuido a un producto.
-        <p role="status" className="rounded-xl bg-risk-low-bg text-risk-low px-4 py-3 font-semibold">
+        <p role="status" className="rounded-control bg-pastel-mint text-pastel-mint-ink px-4 py-3 font-semibold">
           ✓ Registraste tu día. Tu registro constante le muestra a tu médico cómo evolucionas.
         </p>
       )}

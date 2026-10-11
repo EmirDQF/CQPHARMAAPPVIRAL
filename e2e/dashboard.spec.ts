@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { UNDO_WINDOW_MS } from "../src/lib/clinical/constants";
 
 /** Flujos diarios de Mi Panel (375px): semáforo óseo, pastillero y diario de dolor. */
 
@@ -70,22 +71,41 @@ test("T-score de -1.6 se muestra como osteopenia sin bandera roja", async ({ pag
   expect(errors).toEqual([]);
 });
 
-test("el pastillero marca la toma y la recuerda al recargar", async ({ page }) => {
+test("el pastillero anota la toma, permite deshacer y la guarda al cerrar la ventana", async ({ page }) => {
   const errors = collectConsoleErrors(page);
+  await page.clock.install();
   await page.goto("/app");
 
-  const pillbox = page.locator("section").filter({ has: page.getByRole("heading", { name: "Pastillero Inteligente" }) });
-  const pending = pillbox.getByRole("button", { name: "Tomar", exact: true });
-  const doseCount = await pending.count();
+  const pillbox = page.locator("section#pastillero");
+  const take = pillbox.getByRole("button", { name: "Ya me la tomé" });
+  const doseCount = await take.count();
   expect(doseCount).toBeGreaterThan(0);
-  // La racha cuenta días completos: se marcan todas las tomas de hoy.
-  for (let index = 0; index < doseCount; index += 1) await pending.first().click();
-  await expect(pillbox.getByRole("button", { name: "✓ Tomado" })).toHaveCount(doseCount);
-  await expect(pillbox.getByText(/Racha: 1 día/)).toBeVisible();
+
+  await take.first().click();
+  await pillbox.getByRole("button", { name: /Deshacer/ }).click();
+  await expect(take).toHaveCount(doseCount);
+
+  // La racha cuenta días completos: se anotan todas las tomas de hoy.
+  for (let index = 0; index < doseCount; index += 1) await take.first().click();
+  await expect(pillbox.getByText("✓ Anotada")).toHaveCount(doseCount);
+  await page.clock.runFor(UNDO_WINDOW_MS);
+  await expect(pillbox.getByText("✓ Tomada", { exact: true })).toHaveCount(doseCount);
+  await expect(page.getByText("1 día seguido")).toBeVisible();
+  await expect(page.getByRole("img", { name: /Progreso de hoy: 2 de 3/ })).toBeVisible();
 
   await page.reload();
-  await expect(pillbox.getByRole("button", { name: "✓ Tomado" })).toHaveCount(doseCount);
+  await expect(pillbox.getByText("✓ Tomada", { exact: true })).toHaveCount(doseCount);
   expect(errors).toEqual([]);
+});
+
+test("una toma anotada se guarda aunque se recargue antes de que termine la ventana de deshacer", async ({ page }) => {
+  await page.goto("/app");
+  const pillbox = page.locator("section#pastillero");
+  await pillbox.getByRole("button", { name: "Ya me la tomé" }).first().click();
+  await expect(pillbox.getByText("✓ Anotada")).toHaveCount(1);
+
+  await page.reload();
+  await expect(pillbox.getByText("✓ Tomada", { exact: true })).toHaveCount(1);
 });
 
 test("el diario de dolor guarda el registro de hoy", async ({ page }) => {

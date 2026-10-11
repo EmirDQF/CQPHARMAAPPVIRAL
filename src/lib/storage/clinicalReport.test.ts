@@ -4,6 +4,7 @@ import {
   describeStiffnessChange,
   formatClinicalReportText,
   selectLast30DaysEntries,
+  selectLastDaysEntries,
 } from "./clinicalReport";
 import type { PainLogEntry } from "../dashboard/types";
 
@@ -25,6 +26,13 @@ describe("selectLast30DaysEntries", () => {
       "2026-09-01",
       "2026-09-30",
     ]);
+  });
+});
+
+describe("selectLastDaysEntries", () => {
+  it("narrows the window to the last 7 Lima days for the weekly chart", () => {
+    const entries = [entry("2026-09-23", 4), entry("2026-09-24", 2), entry("2026-09-30", 1)];
+    expect(selectLastDaysEntries(entries, 7, NOON_IN_LIMA_SEP_30).map((e) => e.date)).toEqual(["2026-09-24", "2026-09-30"]);
   });
 });
 

@@ -47,6 +47,17 @@ export function toLimaIsoDate(date: Date = new Date()): string {
   return readLimaWallClock(date).isoDate;
 }
 
+/** Minutos transcurridos del día en el reloj de Lima (0–1439). */
+export function limaMinutesOfDay(date: Date = new Date()): number {
+  return readLimaWallClock(date).minutesOfDay;
+}
+
+/** "HH:mm" → minutos del día. */
+export function time24hToMinutes(time24h: string): number {
+  const [hours, minutes] = time24h.split(":").map(Number);
+  return hours * 60 + minutes;
+}
+
 /** Suma (o resta) días a una fecha YYYY-MM-DD sin depender de la zona horaria. */
 export function addDaysToIsoDate(isoDate: string, days: number): string {
   const [year, month, day] = isoDate.split("-").map(Number);

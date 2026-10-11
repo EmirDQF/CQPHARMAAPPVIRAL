@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { readSiteUrl } from "@/lib/native/appIdentity";
 import { isNativeApp } from "@/lib/native/doseNotifications";
 import { shareInvite, type InviteAudience, type ShareDependencies, type ShareOutcome } from "@/lib/share/inviteShare";
@@ -32,9 +32,18 @@ function browserShareDependencies(): ShareDependencies {
 /** Invita a otra persona a hacer el test; nunca comparte el resultado de quien lo hizo. */
 export function ShareInviteActions() {
   const [outcome, setOutcome] = useState<ShareOutcome | null>(null);
+  // La hoja de compartir puede seguir abierta si la tarjeta se desmonta (p. ej. "Volver a hacer el test").
+  const isMountedRef = useRef(true);
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   async function handleShare(audience: InviteAudience) {
-    setOutcome(await shareInvite(audience, readSiteUrl(), browserShareDependencies()));
+    const result = await shareInvite(audience, readSiteUrl(), browserShareDependencies());
+    if (isMountedRef.current) setOutcome(result);
   }
 
   const message = outcome ? OUTCOME_MESSAGES[outcome] : undefined;

@@ -110,7 +110,7 @@ export function ResultCard({ result, onRestart }: ResultCardProps) {
           <button
             type="button"
             onClick={onRestart}
-            className="w-full text-center text-sm text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300 px-4 py-2"
+            className={`w-full text-center text-sm text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300 px-4 py-2 ${FOCUS_RING}`}
           >
             Volver a hacer el test
           </button>

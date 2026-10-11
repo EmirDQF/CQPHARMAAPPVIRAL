@@ -17,5 +17,6 @@ export default async function TestShortLink({
   const siteUrl = readSiteUrl();
   const allowed = resolveDeepLink(`${new URL("/test", siteUrl).href}?${params.toString()}`, siteUrl) ?? "/test";
   const query = allowed.slice("/test".length);
+  // A "/" y no a "/test": esta página ES /test (evita un bucle) y el test vive en la landing.
   redirect(`/${query}`);
 }

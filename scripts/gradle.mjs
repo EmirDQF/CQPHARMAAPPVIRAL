@@ -11,9 +11,13 @@ const ANDROID_DIR = "android";
 const KEYSTORE_PROPERTIES = join(ANDROID_DIR, "keystore.properties");
 const RELEASE_TASKS = new Set(["bundleRelease", "assembleRelease"]);
 
+// Solo nombres de tarea simples: en Windows Gradle corre vía cmd.exe (shell) y un
+// argumento con & | ^ % se interpretaría como comando.
+const TASK_NAME_PATTERN = /^[A-Za-z][A-Za-z0-9:]*$/;
+
 const tasks = process.argv.slice(2);
-if (tasks.length === 0) {
-  process.stderr.write("Uso: node scripts/gradle.mjs <tarea> (p. ej. bundleRelease)\n");
+if (tasks.length === 0 || !tasks.every((task) => TASK_NAME_PATTERN.test(task))) {
+  process.stderr.write("Uso: node scripts/gradle.mjs <tarea> (p. ej. bundleRelease); solo letras, números y ':'.\n");
   process.exit(1);
 }
 

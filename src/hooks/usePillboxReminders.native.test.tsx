@@ -64,6 +64,18 @@ describe("usePillboxReminders en la app nativa", () => {
     await waitFor(() => expect(result.current.support).toBe("calendar"));
   });
 
+  it("vuelve a leer el permiso al regresar a la app (p. ej. tras activarlo en Ajustes)", async () => {
+    native.syncNativeDoseReminders.mockResolvedValueOnce("prompt").mockResolvedValueOnce("granted");
+    const usePillboxReminders = await loadHook();
+    const { result } = renderHook(() => usePillboxReminders());
+    await waitFor(() => expect(result.current.support).toBe("ask"));
+
+    document.dispatchEvent(new Event("visibilitychange"));
+
+    await waitFor(() => expect(result.current.support).toBe("granted"));
+    expect(result.current.shouldOffer).toBe(false);
+  });
+
   it("en la web no consulta el plugin nativo", async () => {
     native.isNativeApp.mockReturnValue(false);
     const usePillboxReminders = await loadHook();

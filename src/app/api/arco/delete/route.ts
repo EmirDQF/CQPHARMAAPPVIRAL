@@ -36,5 +36,7 @@ export async function POST(request: NextRequest) {
 
   // La cuenta ya no existe: se cierran las cookies de sesión de este navegador.
   await client.auth.signOut({ scope: "local" }).catch(() => undefined);
-  return apiSuccess(result.data);
+  const response = apiSuccess(result.data);
+  response.headers.set("Cache-Control", "no-store");
+  return response;
 }

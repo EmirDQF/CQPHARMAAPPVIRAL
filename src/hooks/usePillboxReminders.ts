@@ -34,7 +34,7 @@ const supportListeners = createListenerSet();
 
 /** En la app nativa el permiso vive en el sistema operativo; se recuerda el último resultado. */
 let nativeSupport: ReminderSupport = "ask";
-let hasSyncedNativePermission = false;
+let isSyncingNativePermission = false;
 
 const NATIVE_SUPPORT_BY_PERMISSION: Readonly<Record<NativePermissionState, ReminderSupport>> = {
   granted: "granted",
@@ -43,16 +43,31 @@ const NATIVE_SUPPORT_BY_PERMISSION: Readonly<Record<NativePermissionState, Remin
 };
 
 /**
- * Una vez por carga de la app: lee el permiso real del sistema (sin pedirlo)
- * y reprograma si ya está concedido, para no volver a ofrecer lo aceptado.
+ * Lee el permiso real del sistema (sin pedirlo) y reprograma si ya está
+ * concedido, para no volver a ofrecer lo aceptado. Corre al abrir la app y
+ * cada vez que vuelve al frente (p. ej. tras activar el permiso en Ajustes).
+ * Estado de módulo como `supportListeners`: el permiso del SO es uno solo.
  */
-function syncNativePermissionOnce(): void {
-  if (hasSyncedNativePermission || !isNativeApp()) return;
-  hasSyncedNativePermission = true;
-  void syncNativeDoseReminders().then((state) => {
-    nativeSupport = NATIVE_SUPPORT_BY_PERMISSION[state];
-    supportListeners.notify();
-  });
+function syncNativePermission(): void {
+  if (isSyncingNativePermission || !isNativeApp()) return;
+  isSyncingNativePermission = true;
+  void syncNativeDoseReminders()
+    .then((state) => {
+      nativeSupport = NATIVE_SUPPORT_BY_PERMISSION[state];
+      supportListeners.notify();
+    })
+    .finally(() => {
+      isSyncingNativePermission = false;
+    });
+}
+
+function syncNativePermissionWhileOpen(): () => void {
+  syncNativePermission();
+  const onVisibilityChange = () => {
+    if (document.visibilityState === "visible") syncNativePermission();
+  };
+  document.addEventListener("visibilitychange", onVisibilityChange);
+  return () => document.removeEventListener("visibilitychange", onVisibilityChange);
 }
 
 function getSupportSnapshot(): ReminderSupport {
@@ -120,7 +135,7 @@ export function usePillboxReminders(): PillboxReminders {
 
   const isGranted = support === "granted";
 
-  useEffect(syncNativePermissionOnce, []);
+  useEffect(syncNativePermissionWhileOpen, []);
 
   useEffect(() => {
     // En nativo los programa el sistema operativo (doseNotifications.ts).

@@ -41,19 +41,55 @@ export function buildNativeDoseNotifications(now: Date = new Date()): NativeDose
   }));
 }
 
+/** Estado del permiso en el sistema operativo; "prompt" = el paciente aún no decidió. */
+export type NativePermissionState = "granted" | "prompt" | "denied";
+
+type LocalNotificationsPlugin = (typeof import("@capacitor/local-notifications"))["LocalNotifications"];
+
+async function loadPlugin(): Promise<LocalNotificationsPlugin> {
+  return (await import("@capacitor/local-notifications")).LocalNotifications;
+}
+
+/** Mismos ids en cada pase: cancelar y volver a programar es idempotente. */
+async function scheduleDailyDoses(plugin: LocalNotificationsPlugin, now: Date): Promise<void> {
+  const notifications = buildNativeDoseNotifications(now);
+  await plugin.cancel({ notifications: notifications.map(({ id }) => ({ id })) });
+  await plugin.schedule({ notifications });
+}
+
+function toPermissionState(display: string): NativePermissionState {
+  if (display === "granted") return "granted";
+  return display === "denied" ? "denied" : "prompt";
+}
+
 /** Pide permiso (solo tras un toque del paciente) y programa las tomas diarias. */
 export async function enableNativeDoseReminders(now: Date = new Date()): Promise<NativeReminderPermission> {
   try {
-    const { LocalNotifications } = await import("@capacitor/local-notifications");
-    const { display } = await LocalNotifications.requestPermissions();
+    const plugin = await loadPlugin();
+    const { display } = await plugin.requestPermissions();
     if (display !== "granted") return "denied";
 
-    const notifications = buildNativeDoseNotifications(now);
-    await LocalNotifications.cancel({ notifications: notifications.map(({ id }) => ({ id })) });
-    await LocalNotifications.schedule({ notifications });
+    await scheduleDailyDoses(plugin, now);
     return "granted";
   } catch (error: unknown) {
     console.error("[reminders] No se pudieron programar los recordatorios nativos", error);
     return "denied";
+  }
+}
+
+/**
+ * Al abrir la app: lee el permiso real sin pedirlo y, si está concedido,
+ * reprograma (cubre reinicios del celular y cambios de horario del plan).
+ * Ante un fallo responde "prompt": mejor volver a ofrecer que callar.
+ */
+export async function syncNativeDoseReminders(now: Date = new Date()): Promise<NativePermissionState> {
+  try {
+    const plugin = await loadPlugin();
+    const state = toPermissionState((await plugin.checkPermissions()).display);
+    if (state === "granted") await scheduleDailyDoses(plugin, now);
+    return state;
+  } catch (error: unknown) {
+    console.error("[reminders] No se pudo leer el permiso de recordatorios nativos", error);
+    return "prompt";
   }
 }

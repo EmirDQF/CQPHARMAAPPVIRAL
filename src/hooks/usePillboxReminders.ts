@@ -16,7 +16,12 @@ import {
   snoozeReminderOffer,
   type ReminderSupport,
 } from "@/lib/reminders/reminders";
-import { enableNativeDoseReminders, isNativeApp } from "@/lib/native/doseNotifications";
+import {
+  enableNativeDoseReminders,
+  isNativeApp,
+  syncNativeDoseReminders,
+  type NativePermissionState,
+} from "@/lib/native/doseNotifications";
 import { millisecondsUntilNextLimaTime, toLimaIsoDate } from "@/lib/utils/date";
 
 const NOTIFICATION_ICON = "/icons/icon-192x192.png";
@@ -29,6 +34,26 @@ const supportListeners = createListenerSet();
 
 /** En la app nativa el permiso vive en el sistema operativo; se recuerda el último resultado. */
 let nativeSupport: ReminderSupport = "ask";
+let hasSyncedNativePermission = false;
+
+const NATIVE_SUPPORT_BY_PERMISSION: Readonly<Record<NativePermissionState, ReminderSupport>> = {
+  granted: "granted",
+  prompt: "ask",
+  denied: "calendar",
+};
+
+/**
+ * Una vez por carga de la app: lee el permiso real del sistema (sin pedirlo)
+ * y reprograma si ya está concedido, para no volver a ofrecer lo aceptado.
+ */
+function syncNativePermissionOnce(): void {
+  if (hasSyncedNativePermission || !isNativeApp()) return;
+  hasSyncedNativePermission = true;
+  void syncNativeDoseReminders().then((state) => {
+    nativeSupport = NATIVE_SUPPORT_BY_PERMISSION[state];
+    supportListeners.notify();
+  });
+}
 
 function getSupportSnapshot(): ReminderSupport {
   if (isNativeApp()) return nativeSupport;
@@ -94,6 +119,8 @@ export function usePillboxReminders(): PillboxReminders {
   );
 
   const isGranted = support === "granted";
+
+  useEffect(syncNativePermissionOnce, []);
 
   useEffect(() => {
     // En nativo los programa el sistema operativo (doseNotifications.ts).

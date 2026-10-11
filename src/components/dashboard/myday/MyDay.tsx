@@ -17,6 +17,7 @@ import { DayHeader } from "./DayHeader";
 import { DayProgressRing } from "./DayProgressRing";
 import { MyDaySkeleton } from "./MyDaySkeleton";
 import { NextActionCard } from "./NextActionCard";
+import { QuickActions } from "./QuickActions";
 
 interface MyDayProps {
   firstName: string | null;
@@ -57,6 +58,7 @@ export function MyDay({ firstName, onOpenBoneTab, celebration }: MyDayProps) {
         <DayProgressRing progress={buildDayProgress(doneOrPending, checkInDone)} />
       </section>
       <NextActionCard action={nextAction} onOpenBoneTab={onOpenBoneTab} />
+      <QuickActions doneOrPendingDoseIds={doneOrPending} onTake={deferredDose.take} />
       <SmartPillbox
         takenDoseIds={takenDoseIds}
         pendingDoseIds={deferredDose.pendingDoseIds}

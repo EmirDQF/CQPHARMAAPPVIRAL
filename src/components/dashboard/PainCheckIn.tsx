@@ -26,7 +26,12 @@ function optionClassName(isSelected: boolean): string {
   }`;
 }
 
-export function PainCheckIn() {
+interface PainCheckInProps {
+  /** Ancla para "Lo siguiente" (#chequeo); null dentro de la hoja inferior para no duplicar el id. */
+  anchorId?: string | null;
+}
+
+export function PainCheckIn({ anchorId = "chequeo" }: PainCheckInProps) {
   const entries = useSyncExternalStore(
     painLogStore.subscribe,
     painLogStore.getSnapshot,
@@ -85,7 +90,7 @@ export function PainCheckIn() {
 
   return (
     <section
-      id="chequeo"
+      id={anchorId ?? undefined}
       className="rounded-card border border-line bg-surface shadow-soft px-5 py-5 flex flex-col gap-5 scroll-mt-24"
     >
       <div>

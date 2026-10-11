@@ -53,7 +53,7 @@ test("T-score de -2.5 exacto es osteoporosis y pone al reumatólogo antes que cu
   const redFlag = page.getByRole("region", { name: /Requiere evaluación reumatológica/ });
   await expect(redFlag).toBeVisible();
 
-  await page.getByRole("button", { name: /Mi Hueso/ }).click();
+  await page.getByRole("button", { name: /Progreso/ }).click();
   await expect(page.getByText("Osteoporosis").first()).toBeVisible();
   await expect(page.getByText("-2.5").first()).toBeVisible();
   await expect(page.getByRole("link", { name: "Agendar evaluación reumatológica" }).first()).toBeVisible();
@@ -64,7 +64,7 @@ test("T-score de -1.6 se muestra como osteopenia sin bandera roja", async ({ pag
   const errors = collectConsoleErrors(page);
   await seedPostmenopausalPatient(page, -1.6);
   await page.goto("/app");
-  await page.getByRole("button", { name: /Mi Hueso/ }).click();
+  await page.getByRole("button", { name: /Progreso/ }).click();
 
   await expect(page.getByText("Osteopenia").first()).toBeVisible();
   await expect(page.getByRole("region", { name: /Requiere evaluación reumatológica/ })).toHaveCount(0);
@@ -78,6 +78,7 @@ test("el pastillero anota la toma, permite deshacer y la guarda al cerrar la ven
 
   const pillbox = page.locator("section#pastillero");
   const take = pillbox.getByRole("button", { name: "Ya me la tomé" });
+  await expect(take.first()).toBeVisible();
   const doseCount = await take.count();
   expect(doseCount).toBeGreaterThan(0);
 

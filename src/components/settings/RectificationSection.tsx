@@ -13,7 +13,7 @@ export function RectificationSection() {
     <SettingsCard
       id="ajustes-rectificar"
       title="Corregir mis datos"
-      description="Derecho de rectificación: corrige tu perfil médico cuando quieras. Tus registros de dolor, tomas y densitometrías se corrigen o se borran uno por uno en Mi Panel → Reumatólogo → Mis registros."
+      description="Derecho de rectificación: corrige tu perfil médico cuando quieras. Tus registros de dolor, tomas y densitometrías se corrigen o se borran uno por uno en Mi Panel → Médico → Mis registros."
     >
       <div className="flex flex-col sm:flex-row gap-3">
         <button

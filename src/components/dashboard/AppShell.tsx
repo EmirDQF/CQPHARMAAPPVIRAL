@@ -31,12 +31,13 @@ interface TabDefinition {
   icon: string;
 }
 
+// Orden y nombres de la navegación inferior (los id internos no cambian).
 const TABS: TabDefinition[] = [
-  { id: "hoy", label: "Hoy", icon: "📅" },
-  { id: "hueso", label: "Mi Hueso", icon: "🦴" },
-  { id: "tratamiento", label: "Tratamiento", icon: "💊" },
+  { id: "hoy", label: "Mi día", icon: "📅" },
+  { id: "tratamiento", label: "Pastillero", icon: "💊" },
+  { id: "hueso", label: "Progreso", icon: "🦴" },
   { id: "logros", label: "Logros", icon: "🏅" },
-  { id: "reumatologo", label: "Reumatólogo", icon: "🩺" },
+  { id: "reumatologo", label: "Médico", icon: "🩺" },
 ];
 
 export function AppShell() {
@@ -82,6 +83,9 @@ export function AppShell() {
 
       <main className="flex-1 w-full max-w-2xl mx-auto px-4 py-6 pb-28 flex flex-col gap-6 text-base sm:text-lg">
         <RedFlagBanner />
+
+        {/* Transición suave al cambiar de pestaña (200 ms; nada con movimiento reducido). */}
+        <div key={activeTab} className="flex flex-col gap-6 motion-safe:animate-fade-in">
 
         {activeTab === "hoy" && (
           <>
@@ -141,31 +145,36 @@ export function AppShell() {
             <ClinicalRecordsManager />
           </>
         )}
+        </div>
       </main>
 
       <nav
         aria-label="Navegación principal"
-        className="fixed bottom-0 inset-x-0 z-40 bg-background border-t border-line pb-[env(safe-area-inset-bottom)]"
+        className="fixed bottom-0 inset-x-0 z-40 bg-surface border-t border-line shadow-soft pb-[env(safe-area-inset-bottom)]"
       >
         <div className="max-w-2xl mx-auto grid grid-cols-5">
-          {TABS.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setActiveTab(tab.id)}
-              aria-current={activeTab === tab.id ? "page" : undefined}
-              className={`min-h-16 flex flex-col items-center justify-center gap-1 text-xs font-semibold transition-colors ${
-                activeTab === tab.id
-                  ? "text-brand"
-                  : "text-muted"
-              }`}
-            >
-              <span className="text-2xl" aria-hidden="true">
-                {tab.icon}
-              </span>
-              {tab.label}
-            </button>
-          ))}
+          {TABS.map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveTab(tab.id)}
+                aria-current={isActive ? "page" : undefined}
+                className="min-h-16 flex flex-col items-center justify-center gap-0.5 px-1 text-xs font-semibold"
+              >
+                <span
+                  aria-hidden="true"
+                  className={`flex h-8 w-12 items-center justify-center rounded-full text-xl transition-colors duration-200 ${
+                    isActive ? "bg-pastel-mint" : ""
+                  }`}
+                >
+                  {tab.icon}
+                </span>
+                <span className={isActive ? "text-clinic font-bold" : "text-muted"}>{tab.label}</span>
+              </button>
+            );
+          })}
         </div>
       </nav>
     </div>

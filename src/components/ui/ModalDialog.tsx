@@ -41,7 +41,7 @@ export function ModalDialog({ labelledBy, describedBy, onClose, children }: Moda
       className="m-0 h-dvh max-h-none w-full max-w-none bg-transparent p-0 text-foreground backdrop:bg-black/50"
     >
       <div className="flex h-full items-end sm:items-center justify-center px-4 py-6">
-        <div className="w-full max-w-lg max-h-full overflow-y-auto rounded-2xl bg-background border-2 border-line px-6 py-6 flex flex-col gap-5">
+        <div className="w-full max-w-lg max-h-full overflow-y-auto rounded-card bg-surface border border-line shadow-soft px-5 py-5 flex flex-col gap-5">
           {children}
         </div>
       </div>

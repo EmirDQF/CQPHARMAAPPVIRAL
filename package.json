@@ -15,6 +15,7 @@
     "db:rollback-check": "node scripts/db-rollback-check.mjs && supabase test db",
     "cap:sync": "node scripts/write-shell-config.mjs && cap sync android",
     "verify-env": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/verify-env.ts",
+    "verify:android-release": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/verify-android-release.ts",
     "preflight": "npm run typecheck && npm run lint && npm test && npm run verify-env",
     "build:android": "npm run preflight && npm run verify-env -- --strict && next build && npm run cap:sync && node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/gradle.mjs bundleRelease"
   },

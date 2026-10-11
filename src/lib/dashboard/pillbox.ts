@@ -7,9 +7,9 @@ const store = createPersistentStore<PillboxState>("artikare_pillbox_v1", {
   takenDoseIdsByDate: {},
 });
 
-export function markDoseTaken(doseId: string): void {
+/** `date` = día de Lima en que el paciente tocó la toma (por defecto, hoy). */
+export function markDoseTaken(doseId: string, date: string = toLimaIsoDate()): void {
   const current = store.getSnapshot();
-  const date = toLimaIsoDate();
   const takenToday = current.takenDoseIdsByDate[date] ?? [];
   if (takenToday.includes(doseId)) return;
 

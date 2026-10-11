@@ -3,7 +3,7 @@
 import { useMemo, useState, useSyncExternalStore } from "react";
 import { buildPainBars } from "@/lib/dashboard/painChart";
 import { painLogStore } from "@/lib/dashboard/painLog";
-import { calculateStiffnessReductionPercent, selectLastDaysEntries } from "@/lib/storage/clinicalReport";
+import { selectLastDaysEntries } from "@/lib/storage/clinicalReport";
 
 const CHART_WIDTH = 300;
 const CHART_HEIGHT = 96;
@@ -12,12 +12,15 @@ const RANGES = [7, 30] as const;
 type RangeDays = (typeof RANGES)[number];
 const DEFAULT_RANGE: RangeDays = 30;
 
-/** Gráfica de LO REGISTRADO por el paciente: sin datos inventados ni mejoría atribuida a un producto. */
+/**
+ * Gráfica de LO REGISTRADO por el paciente: sin datos inventados ni mejoría
+ * atribuida a un producto. No resume "bajó X%": un resumen solo de mejorías,
+ * junto al pastillero, se leería como efecto del suplemento.
+ */
 export function PainTrendChart() {
   const realEntries = useSyncExternalStore(painLogStore.subscribe, painLogStore.getSnapshot, painLogStore.getServerSnapshot);
   const [rangeDays, setRangeDays] = useState<RangeDays>(DEFAULT_RANGE);
   const entries = useMemo(() => selectLastDaysEntries(realEntries, rangeDays), [realEntries, rangeDays]);
-  const stiffnessReductionPercent = useMemo(() => calculateStiffnessReductionPercent(entries), [entries]);
   const bars = useMemo(() => buildPainBars(entries, CHART_SIZE), [entries]);
 
   return (
@@ -44,12 +47,6 @@ export function PainTrendChart() {
           ))}
         </div>
       </div>
-
-      {stiffnessReductionPercent !== null && stiffnessReductionPercent > 0 && (
-        <p className="text-sm font-semibold">
-          La rigidez matutina que anotaste bajó {stiffnessReductionPercent}% en este periodo.
-        </p>
-      )}
 
       {entries.length === 0 ? (
         <p className="rounded-control bg-pastel-sky text-pastel-sky-ink px-4 py-4">

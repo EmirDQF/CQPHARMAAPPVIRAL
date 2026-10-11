@@ -1,9 +1,7 @@
 import { expect, test } from "@playwright/test";
-import { UNDO_WINDOW_MS } from "../src/lib/clinical/constants";
 
 /** Flujo de hábito diario (375 px): tomar → progreso del día → logro por constancia. */
 test("marcar las tomas sube el progreso del día y desbloquea el primer logro", async ({ page }) => {
-  await page.clock.install();
   await page.goto("/app");
 
   const ring = page.getByRole("img", { name: /Progreso de hoy/ });
@@ -15,7 +13,8 @@ test("marcar las tomas sube el progreso del día y desbloquea el primer logro", 
   for (let index = 0; index < doseCount; index += 1) await take.first().click();
   await expect(ring).toHaveAccessibleName(new RegExp(`${doseCount} de 3`));
 
-  await page.clock.runFor(UNDO_WINDOW_MS);
+  const confirm = page.locator("section#pastillero").getByRole("button", { name: "Listo" });
+  for (let index = 0; index < doseCount; index += 1) await confirm.first().click();
   const celebration = page.getByRole("region", { name: "¡Nuevo logro!" });
   await expect(celebration.getByRole("status")).toContainText("Primer día completo");
 

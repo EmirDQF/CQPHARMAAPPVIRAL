@@ -4,7 +4,6 @@ import { addDaysToIsoDate, toLimaIsoDate } from "../utils/date";
 import {
   REWARD_PROGRESS_VERSION,
   rewardProgressSchema,
-  unlockedRewardSchema,
   type RewardDefinition,
   type RewardProgress,
   type UnlockRule,
@@ -148,6 +147,6 @@ export function migrateRewardProgress(raw: unknown): RewardProgress | null {
   const isUnversioned = typeof raw === "object" && raw !== null && !("version" in raw);
   const legacy = isUnversioned ? legacyProgressSchema.safeParse(raw) : null;
   if (!legacy?.success) return null;
-  const unlocked = legacy.data.unlocked.map((item) => unlockedRewardSchema.parse(item));
+  const { unlocked } = legacy.data;
   return { version: REWARD_PROGRESS_VERSION, unlocked, celebratedKeys: unlocked.map((item) => item.key) };
 }

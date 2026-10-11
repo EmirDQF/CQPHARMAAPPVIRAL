@@ -1,13 +1,14 @@
 // @vitest-environment jsdom
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { UNDO_WINDOW_MS } from "@/lib/clinical/constants";
 import { pillboxStore } from "@/lib/dashboard/pillbox";
 import { toLimaIsoDate } from "@/lib/utils/date";
 import { useDeferredDose } from "./useDeferredDose";
 
 const DOSE = "morning-collagen";
-const takenToday = () => pillboxStore.getSnapshot().takenDoseIdsByDate[toLimaIsoDate()] ?? [];
+const LONG_WAIT_MS = 60 * 60 * 1000;
+const takenOn = (date: string) => pillboxStore.getSnapshot().takenDoseIdsByDate[date] ?? [];
+const takenToday = () => takenOn(toLimaIsoDate());
 
 beforeEach(() => {
   vi.useFakeTimers();
@@ -19,23 +20,24 @@ afterEach(() => {
 });
 
 describe("useDeferredDose", () => {
-  it("shows the dose as pending and writes it only when the undo window ends", () => {
+  it("keeps the dose pending with no time limit until the patient confirms (WCAG 2.2.1)", () => {
     const { result } = renderHook(() => useDeferredDose());
     act(() => result.current.take(DOSE));
+    act(() => vi.advanceTimersByTime(LONG_WAIT_MS));
 
     expect(result.current.pendingDoseIds).toEqual([DOSE]);
     expect(takenToday()).toEqual([]);
 
-    act(() => vi.advanceTimersByTime(UNDO_WINDOW_MS));
+    act(() => result.current.confirm(DOSE));
     expect(takenToday()).toEqual([DOSE]);
     expect(result.current.pendingDoseIds).toEqual([]);
+    expect(result.current.lastConfirmedDoseId).toBe(DOSE);
   });
 
-  it("undo within the window writes nothing, so sync never has to delete a dose", () => {
+  it("undo writes nothing, so sync never has to delete a dose", () => {
     const { result } = renderHook(() => useDeferredDose());
     act(() => result.current.take(DOSE));
     act(() => result.current.undo(DOSE));
-    act(() => vi.advanceTimersByTime(UNDO_WINDOW_MS));
 
     expect(takenToday()).toEqual([]);
     expect(result.current.pendingDoseIds).toEqual([]);
@@ -47,11 +49,24 @@ describe("useDeferredDose", () => {
       result.current.take(DOSE);
       result.current.take(DOSE);
     });
-    act(() => vi.advanceTimersByTime(UNDO_WINDOW_MS));
+    expect(result.current.pendingDoseIds).toEqual([DOSE]);
+    act(() => result.current.confirm(DOSE));
     expect(takenToday()).toEqual([DOSE]);
   });
 
-  it("commits pending doses when the app is hidden or the screen unmounts", () => {
+  it("saves the dose on the Lima day it was tapped, even if confirmed after midnight", () => {
+    vi.setSystemTime(new Date("2026-10-11T23:59:50-05:00"));
+    const { result } = renderHook(() => useDeferredDose());
+    act(() => result.current.take("night-magnesium"));
+
+    vi.setSystemTime(new Date("2026-10-12T00:00:30-05:00"));
+    act(() => result.current.confirm("night-magnesium"));
+
+    expect(takenOn("2026-10-11")).toEqual(["night-magnesium"]);
+    expect(takenOn("2026-10-12")).toEqual([]);
+  });
+
+  it("commits pending doses when the app is hidden or the dashboard unmounts", () => {
     const { result, unmount } = renderHook(() => useDeferredDose());
     act(() => result.current.take(DOSE));
     act(() => window.dispatchEvent(new Event("pagehide")));

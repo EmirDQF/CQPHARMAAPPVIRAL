@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { contrastRatio } from "./contrast";
-import { CONTRAST_PAIRS, THEMES, type ThemeName } from "./tokens";
+import { AA_TEXT, CONTRAST_PAIRS, RISK_COLORS, RISK_CONTRAST_PAIRS, THEMES, type ThemeName } from "./tokens";
 
 describe("contrastRatio", () => {
   it("matches the WCAG reference values", () => {
@@ -37,6 +37,22 @@ describe("globals.css", () => {
     const block = themeName === "light" ? css.split("@media (prefers-color-scheme: dark)")[0] : css.split("@media (prefers-color-scheme: dark)")[1];
     Object.entries(THEMES[themeName]).forEach(([token, value]) => {
       expect(block, `--${token}`).toMatch(new RegExp(`--${token}:\\s*${value};`, "i"));
+    });
+  });
+});
+
+describe("semáforo OMS y bandera roja", () => {
+  const css = readFileSync(join(process.cwd(), "src", "app", "globals.css"), "utf8");
+
+  it.each(RISK_CONTRAST_PAIRS.map((pair) => [pair.label, pair] as const))("%s cumple AA", (_label, pair) => {
+    expect(contrastRatio(pair.foreground, pair.background)).toBeGreaterThanOrEqual(AA_TEXT);
+  });
+
+  it("keeps the same values in globals.css (only declared once, for both themes)", () => {
+    Object.entries(RISK_COLORS).forEach(([token, value]) => {
+      const hexDeclarations = css.match(new RegExp(`--${token}:\\s*#[0-9a-f]{6};`, "gi")) ?? [];
+      expect(hexDeclarations, `--${token}`).toHaveLength(1);
+      expect(hexDeclarations[0]?.toLowerCase()).toContain(value.toLowerCase());
     });
   });
 });

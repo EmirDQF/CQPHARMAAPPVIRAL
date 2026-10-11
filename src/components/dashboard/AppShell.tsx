@@ -6,6 +6,7 @@ import { NextAppointmentCard } from "@/components/appointments/NextAppointmentCa
 import { AccountBackupOffer } from "@/components/auth/AccountBackupOffer";
 import { AccountInvite } from "@/components/auth/AccountInvite";
 import { usePillboxReminders } from "@/hooks/usePillboxReminders";
+import { useDeferredDose } from "@/hooks/useDeferredDose";
 import { useRewards } from "@/hooks/useRewards";
 import { AchievementsShowcase } from "@/components/rewards/AchievementsShowcase";
 import { RewardCelebration } from "@/components/rewards/RewardCelebration";
@@ -40,10 +41,14 @@ const TABS: TabDefinition[] = [
   { id: "reumatologo", label: "Médico", icon: "🩺" },
 ];
 
+/** "Mi día" y "Logros" traen su propio h1 visible; el resto anuncia la vista para lectores de pantalla. */
+const TABS_WITH_OWN_HEADING: ReadonlySet<TabId> = new Set(["hoy", "logros"]);
+
 export function AppShell() {
   const [activeTab, setActiveTab] = useState<TabId>("hoy");
   const reminders = usePillboxReminders();
   const rewards = useRewards();
+  const deferredDose = useDeferredDose();
 
   const pillboxState = useSyncExternalStore(
     pillboxStore.subscribe,
@@ -85,12 +90,16 @@ export function AppShell() {
 
         {/* Transición suave al cambiar de pestaña (200 ms; nada con movimiento reducido). */}
         <div key={activeTab} className="flex flex-col gap-6 motion-safe:animate-fade-in">
+          {!TABS_WITH_OWN_HEADING.has(activeTab) && (
+            <h1 className="sr-only">{TABS.find((tab) => tab.id === activeTab)?.label}</h1>
+          )}
 
         {activeTab === "hoy" && (
           <>
             <MyDay
               firstName={patientFirstName}
               onOpenBoneTab={() => setActiveTab("hueso")}
+              deferredDose={deferredDose}
               celebration={
                 <RewardCelebration
                   celebrations={rewards.celebrations}
@@ -143,7 +152,7 @@ export function AppShell() {
               href="/app/reporte-medico"
               className="min-h-12 flex items-center justify-center rounded-xl bg-neutral-100 dark:bg-neutral-800 font-semibold px-5 transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-700"
             >
-              🖨️ Ver Ficha Imprimible para tu Médico
+              <span aria-hidden="true">🖨️ </span>Ver Ficha Imprimible para tu Médico
             </Link>
             <ClinicalRecordsManager />
           </>

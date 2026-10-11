@@ -17,6 +17,7 @@ function streakLabel(days: number): string {
 }
 
 function graceLabel(shields: number): string {
+  if (shields === 0) return "1 día de gracia cada 7 días completos";
   return `${shields} ${shields === 1 ? "día de gracia" : "días de gracia"}`;
 }
 

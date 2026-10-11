@@ -106,3 +106,23 @@ export const CONTRAST_PAIRS: readonly ContrastPair[] = [
   { foreground: "color-pastel-mint-ink", background: "color-surface", minRatio: AA_TEXT },
   ...pastelPairs,
 ];
+
+/**
+ * Semáforo OMS y bandera roja: iguales en claro y oscuro (no se pastelizan ni
+ * se suavizan). Se verifican aparte porque no cambian con el tema.
+ */
+export const RISK_COLORS = {
+  "color-risk-low": "#166534",
+  "color-risk-low-bg": "#dcfce7",
+  "color-risk-moderate": "#b45309",
+  "color-risk-moderate-bg": "#fef3c7",
+  "color-risk-high": "#b91c1c",
+  "color-risk-high-bg": "#fee2e2",
+} as const;
+
+export const RISK_CONTRAST_PAIRS: readonly { foreground: string; background: string; label: string }[] = [
+  { label: "riesgo bajo", foreground: RISK_COLORS["color-risk-low"], background: RISK_COLORS["color-risk-low-bg"] },
+  { label: "riesgo moderado", foreground: RISK_COLORS["color-risk-moderate"], background: RISK_COLORS["color-risk-moderate-bg"] },
+  { label: "riesgo alto", foreground: RISK_COLORS["color-risk-high"], background: RISK_COLORS["color-risk-high-bg"] },
+  { label: "botón de evaluación reumatológica", foreground: "#FFFFFF", background: RISK_COLORS["color-risk-high"] },
+];

@@ -46,6 +46,7 @@ function DoseSheetBody({ doneOrPendingDoseIds, onTake, onDone }: QuickActionsPro
 /** Chips de acción rápida: registrar toma o dolor desde una hoja inferior, sin buscar la tarjeta. */
 export function QuickActions(props: QuickActionsProps) {
   const [sheet, setSheet] = useState<Sheet>(null);
+  const [savedMessage, setSavedMessage] = useState("");
   const close = () => setSheet(null);
   return (
     <>
@@ -57,6 +58,9 @@ export function QuickActions(props: QuickActionsProps) {
           <span aria-hidden="true">📝 </span>Chequeo de dolor
         </button>
       </div>
+      <p role="status" className="sr-only">
+        {savedMessage}
+      </p>
       {sheet === "dose" && (
         <BottomSheet title="Anotar toma" onClose={close}>
           <DoseSheetBody {...props} onDone={close} />
@@ -64,7 +68,13 @@ export function QuickActions(props: QuickActionsProps) {
       )}
       {sheet === "pain" && (
         <BottomSheet title="Chequeo de hoy" onClose={close}>
-          <PainCheckIn anchorId={null} />
+          <PainCheckIn
+            anchorId={null}
+            onSaved={() => {
+              close();
+              setSavedMessage("Chequeo de hoy guardado.");
+            }}
+          />
         </BottomSheet>
       )}
     </>

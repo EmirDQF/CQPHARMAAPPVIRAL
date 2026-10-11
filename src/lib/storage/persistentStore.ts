@@ -5,6 +5,8 @@ export interface PersistentStore<T> {
   getSnapshot: () => T;
   getServerSnapshot: () => T;
   write: (value: T) => void;
+  /** true si lo guardado no se pudo interpretar (versión futura o corrupto): quien no quiera perderlo, no escribe. */
+  hasUnreadableData: () => boolean;
 }
 
 /**
@@ -24,6 +26,7 @@ export function createPersistentStore<T>(
 
   let hasCachedSnapshot = false;
   let cachedSnapshot: T = emptyValue;
+  let isUnreadable = false;
 
   function readFromStorage(): T {
     try {
@@ -33,6 +36,7 @@ export function createPersistentStore<T>(
       if (!parse) return stored as T;
       const parsed = parse(stored);
       if (parsed === null) {
+        isUnreadable = true;
         console.error(`[storage] ${storageKey} tiene un formato inválido; se usa el valor vacío`);
         return emptyValue;
       }
@@ -68,5 +72,10 @@ export function createPersistentStore<T>(
     notify();
   }
 
-  return { subscribe, getSnapshot, getServerSnapshot, write };
+  function hasUnreadableData(): boolean {
+    getSnapshot();
+    return isUnreadable;
+  }
+
+  return { subscribe, getSnapshot, getServerSnapshot, write, hasUnreadableData };
 }

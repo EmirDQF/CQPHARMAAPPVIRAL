@@ -29,9 +29,11 @@ function optionClassName(isSelected: boolean): string {
 interface PainCheckInProps {
   /** Ancla para "Lo siguiente" (#chequeo); null dentro de la hoja inferior para no duplicar el id. */
   anchorId?: string | null;
+  /** Tras guardar (p. ej. cerrar la hoja inferior para que una bandera roja nueva quede a la vista). */
+  onSaved?: () => void;
 }
 
-export function PainCheckIn({ anchorId = "chequeo" }: PainCheckInProps) {
+export function PainCheckIn({ anchorId = "chequeo", onSaved }: PainCheckInProps) {
   const entries = useSyncExternalStore(
     painLogStore.subscribe,
     painLogStore.getSnapshot,
@@ -72,6 +74,7 @@ export function PainCheckIn({ anchorId = "chequeo" }: PainCheckInProps) {
     setSelectedStiffness(null);
     setIsConfirmingStreakBreak(false);
     setHasJustSaved(true);
+    onSaved?.();
   }
 
   function handleSave() {

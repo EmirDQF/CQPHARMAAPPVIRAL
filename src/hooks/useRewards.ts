@@ -54,14 +54,20 @@ export function useRewards(repository: RewardCatalogRepository = localRepository
   const stats = useMemo(() => computeHabitStats(pillbox, painEntries), [pillbox, painEntries]);
 
   useEffect(() => {
+    // Logros guardados en un formato que esta versión no entiende: no se pisan (nunca se quita progreso).
+    if (rewardProgressStore.hasUnreadableData()) return;
     const { progress: next } = evaluateRewards(catalog, stats, progress, toLimaIsoDate());
     if (next !== progress) rewardProgressStore.write(next);
   }, [catalog, stats, progress]);
 
-  const celebrations = pendingCelebrations(progress).flatMap((item): CelebratedReward[] => {
-    const reward = catalog.find((candidate) => candidate.id === item.rewardId);
-    return reward ? [{ key: item.key, reward }] : [];
-  });
+  const celebrations = useMemo(
+    () =>
+      pendingCelebrations(progress).flatMap((item): CelebratedReward[] => {
+        const reward = catalog.find((candidate) => candidate.id === item.rewardId);
+        return reward ? [{ key: item.key, reward }] : [];
+      }),
+    [catalog, progress]
+  );
 
   const dismissCelebrations = () =>
     rewardProgressStore.write(markCelebrated(rewardProgressStore.getSnapshot(), celebrations.map((item) => item.key)));

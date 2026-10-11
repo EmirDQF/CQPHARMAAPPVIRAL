@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore, type ReactNode } from "react";
-import { useDeferredDose } from "@/hooks/useDeferredDose";
+import type { DeferredDose } from "@/hooks/useDeferredDose";
 import { useHydrated } from "@/hooks/useHydrated";
 import { useMinuteClock } from "@/hooks/useMinuteClock";
 import { buildDayProgress, suggestNextAction } from "@/lib/dashboard/myDay";
@@ -21,6 +21,8 @@ import { QuickActions } from "./QuickActions";
 interface MyDayProps {
   firstName: string | null;
   onOpenBoneTab: () => void;
+  /** Tomas anotadas con deshacer: viven en AppShell para que cambiar de pestaña no las confirme. */
+  deferredDose: DeferredDose;
   /** Celebración de logro nuevo: va justo después del saludo. */
   celebration?: ReactNode;
   /** Avisos secundarios: se pintan junto con el resto tras hidratar, para no saltar sobre el esqueleto (CLS). */
@@ -28,13 +30,12 @@ interface MyDayProps {
 }
 
 /** Pantalla principal de /app, escaneable en 5 segundos. La bandera roja la pinta AppShell por encima. */
-export function MyDay({ firstName, onOpenBoneTab, celebration, footer }: MyDayProps) {
+export function MyDay({ firstName, onOpenBoneTab, deferredDose, celebration, footer }: MyDayProps) {
   const isHydrated = useHydrated();
   const now = useMinuteClock();
   const pillbox = useSyncExternalStore(pillboxStore.subscribe, pillboxStore.getSnapshot, pillboxStore.getServerSnapshot);
   const painEntries = useSyncExternalStore(painLogStore.subscribe, painLogStore.getSnapshot, painLogStore.getServerSnapshot);
   const { boneScan, redFlags } = useClinicalStatus();
-  const deferredDose = useDeferredDose();
 
   const today = now ? toLimaIsoDate(now) : null;
   const takenDoseIds = (today && pillbox.takenDoseIdsByDate[today]) || [];
@@ -70,6 +71,8 @@ export function MyDay({ firstName, onOpenBoneTab, celebration, footer }: MyDayPr
         pendingDoseIds={deferredDose.pendingDoseIds}
         onTake={deferredDose.take}
         onUndo={deferredDose.undo}
+        onConfirm={deferredDose.confirm}
+        lastConfirmedDoseId={deferredDose.lastConfirmedDoseId}
         now={now}
       />
       <PainCheckIn />

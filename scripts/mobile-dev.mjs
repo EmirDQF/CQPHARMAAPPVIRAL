@@ -28,6 +28,7 @@ try {
     stdio: "inherit",
     shell: process.platform === "win32",
   });
+  server.on("error", fail);
   server.on("exit", (code) => process.exit(code ?? 0));
 } catch (error) {
   fail(error);

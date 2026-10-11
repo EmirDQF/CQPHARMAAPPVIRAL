@@ -17,6 +17,11 @@ describe("parseAdbDevices", () => {
       offline: ["emulator-5554"],
     });
   });
+
+  it("ignores serials with shell metacharacters (they end up in a cmd.exe line on Windows)", () => {
+    const output = ["List of devices attached", "X&calc.exe&\tdevice", "emulator-5554\tdevice", ""].join("\n");
+    expect(parseAdbDevices(output).ready).toEqual(["emulator-5554"]);
+  });
 });
 
 describe("pickDevice", () => {

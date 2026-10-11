@@ -15,7 +15,7 @@ ext.capacitorServerHost = {
 def assertReleaseCapacitorServer = {
     def server = readCapacitorServer()
     def url = server.url ? new URI(server.url) : null
-    def host = url?.host ?: ""
+    def host = (url?.host ?: "").replaceAll(/\.$/, "")  // "localhost." = "localhost"
     def isLocalHost = host == "localhost" || host ==~ /^[0-9.]+$/ || host.startsWith("[") ||
         host ==~ /.*\.(localhost|local|internal|lan)$/
     if (url?.scheme != "https" || server.cleartext == true || isLocalHost) {

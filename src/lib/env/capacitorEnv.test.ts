@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { DEV_DEFAULT_SERVER_URL, resolveCapacitorServer } from "./capacitorEnv";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { DEV_CLEARTEXT_HOSTS, DEV_DEFAULT_SERVER_URL, resolveCapacitorServer } from "./capacitorEnv";
 
 describe("resolveCapacitorServer", () => {
   it("dev without URL uses localhost over http with cleartext", () => {
@@ -47,6 +49,8 @@ describe("resolveCapacitorServer", () => {
     ["emulator host", "https://10.0.2.2", /local/],
     ["IPv6 loopback", "https://[::1]", /local/],
     [".local host", "https://pc.local", /local/],
+    ["localhost with trailing dot", "https://localhost./", /local/],
+    [".local with trailing dot", "https://pc.local./", /local/],
     ["credentials", "https://user:pass@app.ejemplo.pe", /credenciales/],
     ["not a URL", "artikare", /URL/],
   ])("release fails with %s", (_label, url, message) => {
@@ -63,5 +67,21 @@ describe("resolveCapacitorServer", () => {
     expect(() => resolveCapacitorServer({ CAP_ENV: "release", CAP_SERVER_URL: "http://secreto.ejemplo.pe" })).toThrow(
       expect.objectContaining({ message: expect.not.stringContaining("secreto") })
     );
+  });
+});
+
+describe("DEV_CLEARTEXT_HOSTS", () => {
+  // Misma lista en el network_security_config de debug y en el shell offline (sin bundler).
+  it("matches the debug network config and the offline shell", () => {
+    const debugConfig = readFileSync(
+      join(process.cwd(), "android", "app", "src", "debug", "res", "xml", "network_security_config.xml"),
+      "utf8"
+    );
+    const domains = [...debugConfig.matchAll(/<domain[^>]*>([^<]+)<\/domain>/g)].map(([, domain]) => domain);
+    const offlineJs = readFileSync(join(process.cwd(), "capacitor-shell-src", "offline.js"), "utf8");
+    const shellHosts = JSON.parse(/DEV_CLEARTEXT_HOSTS = (\[[^\]]*\])/.exec(offlineJs)?.[1] ?? "[]");
+
+    expect(domains).toEqual(DEV_CLEARTEXT_HOSTS);
+    expect(shellHosts).toEqual(DEV_CLEARTEXT_HOSTS);
   });
 });

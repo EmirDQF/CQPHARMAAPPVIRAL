@@ -38,8 +38,10 @@ const LOCAL_HOST_PATTERNS: readonly RegExp[] = [
   /^\[.*\]$/,
 ];
 
+/** "localhost." (FQDN con punto final) resuelve igual que "localhost". */
 export function isLocalHost(hostname: string): boolean {
-  return LOCAL_HOST_PATTERNS.some((pattern) => pattern.test(hostname));
+  const normalized = hostname.replace(/\.$/, "");
+  return LOCAL_HOST_PATTERNS.some((pattern) => pattern.test(normalized));
 }
 
 function parseCapEnv(raw: string | undefined): CapEnv {

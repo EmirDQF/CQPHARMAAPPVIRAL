@@ -14,7 +14,9 @@ export interface AdbDevices {
   offline: string[];
 }
 
-const DEVICE_LINE = /^(\S+)\s+(device|unauthorized|offline)$/;
+// Seriales solo con [A-Za-z0-9._:-]: en Windows el serial viaja en una línea de
+// cmd.exe, y un dispositivo malicioso podría reportar uno con & o |.
+const DEVICE_LINE = /^([A-Za-z0-9._:-]+)\s+(device|unauthorized|offline)$/;
 
 export function parseAdbDevices(output: string): AdbDevices {
   const entries = output

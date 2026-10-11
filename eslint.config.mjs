@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Salida de Gradle y del cap sync (generada, ignorada por git).
+    "android/**/build/**",
+    "android/app/src/main/assets/**",
   ]),
 ]);
 

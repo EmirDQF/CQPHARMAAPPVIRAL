@@ -27,4 +27,5 @@ Bloqueos que requieren al usuario: `docs/BLOCKERS.md` · Informe con los candado
 
 SIGUIENTE: desplegar la web con dominio HTTPS y variables de producción → `npm run build:android` → primera subida a Google Play (pista interna) → huella de Play App Signing en `ANDROID_SHA256_FINGERPRINT`.
 
-- [x] V1-V7 Redise�o Cl�nico Amable: tokens accesibles WCAG AA, dashboard Mi D�a, recompensas �ticas, CLS contenido en DayHeader y 17/17 E2E.
+- [x] V1–V7 rediseño clínico-amable (2026-10-11): primitivas shadcn base-nova, profundidad ambiental, una sola familia de iconos, Z-score sin cifra protagonista; vitest 943/943, E2E 17/17, Lighthouse A11y 100 (`9c6f930` `0c52296` `47cae74`).
+- [x] Despliegue documentado en `docs/DEPLOY.md`; keystore y artefactos de release en `docs/MOBILE.md` (`cfaeef9` `48b0a62`).

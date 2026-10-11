@@ -1,19 +1,20 @@
-# RELEASE — estado de lanzamiento de Artikare (2026-10-10, código en `55a37d1`)
+# RELEASE — estado de lanzamiento de Artikare (2026-10-11, código en `cfaeef9`)
 
-## Candados (salida real)
+## Candados (salida real, 2026-10-11)
 
 | Candado | Resultado |
 |---|---|
-| `npm run preflight` (typecheck → lint → test → verify-env) | exit 0 · 88 archivos, 778/778 tests · verify-env OK con 8 avisos (modo desarrollo) |
-| `npm run test:e2e` (375 px) | 15/15 |
+| `npx tsc --noEmit` · `npx eslint .` | OK · 0 avisos |
+| `npx vitest run` | 108 archivos · 943/943 |
+| `npm run test:e2e` (375 px) | 17/17 (con `E2E_PORT` libre: otro proyecto local ocupaba el 3100) |
 | `npm run test:db` | pgTAP 163/163 (6 archivos) · integración 47/47 |
-| `node scripts/db-rollback-check.mjs` | up → down → up: 7/7 ok (9 migraciones con rollback, 12 tablas) |
-| `npm run build` (Next 16.4.0) | OK |
-| `npm run cap:sync` | OK · 3 plugins (app, local-notifications, share) |
-| Lighthouse móvil, throttling real | `/` LCP 1.6 s · A11y 96 · `/app` LCP 1.7 s · A11y 95 · BP 100 · SEO 100 |
-| `npm audit --omit=dev` | 0 vulnerabilidades en producción |
-| Secretos / `NEXT_PUBLIC_*` | Sin secretos versionados; `NEXT_PUBLIC_*` solo públicos (los del test de verify-env son fixtures) |
-| Revisiones finales | código APPROVE · seguridad, TypeScript y React sin CRITICAL; HIGH y MEDIUM baratos corregidos en `55a37d1` |
+| `npm run build` (Next 16.4) | OK · 25/25 páginas |
+| `CAP_ENV=dev npm run cap:sync` + `gradlew assembleDebug` | OK · 3 plugins · BUILD SUCCESSFUL |
+| Lighthouse móvil (Chrome DevTools MCP) | `/` y `/app`: A11y 100 · BP 100 · SEO 100 |
+| Traza de rendimiento `/` (Fast 4G, CPU ×4, local) | LCP 355 ms · CLS 0 (sin latencia real de red: medir de nuevo en Vercel) |
+| `npm audit --omit=dev` | 0 vulnerabilidades en producción (12 solo de desarrollo: CLI de shadcn, lint, Capacitor CLI) |
+| Revisiones V7 | clínica, a11y, React y código: sin CRITICAL reales; HIGH y MEDIUM corregidos en `47cae74` |
+| Secretos / `NEXT_PUBLIC_*` | Sin secretos versionados; keystore y `keystore.properties` ignorados |
 
 ## Android en el teléfono (2026-10-11, `b6c21a6`)
 

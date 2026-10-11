@@ -11,7 +11,9 @@ const plugin = vi.hoisted(() => ({
   checkPermissions: vi.fn(async () => ({ display: "granted" })),
   requestPermissions: vi.fn(async () => ({ display: "granted" })),
   cancel: vi.fn(async () => undefined),
-  schedule: vi.fn(async (_options: { notifications: { id: number }[] }) => ({ notifications: [] })),
+  schedule: vi.fn<(options: { notifications: { id: number }[] }) => Promise<{ notifications: [] }>>(async () => ({
+    notifications: [],
+  })),
 }));
 vi.mock("@capacitor/local-notifications", () => ({ LocalNotifications: plugin }));
 

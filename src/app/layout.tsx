@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { DeepLinkListener } from "@/components/DeepLinkListener";
 import { WhatsAppFloatingButton } from "@/components/landing/WhatsAppFloatingButton";
+import { LocalTrashPurge } from "@/components/LocalTrashPurge";
 import { OutboxSync } from "@/components/OutboxSync";
 import { PendingAssessmentUploader } from "@/components/PendingAssessmentUploader";
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
@@ -80,6 +81,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <ServiceWorkerRegistration />
         <OutboxSync />
         <SyncCoordinator />
+        <LocalTrashPurge />
         <PendingAssessmentUploader />
         <DeepLinkListener />
       </body>

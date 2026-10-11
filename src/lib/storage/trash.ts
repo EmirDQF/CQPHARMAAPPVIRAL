@@ -62,6 +62,18 @@ export function selectRestorableRecords(
     .sort((a, b) => b.deletedAt.localeCompare(a.deletedAt));
 }
 
+/**
+ * Minimización (Ley 29733): lo vencido se borra de verdad, igual que la purga
+ * diaria de la base. Sin esto quedaría en el celular —y en la exportación
+ * ARCO— hasta el siguiente borrado. Devuelve cuántos registros eliminó.
+ */
+export function purgeExpiredTrash(now: Date): number {
+  const current = trashStore.getSnapshot();
+  const remaining = current.filter((item) => isWithinRestoreWindow(item, now));
+  if (remaining.length !== current.length) trashStore.write(remaining);
+  return current.length - remaining.length;
+}
+
 /** Un registro nuevo en la misma fecha reemplaza al borrado (igual que la base). */
 export function discardTrashedRecordsFor(kind: TrashedRecordKind, date: string): void {
   const current = trashStore.getSnapshot();

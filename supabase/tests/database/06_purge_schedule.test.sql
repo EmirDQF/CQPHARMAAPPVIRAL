@@ -45,6 +45,7 @@ insert into public.pain_logs (id, user_id, log_date, pain_level, stiffness, dele
 values
   ('bbbbbbbb-0000-4000-8000-000000000031', '77777777-7777-4777-8777-777777777777', '2026-01-01', 4, '0-15', now() - interval '31 days'),
   ('bbbbbbbb-0000-4000-8000-000000000005', '77777777-7777-4777-8777-777777777777', '2026-01-02', 5, '0-15', now() - interval '5 days'),
+  ('bbbbbbbb-0000-4000-8000-000000000029', '77777777-7777-4777-8777-777777777777', '2026-01-04', 5, '0-15', now() - interval '29 days 23 hours'),
   ('bbbbbbbb-0000-4000-8000-000000000000', '77777777-7777-4777-8777-777777777777', '2026-01-03', 6, '0-15', null),
   ('bbbbbbbb-0000-4000-8000-000000000b31', '88888888-8888-4888-8888-888888888888', '2026-01-01', 3, '0-15', now() - interval '31 days');
 
@@ -53,8 +54,8 @@ select ok(public.purge_expired_soft_deletes() >= 2, 'la purga elimina lo borrado
 select is(
   (select array_agg(id::text order by id) from public.pain_logs
    where user_id in ('77777777-7777-4777-8777-777777777777', '88888888-8888-4888-8888-888888888888')),
-  array['bbbbbbbb-0000-4000-8000-000000000000', 'bbbbbbbb-0000-4000-8000-000000000005'],
-  'quedan la fila viva y la borrada hace 5 días (aún restaurable)'
+  array['bbbbbbbb-0000-4000-8000-000000000000', 'bbbbbbbb-0000-4000-8000-000000000005', 'bbbbbbbb-0000-4000-8000-000000000029'],
+  'quedan la fila viva y las borradas hace menos de 30 días (aún restaurables)'
 );
 select is(
   (select count(*)::int from public.audit_log

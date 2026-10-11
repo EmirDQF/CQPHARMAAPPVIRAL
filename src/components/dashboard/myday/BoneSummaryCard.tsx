@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { BoneScanSummary } from "@/lib/dashboard/types";
 import type { RiskLevel } from "@/lib/types";
+import { NO_T_SCORE_ICON, RISK_ICON } from "../riskIcons";
 
 /** Colores OMS del semáforo: no se pastelizan (mantienen urgencia y contraste AA). */
 const RISK_STYLE: Record<RiskLevel, string> = {
@@ -8,7 +9,6 @@ const RISK_STYLE: Record<RiskLevel, string> = {
   moderado: "bg-risk-moderate-bg text-risk-moderate border-risk-moderate",
   alto: "bg-risk-high-bg text-risk-high border-risk-high",
 };
-const RISK_EMOJI: Record<RiskLevel, string> = { bajo: "🟢", moderado: "🟡", alto: "🔴" };
 
 interface BoneSummaryCardProps {
   scan: BoneScanSummary | null;
@@ -32,11 +32,12 @@ export function BoneSummaryCard({ scan, onOpenBoneTab }: BoneSummaryCardProps) {
     );
   }
   const style = scan.riskLevel ? RISK_STYLE[scan.riskLevel] : "bg-surface text-foreground border-line";
+  const StatusIcon = scan.riskLevel ? RISK_ICON[scan.riskLevel] : NO_T_SCORE_ICON;
   return (
     <section aria-labelledby="hueso-resumen" className={`rounded-card border-2 px-5 py-5 flex flex-col gap-3 ${style}`}>
       <div className="flex items-center justify-between gap-3">
         <h2 id="hueso-resumen" className="text-lg font-bold">Tu Semáforo Óseo</h2>
-        <span className="text-2xl" aria-hidden="true">{scan.riskLevel ? RISK_EMOJI[scan.riskLevel] : "🩺"}</span>
+        <StatusIcon aria-hidden="true" className="size-6 shrink-0" />
       </div>
       <p className="text-lg">
         Peor T-score <strong className="text-2xl">{scan.worstTScore.toFixed(1)}</strong> · <strong>{scan.diagnosisLabel}</strong>

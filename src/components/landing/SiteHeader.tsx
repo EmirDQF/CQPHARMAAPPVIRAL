@@ -1,17 +1,17 @@
+import { BrandMark } from "@/components/brand/BrandMark";
 import Link from "next/link";
 
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-background/80 backdrop-blur">
       <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 font-bold text-lg">
-          <span aria-hidden="true">🦴</span>
-          <span>Artikare</span>
+        <Link href="/" aria-label="Artikare, ir al inicio" className="min-h-11 flex items-center rounded-control text-lg">
+          <BrandMark />
         </Link>
 
         <Link
           href="/citas"
-          className="rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] text-white text-sm font-semibold px-4 py-2 transition-colors"
+          className="btn-sheen min-h-11 inline-flex items-center rounded-control bg-action-strong hover:bg-brand-dark active:scale-[0.98] text-white text-sm font-semibold px-4 transition-colors"
         >
           Agendar Densitometría
         </Link>

@@ -1,3 +1,4 @@
+import { BrandMark } from "@/components/brand/BrandMark";
 import Link from "next/link";
 
 export function SiteFooter() {
@@ -7,7 +8,7 @@ export function SiteFooter() {
     <footer className="w-full border-t border-line mt-8">
       <div className="max-w-5xl mx-auto px-4 py-10 flex flex-col gap-4 text-sm text-muted">
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <span className="font-bold text-base text-foreground">🦴 Artikare</span>
+          <BrandMark className="text-base" />
           <nav className="flex gap-4">
             <Link href="/" className="hover:text-clinic">
               Inicio

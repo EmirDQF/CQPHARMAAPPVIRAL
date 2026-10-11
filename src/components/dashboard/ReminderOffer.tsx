@@ -1,5 +1,6 @@
 "use client";
 
+import { AlarmClock } from "lucide-react";
 import { DOSE_SCHEDULE } from "@/lib/clinical/constants";
 import { buildRemindersIcs, type ReminderSupport } from "@/lib/reminders/reminders";
 import { formatTime24hForDisplay } from "@/lib/utils/date";
@@ -72,8 +73,9 @@ export function ReminderOffer({ support, onEnable, onSnooze }: ReminderOfferProp
       aria-labelledby="reminder-offer-title"
       className="rounded-2xl border border-brand/30 bg-pastel-mint p-4 flex flex-col gap-3"
     >
-      <h2 id="reminder-offer-title" className="text-base font-bold">
-        ⏰ ¿Te recordamos tus tomas?
+      <h2 id="reminder-offer-title" className="flex items-center gap-2 text-base font-bold">
+        <AlarmClock aria-hidden="true" className="size-5 shrink-0" />
+        ¿Te recordamos tus tomas?
       </h2>
       <OfferMessage support={support} />
       <div className="flex flex-wrap gap-2">

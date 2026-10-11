@@ -1,5 +1,6 @@
 "use client";
 
+import { TriangleAlert } from "lucide-react";
 import Link from "next/link";
 import { getServiceById } from "@/lib/appointments/catalog";
 import { DENSITOMETRY_UPSELL_DISCOUNT_PERCENT } from "@/lib/clinical/constants";
@@ -56,8 +57,8 @@ export function ConfirmationCard({ appointment }: ConfirmationCardProps) {
       </div>
 
       {service?.prepInstructions && (
-        <p className="text-sm font-medium text-neutral-900">
-          <span aria-hidden="true">⚠️ </span>
+        <p className="flex items-start gap-1.5 text-sm font-medium text-neutral-900">
+          <TriangleAlert aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
           {service.prepInstructions}
         </p>
       )}

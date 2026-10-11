@@ -1,5 +1,6 @@
 "use client";
 
+import { Smartphone } from "lucide-react";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import {
   dismissPwaInstallPrompt,
@@ -39,8 +40,9 @@ export function InstallPwaBanner() {
 
   return (
     <div className="rounded-xl bg-action-strong text-white px-4 py-3 flex flex-wrap items-center justify-between gap-3">
-      <p className="text-sm font-medium">
-        📲 Instala Artikare en tu pantalla de inicio para no perder tus recordatorios médicos.
+      <p className="flex items-start gap-2 text-sm font-medium">
+        <Smartphone aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+        Instala Artikare en tu pantalla de inicio para no perder tus recordatorios médicos.
       </p>
       <div className="flex gap-2">
         <button

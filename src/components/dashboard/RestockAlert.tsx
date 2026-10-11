@@ -1,5 +1,6 @@
 "use client";
 
+import { Bell } from "lucide-react";
 import { useSyncExternalStore } from "react";
 import { RESTOCK_DISCOUNT_PERCENT } from "@/lib/clinical/constants";
 import { buildBottleStatuses } from "@/lib/dashboard/bottleTracking";
@@ -50,7 +51,7 @@ export function RestockAlert() {
             className="rounded-2xl border-2 border-risk-moderate/50 bg-risk-moderate-bg px-6 py-6 flex flex-col gap-4"
           >
             <p className="font-semibold text-risk-moderate">
-              <span aria-hidden="true">🔔 </span>Tu frasco de {bottle.label} está al {bottle.percentRemaining}% (
+              <Bell aria-hidden="true" className="mr-1.5 inline size-5 align-[-0.2em]" />Tu frasco de {bottle.label} está al {bottle.percentRemaining}% (
               {bottle.servingsRemaining} tomas)
             </p>
 

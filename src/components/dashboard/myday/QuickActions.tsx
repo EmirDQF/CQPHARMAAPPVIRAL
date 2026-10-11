@@ -1,5 +1,6 @@
 "use client";
 
+import { NotebookPen, Pill } from "lucide-react";
 import { useState } from "react";
 import { BottomSheet } from "@/components/ui/BottomSheet";
 import { DOSE_SCHEDULE } from "@/lib/clinical/constants";
@@ -15,7 +16,7 @@ interface QuickActionsProps {
 }
 
 const CHIP_CLASS =
-  "min-h-12 shrink-0 rounded-full border-2 border-line bg-surface px-4 font-semibold text-clinic transition-transform duration-150 active:scale-[0.97]";
+  "min-h-12 shrink-0 inline-flex items-center gap-2 rounded-full border-2 border-line bg-surface px-4 font-semibold text-clinic transition-transform duration-150 active:scale-[0.97]";
 
 function DoseSheetBody({ doneOrPendingDoseIds, onTake, onDone }: QuickActionsProps & { onDone: () => void }) {
   const pending = DOSE_SCHEDULE.filter((dose) => !doneOrPendingDoseIds.includes(dose.id));
@@ -52,10 +53,12 @@ export function QuickActions(props: QuickActionsProps) {
     <>
       <div role="group" aria-label="Acciones rápidas" className="flex gap-2 overflow-x-auto pb-1">
         <button type="button" className={CHIP_CLASS} onClick={() => setSheet("dose")}>
-          <span aria-hidden="true">💊 </span>Anotar toma
+          <Pill aria-hidden="true" className="size-4 shrink-0" />
+          Anotar toma
         </button>
         <button type="button" className={CHIP_CLASS} onClick={() => setSheet("pain")}>
-          <span aria-hidden="true">📝 </span>Chequeo de dolor
+          <NotebookPen aria-hidden="true" className="size-4 shrink-0" />
+          Chequeo de dolor
         </button>
       </div>
       <p role="status" className="sr-only">

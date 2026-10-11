@@ -1,19 +1,9 @@
 import Link from "next/link";
-import {
-  TriangleAlert,
-  CalendarClock,
-  CalendarPlus,
-  CircleCheck,
-  ChartLine,
-  OctagonAlert,
-  ScanLine,
-  Stethoscope,
-  Upload,
-  type LucideIcon,
-} from "lucide-react";
+import { CalendarClock, CalendarPlus, ChartLine, ScanLine, Stethoscope, TriangleAlert, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { BoneScanSummary } from "@/lib/dashboard/types";
 import type { RiskLevel } from "@/lib/types";
+import { NO_T_SCORE_ICON, RISK_ICON } from "./riskIcons";
 
 interface BoneSemaphoreWidgetProps {
   scan: BoneScanSummary | null;
@@ -25,12 +15,6 @@ const semaphoreStyles: Record<RiskLevel, string> = {
   bajo: "bg-risk-low-bg text-risk-low border-risk-low",
   moderado: "bg-risk-moderate-bg text-risk-moderate border-risk-moderate",
   alto: "bg-risk-high-bg text-risk-high border-risk-high",
-};
-
-const semaphoreIcon: Record<RiskLevel, LucideIcon> = {
-  bajo: CircleCheck,
-  moderado: TriangleAlert,
-  alto: OctagonAlert,
 };
 
 // Sin T-score aplicable no hay color OMS: tarjeta neutra con derivación médica.
@@ -88,7 +72,7 @@ function DexaEmptyState({ onUploadClick }: DexaEmptyStateProps) {
 export function BoneSemaphoreWidget({ scan, onUploadClick }: BoneSemaphoreWidgetProps) {
   if (!scan) return <DexaEmptyState onUploadClick={onUploadClick} />;
 
-  const StatusIcon = scan.riskLevel ? semaphoreIcon[scan.riskLevel] : Stethoscope;
+  const StatusIcon = scan.riskLevel ? RISK_ICON[scan.riskLevel] : NO_T_SCORE_ICON;
 
   return (
     <section

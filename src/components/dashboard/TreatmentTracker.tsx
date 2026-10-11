@@ -1,5 +1,6 @@
 "use client";
 
+import { Lightbulb } from "lucide-react";
 import { useSyncExternalStore } from "react";
 import { buildBottleStatuses } from "@/lib/dashboard/bottleTracking";
 import { bottlesStore } from "@/lib/dashboard/bottles";
@@ -55,8 +56,9 @@ export function TreatmentTracker() {
       <div className="flex flex-col gap-2 pt-2 border-t border-line">
         <p className="text-sm font-semibold">Consejos clínicos de absorción</p>
         {ABSORPTION_TIPS.map((tip) => (
-          <p key={tip} className="text-sm text-neutral-600 dark:text-neutral-300">
-            💡 {tip}
+          <p key={tip} className="flex items-start gap-2 text-sm text-muted">
+            <Lightbulb aria-hidden="true" className="mt-0.5 size-4 text-clinic shrink-0" />
+            <span>{tip}</span>
           </p>
         ))}
       </div>

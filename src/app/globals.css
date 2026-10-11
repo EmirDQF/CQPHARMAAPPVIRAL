@@ -161,6 +161,58 @@
   }
 }
 
+/*
+ * Profundidad sin oscurecer: dos brillos radiales tenues (menta arriba-izquierda, celeste
+ * arriba-derecha) sobre el lienzo. Solo fondo: nunca detrás de texto del semáforo.
+ */
+@utility ambient-canvas {
+  background-color: var(--color-canvas);
+  background-image:
+    radial-gradient(60rem 28rem at -10% -8%, color-mix(in oklch, var(--color-pastel-mint) 70%, transparent), transparent 70%),
+    radial-gradient(48rem 24rem at 110% -4%, color-mix(in oklch, var(--color-pastel-sky) 65%, transparent), transparent 70%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+/* Barrido de brillo del botón primario al pasar el puntero (600 ms, una vez). */
+@utility btn-sheen {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.28) 50%, transparent 70%);
+    transform: translateX(-120%);
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    &:hover::after {
+      animation: sheen-sweep 600ms ease-out;
+    }
+  }
+}
+
+/* Entrada escalonada de las tarjetas de una vista: 40 ms entre hijos, tope en el 6.º. */
+@utility stagger-in {
+  & > * {
+    animation: fade-in 220ms ease-out both;
+  }
+  & > :nth-child(2) { animation-delay: 40ms; }
+  & > :nth-child(3) { animation-delay: 80ms; }
+  & > :nth-child(4) { animation-delay: 120ms; }
+  & > :nth-child(5) { animation-delay: 160ms; }
+  & > :nth-child(n + 6) { animation-delay: 200ms; }
+}
+
+@keyframes sheen-sweep {
+  to {
+    transform: translateX(120%);
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --color-canvas: #0B1220;

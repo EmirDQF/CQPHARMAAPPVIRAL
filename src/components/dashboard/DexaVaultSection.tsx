@@ -1,5 +1,6 @@
 "use client";
 
+import { FilePlus2 } from "lucide-react";
 import { useState } from "react";
 import { BoneSemaphoreWidget } from "./BoneSemaphoreWidget";
 import { DexaTrendChart } from "./DexaTrendChart";
@@ -25,9 +26,10 @@ export function DexaVaultSection() {
           <button
             type="button"
             onClick={() => setIsModalOpen(true)}
-            className="min-h-12 self-start rounded-xl border-2 border-brand text-clinic font-semibold px-4 hover:bg-pastel-mint transition-colors"
+            className="min-h-12 self-start inline-flex items-center gap-2 rounded-control border-2 border-brand text-clinic font-semibold px-4 hover:bg-pastel-mint transition-colors"
           >
-            <span aria-hidden="true">📋 </span>Actualizar mi Bóveda DEXA
+            <FilePlus2 aria-hidden="true" className="size-5 shrink-0" />
+            Actualizar mi Bóveda DEXA
           </button>
         </>
       )}

@@ -1,5 +1,6 @@
 "use client";
 
+import { TriangleAlert } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { ModalDialog } from "@/components/ui/ModalDialog";
 import { addDexaScanEntry, parseTScoreInput, validateScanDate } from "@/lib/dashboard/dexaVault";
@@ -102,8 +103,8 @@ export function DexaVaultModal({ isOpen, onClose }: DexaVaultModalProps) {
             </p>
             <p className="text-sm">{summary.diagnosisMessage}</p>
             {summary.profileNote && (
-              <p role="note" className="text-sm font-semibold">
-                <span aria-hidden="true">⚠️ </span>
+              <p role="note" className="flex items-start gap-1.5 text-sm font-semibold">
+                <TriangleAlert aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
                 <span className="sr-only">Aviso: </span>
                 {summary.profileNote}
               </p>

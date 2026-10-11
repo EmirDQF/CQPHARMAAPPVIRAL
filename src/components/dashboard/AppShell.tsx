@@ -1,7 +1,18 @@
 "use client";
 
+import { BrandMark } from "@/components/brand/BrandMark";
 import Link from "next/link";
-import { CalendarPlus, Printer } from "lucide-react";
+import {
+  Award,
+  CalendarPlus,
+  ChartLine,
+  Pill,
+  Printer,
+  Settings,
+  Stethoscope,
+  Sun,
+  type LucideIcon,
+} from "lucide-react";
 import { useState, useSyncExternalStore } from "react";
 import { NextAppointmentCard } from "@/components/appointments/NextAppointmentCard";
 import { AccountBackupOffer } from "@/components/auth/AccountBackupOffer";
@@ -30,16 +41,16 @@ type TabId = "hoy" | "hueso" | "tratamiento" | "logros" | "reumatologo";
 interface TabDefinition {
   id: TabId;
   label: string;
-  icon: string;
+  icon: LucideIcon;
 }
 
 // Orden y nombres de la navegación inferior (los id internos no cambian).
 const TABS: TabDefinition[] = [
-  { id: "hoy", label: "Mi día", icon: "📅" },
-  { id: "tratamiento", label: "Pastillero", icon: "💊" },
-  { id: "hueso", label: "Progreso", icon: "🦴" },
-  { id: "logros", label: "Logros", icon: "🏅" },
-  { id: "reumatologo", label: "Médico", icon: "🩺" },
+  { id: "hoy", label: "Mi día", icon: Sun },
+  { id: "tratamiento", label: "Pastillero", icon: Pill },
+  { id: "hueso", label: "Progreso", icon: ChartLine },
+  { id: "logros", label: "Logros", icon: Award },
+  { id: "reumatologo", label: "Médico", icon: Stethoscope },
 ];
 
 /** "Mi día" y "Logros" traen su propio h1 visible; el resto anuncia la vista para lectores de pantalla. */
@@ -67,20 +78,20 @@ export function AppShell() {
   const patientFirstName = nextAppointment?.patient.name.split(" ")[0] ?? null;
 
   return (
-    <div className="flex flex-col min-h-dvh">
-      <header className="sticky top-0 z-30 bg-background/95 backdrop-blur border-b border-line px-4 py-3 flex flex-col gap-3">
+    <div className="ambient-canvas flex flex-col min-h-dvh">
+      <header className="sticky top-0 z-30 bg-surface/80 backdrop-blur-md border-b border-line/70 px-4 py-3 flex flex-col gap-3">
         <div className="flex items-center justify-between gap-3">
-          <p className="text-lg font-extrabold text-clinic">
-            <span aria-hidden="true">🦴 </span>Artikare
+          <p className="text-lg">
+            <BrandMark />
           </p>
           <div className="flex items-center gap-2">
             <PatientProfileLauncher />
             <Link
               href="/app/ajustes"
               aria-label="Ajustes y privacidad"
-              className="min-h-12 min-w-12 flex items-center justify-center rounded-full text-xl bg-pastel-sky"
+              className="min-h-12 min-w-12 flex items-center justify-center rounded-full bg-pastel-sky text-pastel-sky-ink transition-transform active:scale-95"
             >
-              <span aria-hidden="true">⚙️</span>
+              <Settings aria-hidden="true" className="size-5" />
             </Link>
           </div>
         </div>
@@ -90,7 +101,7 @@ export function AppShell() {
         <RedFlagBanner />
 
         {/* Transición suave al cambiar de pestaña (200 ms; nada con movimiento reducido). */}
-        <div key={activeTab} className="flex flex-col gap-6 motion-safe:animate-fade-in">
+        <div key={activeTab} className="flex flex-col gap-6 motion-safe:stagger-in">
           {!TABS_WITH_OWN_HEADING.has(activeTab) && (
             <h1 className="sr-only">{TABS.find((tab) => tab.id === activeTab)?.label}</h1>
           )}
@@ -168,26 +179,27 @@ export function AppShell() {
 
       <nav
         aria-label="Navegación principal"
-        className="fixed bottom-0 inset-x-0 z-40 bg-surface border-t border-line shadow-soft pb-[env(safe-area-inset-bottom)]"
+        className="fixed bottom-0 inset-x-0 z-40 bg-surface/85 backdrop-blur-md border-t border-line/70 shadow-soft pb-[env(safe-area-inset-bottom)]"
       >
         <div className="max-w-2xl mx-auto grid grid-cols-5">
           {TABS.map((tab) => {
             const isActive = activeTab === tab.id;
+            const TabIcon = tab.icon;
             return (
               <button
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
                 aria-current={isActive ? "page" : undefined}
-                className="min-h-16 flex flex-col items-center justify-center gap-0.5 px-1 text-xs font-semibold"
+                className="min-h-16 flex flex-col items-center justify-center gap-0.5 px-1 text-xs font-semibold transition-transform active:scale-95"
               >
                 <span
                   aria-hidden="true"
-                  className={`flex h-8 w-12 items-center justify-center rounded-full text-xl transition-colors duration-200 ${
-                    isActive ? "bg-pastel-mint" : ""
+                  className={`flex h-8 w-12 items-center justify-center rounded-full transition-colors duration-200 ${
+                    isActive ? "bg-pastel-mint text-pastel-mint-ink" : "text-muted"
                   }`}
                 >
-                  {tab.icon}
+                  <TabIcon className="size-5" strokeWidth={isActive ? 2.4 : 2} />
                 </span>
                 <span className={isActive ? "text-clinic font-bold" : "text-muted"}>{tab.label}</span>
               </button>

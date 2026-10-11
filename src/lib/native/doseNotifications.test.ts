@@ -11,7 +11,7 @@ const plugin = vi.hoisted(() => ({
   checkPermissions: vi.fn(async () => ({ display: "granted" })),
   requestPermissions: vi.fn(async () => ({ display: "granted" })),
   cancel: vi.fn(async () => undefined),
-  schedule: vi.fn(async () => ({ notifications: [] })),
+  schedule: vi.fn(async (_options: { notifications: { id: number }[] }) => ({ notifications: [] })),
 }));
 vi.mock("@capacitor/local-notifications", () => ({ LocalNotifications: plugin }));
 
@@ -61,9 +61,7 @@ describe("syncNativeDoseReminders", () => {
 
     expect(plugin.requestPermissions).not.toHaveBeenCalled();
     expect(plugin.schedule).toHaveBeenCalledTimes(2);
-    const scheduledIds = plugin.schedule.mock.calls.map(
-      ([options]) => (options as { notifications: { id: number }[] }).notifications.map(({ id }) => id)
-    );
+    const scheduledIds = plugin.schedule.mock.calls.map(([options]) => options.notifications.map(({ id }) => id));
     expect(scheduledIds[0]).toEqual(scheduledIds[1]);
     expect(plugin.cancel).toHaveBeenCalledTimes(2);
   });

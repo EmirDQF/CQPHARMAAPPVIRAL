@@ -22,6 +22,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
+            <!-- App Links verificados con /.well-known/assetlinks.json: solo rutas compartibles
+                 (SHAREABLE_PATH_PREFIXES en src/lib/native/deepLinks.ts). -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="${appLinkHost}" android:pathPrefix="/test" />
+                <data android:scheme="https" android:host="${appLinkHost}" android:pathPrefix="/blog" />
+            </intent-filter>
+
         </activity>
 
         <provider

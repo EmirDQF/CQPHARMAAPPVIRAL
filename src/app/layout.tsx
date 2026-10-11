@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { DeepLinkListener } from "@/components/DeepLinkListener";
 import { WhatsAppFloatingButton } from "@/components/landing/WhatsAppFloatingButton";
 import { OutboxSync } from "@/components/OutboxSync";
 import { PendingAssessmentUploader } from "@/components/PendingAssessmentUploader";
@@ -80,6 +81,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <OutboxSync />
         <SyncCoordinator />
         <PendingAssessmentUploader />
+        <DeepLinkListener />
       </body>
     </html>
   );

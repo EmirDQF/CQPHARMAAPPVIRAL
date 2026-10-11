@@ -5,6 +5,7 @@ import {
   buildSupplementWhatsAppLink,
 } from "@/lib/whatsapp";
 import { WhatsAppCta } from "@/components/ui/WhatsAppCta";
+import { ShareInviteActions } from "./ShareInviteActions";
 
 interface ResultCardProps {
   result: RiskResult;
@@ -99,6 +100,7 @@ export function ResultCard({ result, onRestart }: ResultCardProps) {
           >
             Pedir mi Pack CQ Pharma por WhatsApp
           </WhatsAppCta>
+          <ShareInviteActions />
           <button
             type="button"
             onClick={onRestart}

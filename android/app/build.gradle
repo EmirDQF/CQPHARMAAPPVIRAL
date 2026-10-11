@@ -10,6 +10,8 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        // Host de los App Links: el mismo dominio que carga el WebView (capacitor.config.ts).
+        manifestPlaceholders = [appLinkHost: new URI(System.getenv("CAP_SERVER_URL") ?: "https://artikare.com").host]
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
              // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61

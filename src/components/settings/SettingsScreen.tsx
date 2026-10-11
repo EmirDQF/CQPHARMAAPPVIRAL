@@ -25,7 +25,7 @@ export function SettingsScreen() {
 
   return (
     <main className="flex-1 w-full max-w-2xl mx-auto px-4 py-8 pb-28 flex flex-col gap-6">
-      <Link href="/app" className="text-sm text-brand font-semibold">
+      <Link href="/app" className="text-sm text-clinic font-semibold">
         ← Volver a Mi Panel
       </Link>
       <header className="flex flex-col gap-2">
@@ -37,7 +37,7 @@ export function SettingsScreen() {
       </header>
 
       {wasJustDeleted && (
-        <p role="status" className="rounded-2xl bg-brand-light dark:bg-brand-dark/30 px-5 py-4 text-base font-semibold">
+        <p role="status" className="rounded-2xl bg-pastel-mint px-5 py-4 text-base font-semibold">
           Listo: borramos tus datos de este celular y, si tenías cuenta, también la cuenta.
         </p>
       )}
@@ -48,7 +48,7 @@ export function SettingsScreen() {
       <AccountDeletionSection authStatus={authStatus} />
 
       <p className="text-sm text-muted">
-        <Link href={PRIVACY_POLICY_PATH} className="text-brand font-semibold underline">
+        <Link href={PRIVACY_POLICY_PATH} className="text-clinic font-semibold underline">
           Política de Privacidad
         </Link>{" "}
         · Versión {CONSENT_VERSION}

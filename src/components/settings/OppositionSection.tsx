@@ -37,7 +37,7 @@ export function OppositionSection() {
         <button
           type="button"
           onClick={() => setIsConfirming(true)}
-          className="min-h-12 rounded-xl border-2 border-brand text-brand font-semibold px-5"
+          className="min-h-12 rounded-xl border-2 border-brand text-clinic font-semibold px-5"
         >
           Dejar de respaldar mis registros en la cuenta
         </button>
@@ -48,7 +48,7 @@ export function OppositionSection() {
             Tus registros seguirán en este celular. Lo ya respaldado queda en tu cuenta hasta que la borres.
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
-            <button type="button" onClick={handleRevoke} className="min-h-12 rounded-xl bg-brand text-white font-semibold px-5">
+            <button type="button" onClick={handleRevoke} className="min-h-12 rounded-xl bg-action-strong text-white font-semibold px-5">
               Sí, dejar de respaldar
             </button>
             <button
@@ -71,7 +71,7 @@ export function OppositionSection() {
       <p className="text-base text-neutral-700 dark:text-neutral-300">
         Los recordatorios se desactivan desde los permisos de notificaciones de tu celular. Para oponerte a cualquier
         otro uso de tus datos, escríbenos por el canal indicado en la{" "}
-        <Link href={PRIVACY_POLICY_PATH} className="text-brand font-semibold underline">
+        <Link href={PRIVACY_POLICY_PATH} className="text-clinic font-semibold underline">
           Política de Privacidad
         </Link>
         .

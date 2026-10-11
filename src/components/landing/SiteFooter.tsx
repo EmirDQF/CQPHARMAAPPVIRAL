@@ -9,13 +9,13 @@ export function SiteFooter() {
         <div className="flex flex-wrap items-center justify-between gap-4">
           <span className="font-bold text-base text-foreground">🦴 Artikare</span>
           <nav className="flex gap-4">
-            <Link href="/" className="hover:text-brand">
+            <Link href="/" className="hover:text-clinic">
               Inicio
             </Link>
-            <Link href="/app" className="hover:text-brand">
+            <Link href="/app" className="hover:text-clinic">
               Mi Panel
             </Link>
-            <Link href="/privacidad" className="hover:text-brand">
+            <Link href="/privacidad" className="hover:text-clinic">
               Privacidad
             </Link>
           </nav>

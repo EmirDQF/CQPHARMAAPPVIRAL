@@ -93,7 +93,7 @@ export function ConfirmationCard({ appointment }: ConfirmationCardProps) {
           </p>
           <WhatsAppCta
             href={crossSell.link}
-            className="min-h-12 flex items-center justify-center rounded-xl bg-white border-2 border-brand text-brand font-semibold px-4"
+            className="min-h-12 flex items-center justify-center rounded-xl bg-surface border-2 border-brand text-clinic font-semibold px-4"
           >
             Reservar pack con descuento
           </WhatsAppCta>

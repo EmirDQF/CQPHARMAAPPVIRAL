@@ -82,7 +82,7 @@ export function ClinicalReportExport() {
         <button
           type="button"
           onClick={handleDownload}
-          className="min-h-12 flex items-center justify-center rounded-xl border-2 border-brand text-brand font-semibold px-4 flex-1"
+          className="min-h-12 flex items-center justify-center rounded-xl border-2 border-brand text-clinic font-semibold px-4 flex-1"
         >
           Descargar informe
         </button>

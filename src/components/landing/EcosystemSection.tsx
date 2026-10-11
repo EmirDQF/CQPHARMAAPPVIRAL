@@ -26,7 +26,7 @@ export function EcosystemSection() {
   return (
     <section className="w-full max-w-4xl mx-auto px-4 py-16 flex flex-col gap-10">
       <div className="text-center flex flex-col gap-2">
-        <h2 className="text-2xl sm:text-3xl font-bold">Nuestro Ecosistema Integral</h2>
+        <h2 className="text-2xl sm:text-3xl font-bold text-clinic">Nuestro Ecosistema Integral</h2>
         <p className="text-neutral-600 dark:text-neutral-300">
           De un examen aislado a un plan de cuidado continuo.
         </p>
@@ -36,11 +36,11 @@ export function EcosystemSection() {
         {steps.map((step, index) => (
           <li key={step.number} className="flex-1 flex sm:flex-col items-start sm:items-center gap-4 sm:text-center">
             <div className="flex sm:flex-col items-center gap-4 sm:gap-3 shrink-0">
-              <span className="flex items-center justify-center w-12 h-12 rounded-full bg-brand text-white font-bold text-lg shrink-0">
+              <span className="flex items-center justify-center w-12 h-12 rounded-full bg-action-strong text-white font-bold text-lg shrink-0">
                 {step.number}
               </span>
               {index < steps.length - 1 && (
-                <span className="hidden sm:block w-full h-0.5 bg-brand-light" aria-hidden="true" />
+                <span className="hidden sm:block w-full h-0.5 bg-pastel-mint" aria-hidden="true" />
               )}
             </div>
             <div>

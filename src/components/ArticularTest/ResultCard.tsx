@@ -27,8 +27,8 @@ export function ResultCard({ result, onRestart }: ResultCardProps) {
   const needsRheumatologyReview = result.riskLevel === "alto";
 
   return (
-    <div className="w-full max-w-md mx-auto rounded-card border border-line bg-surface shadow-soft overflow-hidden shadow-sm">
-      <div className="bg-brand text-white px-6 py-4">
+    <div className="w-full max-w-md mx-auto rounded-card border border-line bg-surface shadow-soft overflow-hidden">
+      <div className="bg-action-strong text-on-action-strong px-6 py-4">
         <p className="text-sm font-medium opacity-90">
           🦴 Reporte de Salud Ósea &amp; Articular
         </p>
@@ -73,18 +73,18 @@ export function ResultCard({ result, onRestart }: ResultCardProps) {
         )}
 
         <div className="flex flex-col gap-2 text-sm">
-          <div className="rounded-lg bg-neutral-100 dark:bg-neutral-900 px-4 py-3">
-            <p className="font-medium">Estudio recomendado</p>
-            <p className="text-neutral-600 dark:text-neutral-400">
+          <div className="rounded-control bg-pastel-sky text-pastel-sky-ink px-4 py-3">
+            <p className="font-bold">Estudio recomendado</p>
+            <p>
               {result.diagnosticSuggestion}
             </p>
           </div>
-          <div className="rounded-lg bg-neutral-100 dark:bg-neutral-900 px-4 py-3">
-            <p className="font-medium">Suplementación que puede acompañar tu cuidado</p>
-            <p className="text-neutral-600 dark:text-neutral-400">
+          <div className="rounded-control bg-pastel-lemon text-pastel-lemon-ink px-4 py-3">
+            <p className="font-bold">Suplementación que puede acompañar tu cuidado</p>
+            <p>
               {result.supplementProtocol}
             </p>
-            <p className="text-neutral-600 dark:text-neutral-400">Consulta con tu médico antes de empezar.</p>
+            <p>Consulta con tu médico antes de empezar.</p>
           </div>
         </div>
 
@@ -102,7 +102,7 @@ export function ResultCard({ result, onRestart }: ResultCardProps) {
           </WhatsAppCta>
           <WhatsAppCta
             href={supplementLink}
-            className={`w-full text-center rounded-xl border-2 border-brand text-brand dark:text-teal-300 hover:bg-brand-light dark:hover:bg-neutral-900 font-semibold px-4 py-3 transition-colors ${FOCUS_RING}`}
+            className={`w-full text-center rounded-xl border-2 border-brand text-clinic hover:bg-pastel-mint font-semibold px-4 py-3 transition-colors ${FOCUS_RING}`}
           >
             Pedir mi Pack CQ Pharma por WhatsApp
           </WhatsAppCta>

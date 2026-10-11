@@ -54,7 +54,7 @@ export function ShareInviteActions() {
       <button
         type="button"
         onClick={() => void handleShare("familiar")}
-        className={`w-full min-h-12 rounded-xl border-2 border-brand text-brand dark:text-teal-300 font-semibold px-4 py-3 ${FOCUS_RING}`}
+        className={`w-full min-h-12 rounded-xl border-2 border-brand text-clinic font-semibold px-4 py-3 ${FOCUS_RING}`}
       >
         Invitar a mamá, papá o un familiar
       </button>

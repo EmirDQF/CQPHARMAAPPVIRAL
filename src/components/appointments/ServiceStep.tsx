@@ -11,7 +11,7 @@ export function ServiceStep({ onSelect }: ServiceStepProps) {
   return (
     <section className="flex flex-col gap-4">
       <div>
-        <p className="text-sm font-semibold text-brand">Paso 1 de 3</p>
+        <p className="text-sm font-semibold text-clinic">Paso 1 de 3</p>
         <h2 className="text-xl font-bold">¿Qué servicio necesitas?</h2>
       </div>
 

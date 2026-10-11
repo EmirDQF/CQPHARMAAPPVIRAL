@@ -13,7 +13,7 @@ export function QuestionStep({
 }: QuestionStepProps) {
   return (
     <fieldset>
-      <legend className="text-sm font-medium text-brand mb-1">
+      <legend className="text-sm font-medium text-clinic mb-1">
         {question.helper}
       </legend>
       <p className="text-xl font-semibold mb-5">{question.title}</p>
@@ -29,7 +29,7 @@ export function QuestionStep({
               onClick={() => onSelect(option.value)}
               className={`w-full text-left px-4 py-3 rounded-xl border-2 transition-colors ${
                 isSelected
-                  ? "border-brand bg-brand-light text-brand-dark"
+                  ? "border-brand bg-pastel-mint text-pastel-mint-ink"
                   : "border-neutral-200 dark:border-neutral-700 hover:border-brand/50"
               }`}
             >

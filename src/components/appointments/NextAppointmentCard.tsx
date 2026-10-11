@@ -39,8 +39,8 @@ export function NextAppointmentCard() {
   const service = getServiceById(nextAppointment.serviceId);
 
   return (
-    <section className="rounded-2xl border-2 border-brand bg-brand-light/40 dark:bg-brand-dark/20 px-6 py-6 flex flex-col gap-2">
-      <p className="text-sm font-semibold text-brand-dark">📅 Próxima cita</p>
+    <section className="rounded-2xl border-2 border-brand bg-pastel-mint px-6 py-6 flex flex-col gap-2">
+      <p className="text-sm font-semibold text-pastel-mint-ink">📅 Próxima cita</p>
       <p className="text-xl font-bold">{service?.name}</p>
       <p className="text-base font-medium">
         {formatAppointmentDate(nextAppointment.date)} ·{" "}

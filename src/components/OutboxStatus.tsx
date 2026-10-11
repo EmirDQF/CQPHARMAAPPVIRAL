@@ -79,7 +79,7 @@ function DeadLetterList({ entries }: { entries: readonly DeadLetterEntry[] }) {
                 type="button"
                 onClick={() => handleRetry(entry.id)}
                 aria-label={`Reintentar envío: ${label} del ${date}`}
-                className="min-h-12 min-w-12 rounded-xl border-2 border-brand px-4 font-semibold text-brand-dark hover:bg-brand-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                className="min-h-12 min-w-12 rounded-xl border-2 border-brand px-4 font-semibold text-pastel-mint-ink hover:bg-pastel-mint focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
               >
                 Reintentar
               </button>

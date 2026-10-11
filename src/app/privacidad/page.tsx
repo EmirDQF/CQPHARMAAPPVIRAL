@@ -80,7 +80,7 @@ const SECTIONS: { title: string; paragraphs: string[] }[] = [
 export default function PrivacidadPage() {
   return (
     <main className="flex-1 w-full max-w-2xl mx-auto px-4 py-12 flex flex-col gap-6">
-      <Link href="/" className="text-sm text-brand font-semibold">
+      <Link href="/" className="text-sm text-clinic font-semibold">
         ← Volver a Artikare
       </Link>
 

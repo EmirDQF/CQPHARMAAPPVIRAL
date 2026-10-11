@@ -36,12 +36,12 @@ export default async function BlogArticlePage({ params }: BlogArticlePageProps) 
 
   return (
     <main className="flex-1 w-full max-w-2xl mx-auto px-4 py-12 flex flex-col gap-6">
-      <Link href="/#educacion" className="text-sm text-brand font-semibold">
+      <Link href="/#educacion" className="text-sm text-clinic font-semibold">
         ← Volver a Artikare
       </Link>
 
       <div className="flex items-center gap-2 text-xs font-semibold">
-        <span className="rounded-full bg-brand-light text-brand-dark px-3 py-1">
+        <span className="rounded-full bg-pastel-mint text-pastel-mint-ink px-3 py-1">
           {article.tag}
         </span>
         <span className="text-neutral-400">Lectura {article.readTimeMinutes} min</span>

@@ -4,7 +4,8 @@ import type { NextAction } from "@/lib/dashboard/myDay";
 import { formatTime24hForDisplay } from "@/lib/utils/date";
 
 interface NextActionCardProps {
-  action: NextAction;
+  /** null hasta conocer la hora del celular: tarjeta del mismo alto, sin sugerencia. */
+  action: NextAction | null;
   onOpenBoneTab: () => void;
 }
 
@@ -16,6 +17,15 @@ function doseLabel(doseId: string): string {
 }
 
 function ActionBody({ action, onOpenBoneTab }: NextActionCardProps) {
+  // Siempre un fragmento con el <p> primero: React reutiliza ese nodo al hidratar
+  // y el texto del servidor ya cuenta como pintura temprana (LCP).
+  if (!action) {
+    return (
+      <>
+        <p className="font-semibold">Estamos preparando tu día: en un momento verás tu siguiente paso.</p>
+      </>
+    );
+  }
   switch (action.kind) {
     case "red-flag":
       return (
@@ -43,7 +53,11 @@ function ActionBody({ action, onOpenBoneTab }: NextActionCardProps) {
         </>
       );
     case "upcoming-dose":
-      return <p className="font-semibold">Tu próxima toma es a las {formatTime24hForDisplay(action.time)} — te esperamos.</p>;
+      return (
+        <>
+          <p className="font-semibold">Tu próxima toma es a las {formatTime24hForDisplay(action.time)} — te esperamos.</p>
+        </>
+      );
     case "register-dexa":
       return (
         <>
@@ -52,14 +66,18 @@ function ActionBody({ action, onOpenBoneTab }: NextActionCardProps) {
         </>
       );
     case "all-done":
-      return <p className="font-semibold">Todo listo por hoy. Gracias por dedicarte este momento.</p>;
+      return (
+        <>
+          <p className="font-semibold">Todo listo por hoy. Gracias por dedicarte este momento.</p>
+        </>
+      );
   }
 }
 
 /** Una sola sugerencia: la más útil ahora (ver suggestNextAction). */
 export function NextActionCard(props: NextActionCardProps) {
   return (
-    <section aria-labelledby="siguiente-accion" className="rounded-card bg-pastel-sky text-pastel-sky-ink px-5 py-4 flex flex-col gap-3">
+    <section aria-labelledby="siguiente-accion" className="min-h-44 rounded-card bg-pastel-sky text-pastel-sky-ink px-5 py-4 flex flex-col gap-3">
       <h2 id="siguiente-accion" className="text-sm font-bold uppercase tracking-wide">Lo siguiente</h2>
       <ActionBody {...props} />
     </section>

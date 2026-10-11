@@ -115,7 +115,7 @@ export function ClinicalRecordsManager() {
       </ul>
 
       {statusMessage && (
-        <p role="status" className="rounded-xl bg-brand-light/60 dark:bg-brand-dark/20 px-4 py-3 font-medium">
+        <p role="status" className="rounded-xl bg-pastel-mint px-4 py-3 font-medium">
           {statusMessage}
         </p>
       )}

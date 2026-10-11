@@ -20,7 +20,7 @@ interface SmartPillboxProps {
   pendingDoseIds: readonly string[];
   onTake: (doseId: string) => void;
   onUndo: (doseId: string) => void;
-  now: Date;
+  now: Date | null;
 }
 
 interface DoseSlotCardProps {
@@ -29,12 +29,12 @@ interface DoseSlotCardProps {
   isPending: boolean;
   onTake: () => void;
   onUndo: () => void;
-  now: Date;
+  now: Date | null;
 }
 
 function DoseSlotCard({ dose, isTaken, isPending, onTake, onUndo, now }: DoseSlotCardProps) {
   const style = PERIOD_STYLE[dose.period];
-  const status = doseSlotStatus(dose.time, isTaken || isPending, now);
+  const status = now ? doseSlotStatus(dose.time, isTaken || isPending, now) : null;
   return (
     <li className={`rounded-card px-4 py-4 flex flex-col gap-3 ${style.card}`}>
       <div className="flex items-start justify-between gap-3">
@@ -45,11 +45,11 @@ function DoseSlotCard({ dose, isTaken, isPending, onTake, onUndo, now }: DoseSlo
           </p>
           <p className="text-lg font-semibold">{dose.label}</p>
         </div>
-        <span className="rounded-full bg-surface/70 px-3 py-1 text-sm font-bold whitespace-nowrap">{STATUS_TEXT[status]}</span>
+        <span className="rounded-full bg-surface/70 px-3 py-1 text-sm font-bold whitespace-nowrap">{status ? STATUS_TEXT[status] : " "}</span>
       </div>
-      {isTaken && <p className="min-h-12 flex items-center font-bold">✓ Tomada</p>}
+      {isTaken && <p className="min-h-14 flex items-center font-bold">✓ Tomada</p>}
       {isPending && (
-        <div className="flex items-center justify-between gap-3">
+        <div className="min-h-14 flex items-center justify-between gap-3">
           <p className="font-bold">✓ Anotada</p>
           <button
             type="button"

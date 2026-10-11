@@ -96,7 +96,7 @@ export function ArticularTest() {
       {step === 0 ? (
         <fieldset className="flex flex-col gap-5">
           <div>
-            <legend className="text-sm font-medium text-brand mb-1">
+            <legend className="text-sm font-medium text-clinic mb-1">
               Datos generales
             </legend>
             <p className="text-xl font-semibold">
@@ -133,7 +133,7 @@ export function ArticularTest() {
                   onClick={() => setSex(option)}
                   className={`flex-1 rounded-xl border-2 px-4 py-3 capitalize transition-colors ${
                     sex === option
-                      ? "border-brand bg-brand-light text-brand-dark"
+                      ? "border-brand bg-pastel-mint text-pastel-mint-ink"
                       : "border-neutral-200 dark:border-neutral-700 hover:border-brand/50"
                   }`}
                 >

@@ -48,7 +48,7 @@ export function AccountInvite({ moment, streakDays = 0 }: AccountInviteProps) {
       {isVisible && (
         <section
           aria-labelledby={titleId}
-          className="rounded-2xl border-2 border-brand/30 bg-brand-light/40 dark:bg-brand-dark/20 px-5 py-5 flex flex-col gap-3 print:hidden"
+          className="rounded-2xl border-2 border-brand/30 bg-pastel-mint px-5 py-5 flex flex-col gap-3 print:hidden"
         >
           <h2 id={titleId} className="text-lg font-bold">
             {ACCOUNT_INVITE_COPY.title}
@@ -70,7 +70,7 @@ export function AccountInvite({ moment, streakDays = 0 }: AccountInviteProps) {
               {ACCOUNT_INVITE_COPY.accept}
             </button>
           </div>
-          <Link href="/acceso" className="text-sm font-semibold text-brand self-start">
+          <Link href="/acceso" className="text-sm font-semibold text-clinic self-start">
             {ACCOUNT_INVITE_COPY.signIn}
           </Link>
         </section>

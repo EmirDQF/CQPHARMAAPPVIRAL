@@ -26,7 +26,7 @@ export function AccessScreen() {
         <AccessPanel channel={getEmailOtpChannel()} />
       )}
 
-      <Link href="/app" className="font-semibold text-brand">
+      <Link href="/app" className="font-semibold text-clinic">
         ← Volver a mi panel
       </Link>
     </main>

@@ -67,7 +67,7 @@ export function DataExportSection({ authStatus }: DataExportSectionProps) {
           type="button"
           onClick={handleDownload}
           disabled={isWorking}
-          className="min-h-12 rounded-xl bg-brand text-white font-semibold px-5 disabled:opacity-60"
+          className="min-h-12 rounded-xl bg-action-strong text-white font-semibold px-5 disabled:opacity-60"
         >
           {status === "working" ? "Preparando…" : "Descargar mis datos (JSON)"}
         </button>
@@ -76,7 +76,7 @@ export function DataExportSection({ authStatus }: DataExportSectionProps) {
           onClick={handleTogglePreview}
           disabled={isWorking}
           aria-expanded={preview !== null}
-          className="min-h-12 rounded-xl border-2 border-brand text-brand font-semibold px-5 disabled:opacity-60"
+          className="min-h-12 rounded-xl border-2 border-brand text-clinic font-semibold px-5 disabled:opacity-60"
         >
           {preview === null ? "Ver mis datos aquí" : "Ocultar mis datos"}
         </button>

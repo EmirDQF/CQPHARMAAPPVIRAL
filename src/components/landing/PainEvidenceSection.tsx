@@ -4,7 +4,7 @@ export function PainEvidenceSection() {
   return (
     <section className="w-full max-w-4xl mx-auto px-4 py-16 flex flex-col gap-8">
       <div className="text-center flex flex-col gap-3">
-        <h2 className="text-2xl sm:text-3xl font-bold text-balance">
+        <h2 className="text-2xl sm:text-3xl font-bold text-clinic text-balance">
           ¿Sabías que la osteoporosis no avisa con dolor, sino con fracturas?
         </h2>
         <p className="text-neutral-600 dark:text-neutral-300 max-w-2xl mx-auto text-balance">

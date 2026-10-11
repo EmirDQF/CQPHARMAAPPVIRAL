@@ -64,7 +64,7 @@ export function BoneComparisonVisual() {
   return (
     <div className="w-full flex items-center gap-4 sm:gap-8 justify-center py-4">
       <BoneCrossSection variant="healthy" label="Hueso Sano" />
-      <div className="text-2xl text-neutral-300 dark:text-neutral-700" aria-hidden="true">
+      <div className="text-2xl text-muted" aria-hidden="true">
         vs
       </div>
       <BoneCrossSection variant="osteoporotic" label="Hueso con Osteoporosis" />

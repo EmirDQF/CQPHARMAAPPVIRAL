@@ -25,7 +25,7 @@ export function ConsentCheckbox({ checked, onChange }: ConsentCheckboxProps) {
           href={PRIVACY_POLICY_PATH}
           target="_blank"
           rel="noopener noreferrer"
-          className="font-semibold text-brand underline"
+          className="font-semibold text-clinic underline"
         >
           Política de Privacidad
         </a>

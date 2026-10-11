@@ -15,7 +15,6 @@ import { useClinicalStatus } from "../useActiveRedFlags";
 import { BoneSummaryCard } from "./BoneSummaryCard";
 import { DayHeader } from "./DayHeader";
 import { DayProgressRing } from "./DayProgressRing";
-import { MyDaySkeleton } from "./MyDaySkeleton";
 import { NextActionCard } from "./NextActionCard";
 import { QuickActions } from "./QuickActions";
 
@@ -24,10 +23,12 @@ interface MyDayProps {
   onOpenBoneTab: () => void;
   /** Celebración de logro nuevo: va justo después del saludo. */
   celebration?: ReactNode;
+  /** Avisos secundarios: se pintan junto con el resto tras hidratar, para no saltar sobre el esqueleto (CLS). */
+  footer?: ReactNode;
 }
 
 /** Pantalla principal de /app, escaneable en 5 segundos. La bandera roja la pinta AppShell por encima. */
-export function MyDay({ firstName, onOpenBoneTab, celebration }: MyDayProps) {
+export function MyDay({ firstName, onOpenBoneTab, celebration, footer }: MyDayProps) {
   const isHydrated = useHydrated();
   const now = useMinuteClock();
   const pillbox = useSyncExternalStore(pillboxStore.subscribe, pillboxStore.getSnapshot, pillboxStore.getServerSnapshot);
@@ -35,24 +36,29 @@ export function MyDay({ firstName, onOpenBoneTab, celebration }: MyDayProps) {
   const { boneScan, redFlags } = useClinicalStatus();
   const deferredDose = useDeferredDose();
 
-  if (!isHydrated) return <MyDaySkeleton />;
-
-  const today = toLimaIsoDate(now);
-  const takenDoseIds = pillbox.takenDoseIdsByDate[today] ?? [];
+  const today = now ? toLimaIsoDate(now) : null;
+  const takenDoseIds = (today && pillbox.takenDoseIdsByDate[today]) || [];
   const checkInDone = painEntries.some((entry) => entry.date === today);
   const doneOrPending = [...takenDoseIds, ...deferredDose.pendingDoseIds];
   const hasHistory = Object.values(pillbox.takenDoseIdsByDate).some((doseIds) => doseIds.length > 0);
-  const nextAction = suggestNextAction({
-    hasRedFlag: redFlags.length > 0,
-    takenDoseIds: doneOrPending,
-    checkInDone,
-    hasBoneScan: boneScan !== null,
-    now,
-  });
+  const nextAction = now
+    ? suggestNextAction({
+        hasRedFlag: redFlags.length > 0,
+        takenDoseIds: doneOrPending,
+        checkInDone,
+        hasBoneScan: boneScan !== null,
+        now,
+      })
+    : null;
 
   return (
     <div className="flex flex-col gap-5">
-      <DayHeader firstName={firstName} streak={calculateStreak(pillbox, now)} hasHistory={hasHistory} now={now} />
+      <DayHeader
+        firstName={firstName}
+        streak={isHydrated && now ? calculateStreak(pillbox, now) : null}
+        hasHistory={hasHistory}
+        now={now}
+      />
       {celebration}
       <section aria-label="Tu progreso de hoy" className="rounded-card bg-pastel-mint text-pastel-mint-ink px-5 py-5">
         <DayProgressRing progress={buildDayProgress(doneOrPending, checkInDone)} />
@@ -69,6 +75,7 @@ export function MyDay({ firstName, onOpenBoneTab, celebration }: MyDayProps) {
       <PainCheckIn />
       <PainTrendChart />
       <BoneSummaryCard scan={boneScan} onOpenBoneTab={onOpenBoneTab} />
+      {footer}
     </div>
   );
 }

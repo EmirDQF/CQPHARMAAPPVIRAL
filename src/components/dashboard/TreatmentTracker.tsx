@@ -43,7 +43,7 @@ export function TreatmentTracker() {
             <div className="h-3 w-full rounded-full bg-neutral-200 dark:bg-neutral-800 overflow-hidden">
               <div
                 className={`h-full rounded-full ${
-                  bottle.needsRestock ? "bg-risk-moderate" : "bg-brand"
+                  bottle.needsRestock ? "bg-risk-moderate" : "bg-action-strong"
                 }`}
                 style={{ width: `${bottle.percentRemaining}%` }}
               />

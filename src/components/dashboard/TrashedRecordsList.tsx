@@ -32,7 +32,7 @@ export function TrashedRecordsList({ items, onRestore }: TrashedRecordsListProps
                 type="button"
                 onClick={() => onRestore(item.id)}
                 aria-label={`Deshacer el borrado: ${label}`}
-                className="min-h-12 shrink-0 rounded-xl border-2 border-brand text-brand font-semibold px-4"
+                className="min-h-12 shrink-0 rounded-xl border-2 border-brand text-clinic font-semibold px-4"
               >
                 Deshacer
               </button>

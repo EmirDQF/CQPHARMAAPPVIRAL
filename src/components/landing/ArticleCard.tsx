@@ -12,7 +12,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
       className="flex flex-col gap-3 rounded-card border border-line bg-surface shadow-soft p-6 h-full hover:border-brand transition-colors"
     >
       <div className="flex items-center gap-2 text-xs font-semibold">
-        <span className="rounded-full bg-brand-light text-brand-dark px-3 py-1">
+        <span className="rounded-full bg-pastel-mint text-pastel-mint-ink px-3 py-1">
           {article.tag}
         </span>
         <span className="text-neutral-400">Lectura {article.readTimeMinutes} min</span>
@@ -23,7 +23,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
         {article.excerpt}
       </p>
 
-      <span className="text-sm font-semibold text-brand mt-auto">
+      <span className="text-sm font-semibold text-clinic mt-auto">
         Leer artículo completo →
       </span>
     </Link>

@@ -38,7 +38,7 @@ export function InstallPwaBanner() {
   }
 
   return (
-    <div className="rounded-xl bg-brand text-white px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+    <div className="rounded-xl bg-action-strong text-white px-4 py-3 flex flex-wrap items-center justify-between gap-3">
       <p className="text-sm font-medium">
         📲 Instala Artikare en tu pantalla de inicio para no perder tus recordatorios médicos.
       </p>
@@ -46,7 +46,7 @@ export function InstallPwaBanner() {
         <button
           type="button"
           onClick={handleInstall}
-          className="min-h-12 rounded-xl bg-white text-brand-dark font-semibold px-4"
+          className="min-h-12 rounded-xl bg-surface text-pastel-mint-ink font-semibold px-4"
         >
           Instalar
         </button>

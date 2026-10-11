@@ -15,7 +15,7 @@ export function ProductCard({ pack }: ProductCardProps) {
         {pack.badges.map((badge) => (
           <span
             key={badge}
-            className="text-xs font-semibold rounded-full bg-brand-light text-brand-dark px-3 py-1"
+            className="text-xs font-semibold rounded-full bg-pastel-mint text-pastel-mint-ink px-3 py-1"
           >
             {badge}
           </span>
@@ -30,7 +30,7 @@ export function ProductCard({ pack }: ProductCardProps) {
       <ul className="text-sm text-neutral-600 dark:text-neutral-300 flex flex-col gap-1">
         {pack.formula.map((item) => (
           <li key={item} className="flex gap-2">
-            <span className="text-brand" aria-hidden="true">
+            <span className="text-clinic" aria-hidden="true">
               •
             </span>
             <span>{item}</span>

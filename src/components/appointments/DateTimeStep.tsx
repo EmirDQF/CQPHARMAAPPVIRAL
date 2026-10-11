@@ -22,7 +22,7 @@ export function DateTimeStep({ availableDays, onBack, onSelect }: DateTimeStepPr
   return (
     <section className="flex flex-col gap-4">
       <div>
-        <p className="text-sm font-semibold text-brand">Paso 2 de 3</p>
+        <p className="text-sm font-semibold text-clinic">Paso 2 de 3</p>
         <h2 className="text-xl font-bold">Elige fecha y turno</h2>
       </div>
 
@@ -35,7 +35,7 @@ export function DateTimeStep({ availableDays, onBack, onSelect }: DateTimeStepPr
             aria-pressed={selectedDate === day.date}
             className={`min-h-12 rounded-xl border-2 font-semibold text-sm px-2 py-2 transition-colors capitalize ${
               selectedDate === day.date
-                ? "border-brand bg-brand-light text-brand-dark"
+                ? "border-brand bg-pastel-mint text-pastel-mint-ink"
                 : "border-neutral-200 dark:border-neutral-700 hover:border-brand/50"
             }`}
           >
@@ -73,7 +73,7 @@ export function DateTimeStep({ availableDays, onBack, onSelect }: DateTimeStepPr
       <button
         type="button"
         onClick={onBack}
-        className="self-start text-sm font-semibold text-muted hover:text-brand"
+        className="self-start text-sm font-semibold text-muted hover:text-clinic"
       >
         ← Cambiar servicio
       </button>

@@ -27,7 +27,7 @@ function downloadRemindersIcs(): void {
 }
 
 const SECONDARY_BUTTON_CLASS =
-  "min-h-12 rounded-xl border-2 border-brand text-brand font-semibold px-4 transition-colors hover:bg-brand-light dark:hover:bg-brand-dark/30";
+  "min-h-12 rounded-xl border-2 border-brand text-clinic font-semibold px-4 transition-colors hover:bg-pastel-mint";
 
 function CalendarButton() {
   return (
@@ -70,7 +70,7 @@ export function ReminderOffer({ support, onEnable, onSnooze }: ReminderOfferProp
   return (
     <section
       aria-labelledby="reminder-offer-title"
-      className="rounded-2xl border border-brand/30 bg-brand-light/40 dark:bg-brand-dark/20 p-4 flex flex-col gap-3"
+      className="rounded-2xl border border-brand/30 bg-pastel-mint p-4 flex flex-col gap-3"
     >
       <h2 id="reminder-offer-title" className="text-base font-bold">
         ⏰ ¿Te recordamos tus tomas?
@@ -81,7 +81,7 @@ export function ReminderOffer({ support, onEnable, onSnooze }: ReminderOfferProp
           <button
             type="button"
             onClick={onEnable}
-            className="min-h-12 rounded-xl bg-brand text-white font-semibold px-4"
+            className="min-h-12 rounded-xl bg-action-strong text-white font-semibold px-4"
           >
             Activar recordatorios
           </button>

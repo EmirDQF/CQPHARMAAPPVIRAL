@@ -37,7 +37,7 @@ export function PatientDataStep({ onBack, onSubmit }: PatientDataStepProps) {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <div>
-        <p className="text-sm font-semibold text-brand">Paso 3 de 3</p>
+        <p className="text-sm font-semibold text-clinic">Paso 3 de 3</p>
         <h2 className="text-xl font-bold">Datos del paciente</h2>
       </div>
 
@@ -82,7 +82,7 @@ export function PatientDataStep({ onBack, onSubmit }: PatientDataStepProps) {
             aria-pressed={bookedBy === "propia"}
             className={`flex-1 min-h-12 rounded-xl border-2 font-semibold transition-colors ${
               bookedBy === "propia"
-                ? "border-brand bg-brand-light text-brand-dark"
+                ? "border-brand bg-pastel-mint text-pastel-mint-ink"
                 : "border-neutral-200 dark:border-neutral-700"
             }`}
           >
@@ -94,7 +94,7 @@ export function PatientDataStep({ onBack, onSubmit }: PatientDataStepProps) {
             aria-pressed={bookedBy === "hijo"}
             className={`flex-1 min-h-12 rounded-xl border-2 font-semibold transition-colors ${
               bookedBy === "hijo"
-                ? "border-brand bg-brand-light text-brand-dark"
+                ? "border-brand bg-pastel-mint text-pastel-mint-ink"
                 : "border-neutral-200 dark:border-neutral-700"
             }`}
           >

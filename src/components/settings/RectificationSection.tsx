@@ -19,13 +19,13 @@ export function RectificationSection() {
         <button
           type="button"
           onClick={() => setIsProfileOpen(true)}
-          className="min-h-12 rounded-xl bg-brand text-white font-semibold px-5"
+          className="min-h-12 rounded-xl bg-action-strong text-white font-semibold px-5"
         >
           Corregir mi perfil médico
         </button>
         <Link
           href="/app"
-          className="min-h-12 flex items-center justify-center rounded-xl border-2 border-brand text-brand font-semibold px-5"
+          className="min-h-12 flex items-center justify-center rounded-xl border-2 border-brand text-clinic font-semibold px-5"
         >
           Ir a Mi Panel
         </Link>

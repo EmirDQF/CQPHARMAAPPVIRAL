@@ -78,7 +78,6 @@ export function AppShell() {
             </Link>
           </div>
         </div>
-        <InstallPwaBanner />
       </header>
 
       <main className="flex-1 w-full max-w-2xl mx-auto px-4 py-6 pb-28 flex flex-col gap-6 text-base sm:text-lg">
@@ -99,17 +98,21 @@ export function AppShell() {
                   onOpenAchievements={() => setActiveTab("logros")}
                 />
               }
+              footer={
+                <>
+                  {reminders.shouldOffer && reminders.support && (
+                    <ReminderOffer
+                      support={reminders.support}
+                      onEnable={reminders.requestPermission}
+                      onSnooze={reminders.snooze}
+                    />
+                  )}
+                  <DailyReinforcementBanner />
+                  <AccountBackupOffer />
+                  <AccountInvite moment="racha" streakDays={streakDays} />
+                </>
+              }
             />
-            {reminders.shouldOffer && reminders.support && (
-              <ReminderOffer
-                support={reminders.support}
-                onEnable={reminders.requestPermission}
-                onSnooze={reminders.snooze}
-              />
-            )}
-            <DailyReinforcementBanner />
-            <AccountBackupOffer />
-            <AccountInvite moment="racha" streakDays={streakDays} />
           </>
         )}
 
@@ -130,7 +133,7 @@ export function AppShell() {
             {nextAppointment && (
               <Link
                 href="/citas"
-                className="min-h-12 flex items-center justify-center rounded-xl border-2 border-brand text-brand font-semibold px-5 transition-colors hover:bg-brand-light dark:hover:bg-brand-dark/30"
+                className="min-h-12 flex items-center justify-center rounded-xl border-2 border-brand text-clinic font-semibold px-5 transition-colors hover:bg-pastel-mint"
               >
                 Agendar otra cita
               </Link>
@@ -146,6 +149,9 @@ export function AppShell() {
           </>
         )}
         </div>
+
+        {/* Al final y no en el encabezado: aparece después de hidratar y no debe empujar el contenido (CLS). */}
+        <InstallPwaBanner />
       </main>
 
       <nav

@@ -14,7 +14,7 @@ export function DailyReinforcementBanner() {
   const message = buildDailyReinforcementMessage(streakDays);
 
   return (
-    <p className="rounded-xl bg-brand-light/60 dark:bg-brand-dark/20 text-brand-dark dark:text-brand-light px-4 py-3 text-sm font-medium">
+    <p className="rounded-xl bg-pastel-mint text-pastel-mint-ink px-4 py-3 text-sm font-medium">
       💬 {message}
     </p>
   );

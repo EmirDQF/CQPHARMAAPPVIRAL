@@ -25,7 +25,7 @@ export function DexaVaultSection() {
           <button
             type="button"
             onClick={() => setIsModalOpen(true)}
-            className="min-h-12 self-start rounded-xl border-2 border-brand text-brand font-semibold px-4 hover:bg-brand-light dark:hover:bg-brand-dark/30 transition-colors"
+            className="min-h-12 self-start rounded-xl border-2 border-brand text-clinic font-semibold px-4 hover:bg-pastel-mint transition-colors"
           >
             <span aria-hidden="true">📋 </span>Actualizar mi Bóveda DEXA
           </button>

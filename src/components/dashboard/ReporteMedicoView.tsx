@@ -113,7 +113,7 @@ export function ReporteMedicoView() {
     <div className="flex flex-col min-h-dvh bg-background text-foreground">
       <div className="w-full max-w-2xl mx-auto px-4 py-6 flex flex-col gap-6 print:px-0 print:py-0 print:max-w-none">
         <div className="flex items-center justify-between gap-3 print:hidden">
-          <Link href="/app" className="text-sm font-semibold text-brand">
+          <Link href="/app" className="text-sm font-semibold text-clinic">
             ← Volver a mi panel
           </Link>
           <button
@@ -211,7 +211,7 @@ export function ReporteMedicoView() {
               </button>
               <Link
                 href="/citas"
-                className="min-h-12 flex-1 flex items-center justify-center rounded-xl border-2 border-brand text-brand font-semibold px-4 transition-colors hover:bg-brand-light dark:hover:bg-brand-dark/30"
+                className="min-h-12 flex-1 flex items-center justify-center rounded-xl border-2 border-brand text-clinic font-semibold px-4 transition-colors hover:bg-pastel-mint"
               >
                 Agendar densitometría
               </Link>

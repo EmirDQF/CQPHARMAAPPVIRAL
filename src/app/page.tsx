@@ -13,16 +13,16 @@ export default function Home() {
       <SiteHeader />
 
       <main className="flex-1 flex flex-col">
-        <div className="flex flex-col items-center px-4 py-16 gap-12">
+        <div className="flex flex-col items-center px-4 pt-12 pb-16 gap-10 bg-gradient-to-b from-pastel-sky to-canvas">
           <div className="max-w-2xl text-center flex flex-col gap-4">
-            <p className="text-brand dark:text-teal-300 font-semibold uppercase tracking-wide text-sm">
+            <p className="text-pastel-sky-ink font-semibold uppercase tracking-wide text-sm">
               Artikare · Respaldado por CQ Pharma
             </p>
-            <h1 className="text-3xl sm:text-4xl font-bold text-balance">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-balance text-pastel-sky-ink">
               Descubre la salud real de tus articulaciones y huesos antes de
               que el dolor limite tu vida.
             </h1>
-            <p className="text-neutral-600 dark:text-neutral-300 text-balance">
+            <p className="text-ink text-balance">
               Test orientativo interactivo en 2 minutos, densitometría ósea
               precisa y nutrición celular clínica.
             </p>

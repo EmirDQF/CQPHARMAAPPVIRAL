@@ -60,7 +60,7 @@ function DexaEmptyState({ onUploadClick }: DexaEmptyStateProps) {
         </button>
         <Link
           href="/citas"
-          className="min-h-12 flex-1 flex items-center justify-center rounded-xl border-2 border-brand text-brand font-semibold px-4 transition-colors hover:bg-brand-light dark:hover:bg-brand-dark/30"
+          className="min-h-12 flex-1 flex items-center justify-center rounded-xl border-2 border-brand text-clinic font-semibold px-4 transition-colors hover:bg-pastel-mint"
         >
           Agendar densitometría
         </Link>

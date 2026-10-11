@@ -70,7 +70,7 @@ function ChoiceGroup<T extends string>({
             key={option.value}
             className={`flex-1 min-h-12 flex items-center justify-center rounded-xl border-2 px-4 font-semibold cursor-pointer transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand ${
               value === option.value
-                ? "border-brand bg-brand-light text-brand-dark"
+                ? "border-brand bg-pastel-mint text-pastel-mint-ink"
                 : "border-neutral-200 dark:border-neutral-700"
             }`}
           >

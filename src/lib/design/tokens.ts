@@ -99,5 +99,10 @@ export const CONTRAST_PAIRS: readonly ContrastPair[] = [
   { foreground: "color-progress", background: "color-surface", minRatio: AA_GRAPHIC },
   { foreground: "color-progress", background: "color-pastel-mint", minRatio: AA_GRAPHIC },
   { foreground: "color-progress", background: "color-pastel-sky", minRatio: AA_GRAPHIC },
+  { foreground: "color-ink", background: "color-pastel-sky", minRatio: AA_TEXT },
+  { foreground: "color-clinic", background: "color-pastel-mint", minRatio: AA_TEXT },
+  { foreground: "color-clinic", background: "color-pastel-sky", minRatio: AA_TEXT },
+  { foreground: "color-ink", background: "color-pastel-mint", minRatio: AA_TEXT },
+  { foreground: "color-pastel-mint-ink", background: "color-surface", minRatio: AA_TEXT },
   ...pastelPairs,
 ];

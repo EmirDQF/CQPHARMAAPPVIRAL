@@ -71,9 +71,12 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
+    // En Android, Capacitor 8 (SystemBars) escribe --safe-area-inset-* en el style de
+    // <html> antes de hidratar; suppressHydrationWarning solo cubre los atributos de <html>.
     <html
       lang="es-PE"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
         {children}

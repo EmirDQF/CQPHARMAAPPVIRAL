@@ -10,7 +10,7 @@ import type { SyncRequester } from "./handleSyncBatch";
  */
 export const ACCOUNT_DELETION_CONFIRMATION = "BORRAR MIS DATOS";
 
-export const accountDeletionBodySchema = z.object({
+const accountDeletionBodySchema = z.object({
   confirmacion: z.literal(ACCOUNT_DELETION_CONFIRMATION),
 });
 

@@ -18,7 +18,7 @@ const tScoreSchema = z
     message: "El T-score admite hasta 2 decimales",
   });
 
-export const RADIOLOGY_CENTER_MAX = 120;
+const RADIOLOGY_CENTER_MAX = 120;
 
 const dexaScanValueColumns = {
   lumbar_t: tScoreSchema,

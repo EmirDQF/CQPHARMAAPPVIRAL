@@ -29,7 +29,7 @@ export function buildInviteUrl(siteUrl: string, audience: InviteAudience, channe
   return url.href;
 }
 
-export function buildWhatsAppShareLink(text: string, url: string): string {
+function buildWhatsAppShareLink(text: string, url: string): string {
   return `https://wa.me/?text=${encodeURIComponent(`${text} ${url}`)}`;
 }
 

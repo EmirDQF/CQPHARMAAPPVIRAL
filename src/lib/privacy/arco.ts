@@ -7,7 +7,7 @@ import { CONSENT_VERSION } from "./consent";
  * Lo de la cuenta lo entregan /api/arco/export y /api/arco/delete.
  */
 
-export const LOCAL_DATA_PREFIX = "artikare_";
+const LOCAL_DATA_PREFIX = "artikare_";
 
 /** Nombre legible de cada clave local; las que no estén aquí salen con su nombre técnico. */
 const LOCAL_SECTION_NAMES: Readonly<Record<string, string>> = {

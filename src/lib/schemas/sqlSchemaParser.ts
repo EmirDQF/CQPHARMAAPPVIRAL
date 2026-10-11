@@ -37,7 +37,7 @@ export interface SqlSchema {
 // ─── Léxico ──────────────────────────────────────────────────────────────────
 
 /** Quita comentarios `--` y `/* *\/` respetando literales '…' y cuerpos $tag$…$tag$. */
-export function stripSqlComments(sql: string): string {
+function stripSqlComments(sql: string): string {
   let output = "";
   let index = 0;
   while (index < sql.length) {
@@ -78,7 +78,7 @@ function readQuoted(sql: string, index: number): string | null {
 }
 
 /** Parte `text` por `separator` solo en el nivel superior (fuera de paréntesis y literales). */
-export function splitTopLevel(text: string, separator: string): string[] {
+function splitTopLevel(text: string, separator: string): string[] {
   const parts: string[] = [];
   let depth = 0;
   let current = "";
@@ -464,7 +464,7 @@ function parseDrop(state: ParserState, statement: string): void {
 }
 
 /** Separa sentencias por `;` fuera de literales, cuerpos $$ y paréntesis. */
-export function splitStatements(sql: string): string[] {
+function splitStatements(sql: string): string[] {
   return splitTopLevel(sql, ";").map((statement) => statement.replace(/\s+/g, " ").trim());
 }
 
@@ -484,100 +484,4 @@ export function parseMigrations(sql: string): SqlSchema {
     ])
   );
   return { enums: state.enums, tables };
-}
-
-// ─── Análisis de expresiones CHECK ───────────────────────────────────────────
-
-export type CheckAtom =
-  | { kind: "lowerBound"; value: number; inclusive: boolean }
-  | { kind: "upperBound"; value: number; inclusive: boolean }
-  | { kind: "lengthMin"; value: number }
-  | { kind: "lengthMax"; value: number }
-  | { kind: "pattern"; source: string }
-  | { kind: "maxScale"; value: number }
-  | { kind: "notFutureDate"; timeZone: string }
-  | { kind: "notFutureTimestamp"; skewMinutes: number }
-  | { kind: "minItems"; value: number }
-  | { kind: "jsonObject" }
-  | { kind: "maxStoredBytes"; value: number }
-  | { kind: "notBefore"; otherColumn: string }
-  | { kind: "oneOf"; values: string[] }
-  | { kind: "unknown"; expression: string };
-
-const NUMBER = String.raw`(-?\d+(?:\.\d+)?)`;
-
-function stripOuterParens(expression: string): string {
-  let current = expression.trim();
-  while (current.startsWith("(") && findClosingParen(current, 0) === current.length - 1) {
-    current = current.slice(1, -1).trim();
-  }
-  return current;
-}
-
-/** Parte por AND del nivel superior sin romper `between x and y`. */
-function splitConjunction(expression: string): string[] {
-  const AND_MARK = "\u0000";
-  const pieces: string[] = [];
-  const marked = expression.replace(/\s+and\s+/gi, AND_MARK);
-  for (const markedPiece of splitTopLevel(marked, AND_MARK)) {
-    // Los AND dentro de paréntesis no parten el átomo: se restauran tal cual.
-    const piece = markedPiece.replaceAll(AND_MARK, " and ");
-    const previous = pieces.at(-1);
-    if (previous !== undefined && /\bbetween\s+\S+$/i.test(previous)) {
-      pieces[pieces.length - 1] = `${previous} and ${piece}`;
-    } else {
-      pieces.push(piece);
-    }
-  }
-  return pieces;
-}
-
-function analyzeAtom(column: string, rawAtom: string): CheckAtom[] {
-  const c = column;
-  // CHECK con NULL da "unknown" y pasa: `c is null or X` equivale a `X`.
-  const atom = stripOuterParens(rawAtom).replace(new RegExp(`^${c} is null or `, "i"), "");
-  const rules: [RegExp, (match: RegExpExecArray) => CheckAtom[]][] = [
-    [new RegExp(`^${c} between ${NUMBER} and ${NUMBER}$`, "i"), (m) => [
-      { kind: "lowerBound", value: Number(m[1]), inclusive: true },
-      { kind: "upperBound", value: Number(m[2]), inclusive: true },
-    ]],
-    [new RegExp(`^${c} (>=|>) ${NUMBER}$`, "i"), (m) => [
-      { kind: "lowerBound", value: Number(m[2]), inclusive: m[1] === ">=" },
-    ]],
-    [new RegExp(`^${c} (<=|<) ${NUMBER}$`, "i"), (m) => [
-      { kind: "upperBound", value: Number(m[2]), inclusive: m[1] === "<=" },
-    ]],
-    [new RegExp(`^char_length\\(${c}\\) between (\\d+) and (\\d+)$`, "i"), (m) => [
-      { kind: "lengthMin", value: Number(m[1]) },
-      { kind: "lengthMax", value: Number(m[2]) },
-    ]],
-    [new RegExp(`^char_length\\(${c}\\) <= (\\d+)$`, "i"), (m) => [{ kind: "lengthMax", value: Number(m[1]) }]],
-    [new RegExp(`^char_length\\(${c}\\) >= (\\d+)$`, "i"), (m) => [{ kind: "lengthMin", value: Number(m[1]) }]],
-    [new RegExp(`^${c} ~ '((?:[^']|'')*)'$`, "i"), (m) => [{ kind: "pattern", source: m[1].replace(/''/g, "'") }]],
-    [new RegExp(`^scale\\(${c}\\) <= (\\d+)$`, "i"), (m) => [{ kind: "maxScale", value: Number(m[1]) }]],
-    [new RegExp(`^${c} <= \\(now\\(\\) at time zone '([^']+)'\\)::date$`, "i"), (m) => [
-      { kind: "notFutureDate", timeZone: m[1] },
-    ]],
-    [new RegExp(`^${c} <= now\\(\\) \\+ interval '(\\d+) minutes'$`, "i"), (m) => [
-      { kind: "notFutureTimestamp", skewMinutes: Number(m[1]) },
-    ]],
-    [new RegExp(`^cardinality\\(${c}\\) >= (\\d+)$`, "i"), (m) => [{ kind: "minItems", value: Number(m[1]) }]],
-    [new RegExp(`^jsonb_typeof\\(${c}\\) = 'object'$`, "i"), () => [{ kind: "jsonObject" }]],
-    [new RegExp(`^pg_column_size\\(${c}\\) <= (\\d+)$`, "i"), (m) => [{ kind: "maxStoredBytes", value: Number(m[1]) }]],
-    [new RegExp(`^${c} >= ([a-z_]\\w*)$`, "i"), (m) => [{ kind: "notBefore", otherColumn: m[1].toLowerCase() }]],
-    [new RegExp(`^${c} in \\((.+)\\)$`, "i"), (m) => [{
-      kind: "oneOf",
-      values: tokenize(m[1]).filter((token) => token.kind === "string").map((token) => token.text),
-    }]],
-  ];
-  for (const [pattern, build] of rules) {
-    const match = pattern.exec(atom);
-    if (match) return build(match);
-  }
-  return [{ kind: "unknown", expression: atom }];
-}
-
-/** Traduce el CHECK de una columna a átomos verificables; lo no reconocido queda como `unknown`. */
-export function analyzeColumnCheck(column: string, expression: string): CheckAtom[] {
-  return splitConjunction(stripOuterParens(expression)).flatMap((atom) => analyzeAtom(column, atom));
 }

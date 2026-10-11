@@ -2,7 +2,7 @@ import { z } from "zod";
 import { hasAtMostDecimals, timestampSchema } from "./shared";
 
 /** Slug del catálogo; replica el CHECK de `products.id` (y lo heredan las FK `product_id`). */
-export const PRODUCT_ID_PATTERN = /^[a-z0-9-]{1,64}$/;
+const PRODUCT_ID_PATTERN = /^[a-z0-9-]{1,64}$/;
 export const productIdSchema = z.string().regex(PRODUCT_ID_PATTERN);
 
 /** `price_pen numeric(10, 2)`: céntimos de sol, nunca un tercer decimal. */

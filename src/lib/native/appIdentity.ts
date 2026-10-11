@@ -7,7 +7,7 @@
 export const ANDROID_APP_ID = "com.artikare.app";
 
 /** Mismo valor por defecto que layout.tsx y capacitor.config.ts. */
-export const DEFAULT_SITE_URL = "https://artikare.com";
+const DEFAULT_SITE_URL = "https://artikare.com";
 
 export function readSiteUrl(): string {
   return process.env.NEXT_PUBLIC_SITE_URL ?? DEFAULT_SITE_URL;

@@ -4,7 +4,7 @@
  * Esta regla decide si se puede compilar; nunca crea ni inventa un keystore.
  * La misma correspondencia usa android/app/build.gradle.
  */
-export const SIGNING_SETTINGS = [
+const SIGNING_SETTINGS = [
   { property: "storeFile", env: "ANDROID_KEYSTORE_PATH" },
   { property: "storePassword", env: "ANDROID_KEYSTORE_PASSWORD" },
   { property: "keyAlias", env: "ANDROID_KEY_ALIAS" },

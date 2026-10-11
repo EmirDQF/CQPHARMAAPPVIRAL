@@ -33,7 +33,7 @@ function isTrashedRecord(value: unknown): value is TrashedRecord {
 }
 
 /** Descarta entradas corruptas sin perder las válidas. */
-export function parseStoredTrash(raw: unknown): TrashedRecord[] | null {
+function parseStoredTrash(raw: unknown): TrashedRecord[] | null {
   return Array.isArray(raw) ? raw.filter(isTrashedRecord) : null;
 }
 

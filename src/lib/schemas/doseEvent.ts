@@ -10,7 +10,7 @@ import {
 } from "./shared";
 
 /** Valores del enum `dose_id` de la base, en el orden de DOSE_SCHEDULE. */
-export const DOSE_IDS: readonly string[] = DOSE_SCHEDULE.map((dose) => dose.id);
+const DOSE_IDS: readonly string[] = DOSE_SCHEDULE.map((dose) => dose.id);
 
 const doseIdSchema = z.enum(DOSE_IDS, { error: "Toma fuera del horario" });
 

@@ -7,13 +7,13 @@ import type { SyncRequester } from "./handleSyncBatch";
 import { describeValidationError } from "./schemas";
 
 /** Por ahora solo el respaldo en la cuenta (C3) registra su consentimiento por esta vía. */
-export const consentGrantBodySchema = z.object({
+const consentGrantBodySchema = z.object({
   purpose: z.literal("respaldo-cuenta"),
   consent: consentRecordSchema,
 });
 
 /** Derecho de oposición (C5): retirar el respaldo es otra fila, con `revoked_at`. */
-export const consentRevokeBodySchema = z.object({
+const consentRevokeBodySchema = z.object({
   purpose: z.literal("respaldo-cuenta"),
   revokedAt: z.iso.datetime(),
   consentVersion: z.string().min(1).max(64),

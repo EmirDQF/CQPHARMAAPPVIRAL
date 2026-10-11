@@ -53,7 +53,7 @@ export function InstallPwaBanner() {
         <button
           type="button"
           onClick={dismissPwaInstallPrompt}
-          aria-label="No instalar por ahora"
+          aria-label="Ahora no, no instalar la app"
           className="min-h-12 rounded-xl border border-white/60 text-white font-semibold px-4"
         >
           Ahora no

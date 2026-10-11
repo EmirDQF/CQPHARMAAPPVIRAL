@@ -6,7 +6,7 @@ import type { SyncRequester } from "./handleSyncBatch";
 import { describeValidationError } from "./schemas";
 
 /** Solo el resumen anónimo del test; un campo extra (p. ej. respuestas) se rechaza. */
-export const recordAssessmentBodySchema = z
+const recordAssessmentBodySchema = z
   .object({
     id: z.uuid(),
     chronologicalAge: z.number().int().min(PATIENT_AGE_MIN).max(PATIENT_AGE_MAX),

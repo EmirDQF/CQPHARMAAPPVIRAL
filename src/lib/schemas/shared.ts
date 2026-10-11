@@ -5,7 +5,7 @@ import { toLimaIsoDate } from "../utils/date";
  * Margen para la deriva del reloj del celular; replica el CHECK
  * `<= now() + interval '5 minutes'` de `dose_events.taken_at` y `consents.granted_at`.
  */
-export const CLIENT_CLOCK_SKEW_MINUTES = 5;
+const CLIENT_CLOCK_SKEW_MINUTES = 5;
 const MS_PER_MINUTE = 60_000;
 
 /** Fecha diaria tal como la guarda una columna `date`: YYYY-MM-DD, sin hora ni zona. */

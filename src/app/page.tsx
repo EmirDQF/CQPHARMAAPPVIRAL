@@ -15,7 +15,7 @@ export default function Home() {
       <main className="flex-1 flex flex-col">
         <div className="flex flex-col items-center px-4 py-16 gap-12">
           <div className="max-w-2xl text-center flex flex-col gap-4">
-            <p className="text-brand font-semibold uppercase tracking-wide text-sm">
+            <p className="text-brand dark:text-teal-300 font-semibold uppercase tracking-wide text-sm">
               Artikare · Respaldado por CQ Pharma
             </p>
             <h1 className="text-3xl sm:text-4xl font-bold text-balance">

@@ -20,7 +20,7 @@ const syncStateSchema = z.object({
   bases: z.record(z.string(), z.record(z.string(), z.string())),
 });
 
-export function parseSyncState(raw: unknown): SyncState | null {
+function parseSyncState(raw: unknown): SyncState | null {
   const result = syncStateSchema.safeParse(raw);
   return result.success ? { userId: result.data.userId, bases: result.data.bases as SyncBases } : null;
 }

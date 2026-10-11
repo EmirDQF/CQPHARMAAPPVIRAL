@@ -7,7 +7,7 @@ import { hasAtMostDecimals, timestampSchema } from "./shared";
 export const SEXES = ["femenino", "masculino"] as const satisfies readonly Sex[];
 
 /** Topes de texto libre; replican los CHECK de `profiles`. */
-export const PROFILE_TEXT_MAX = { name: 200, allergies: 2000, phone: 30 } as const;
+const PROFILE_TEXT_MAX = { name: 200, allergies: 2000, phone: 30 } as const;
 /** Tope plausible de peso; replica el CHECK de `profiles.weight_kg`. */
 export const PROFILE_WEIGHT_MAX_KG = 500;
 /** `weight_kg numeric(4, 1)` redondearía en silencio un segundo decimal: se rechaza aquí. */

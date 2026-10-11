@@ -35,7 +35,7 @@ interface DexaEmptyStateProps {
 }
 
 /** Estado vacío: nunca se muestra un T-score que el paciente no haya registrado. */
-export function DexaEmptyState({ onUploadClick }: DexaEmptyStateProps) {
+function DexaEmptyState({ onUploadClick }: DexaEmptyStateProps) {
   return (
     <section
       aria-labelledby="semaforo-vacio-heading"

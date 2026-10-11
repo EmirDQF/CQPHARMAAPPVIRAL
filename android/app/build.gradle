@@ -18,8 +18,33 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    // Firma de release: SOLO con el keystore del usuario (android/keystore.properties,
+    // ignorado por git, o ANDROID_KEYSTORE_*). Sin él no hay firma; scripts/gradle.mjs
+    // detiene bundleRelease antes con un mensaje claro.
+    def keystorePropertiesFile = rootProject.file("keystore.properties")
+    def keystoreProperties = new Properties()
+    if (keystorePropertiesFile.exists()) {
+        keystorePropertiesFile.withInputStream { keystoreProperties.load(it) }
+    }
+    def signingValue = { String property, String envName ->
+        keystoreProperties.getProperty(property) ?: System.getenv(envName)
+    }
+    def releaseStoreFile = signingValue("storeFile", "ANDROID_KEYSTORE_PATH")
+    signingConfigs {
+        release {
+            if (releaseStoreFile) {
+                storeFile file(releaseStoreFile)
+                storePassword signingValue("storePassword", "ANDROID_KEYSTORE_PASSWORD")
+                keyAlias signingValue("keyAlias", "ANDROID_KEY_ALIAS")
+                keyPassword signingValue("keyPassword", "ANDROID_KEY_PASSWORD")
+            }
+        }
+    }
     buildTypes {
         release {
+            if (releaseStoreFile) {
+                signingConfig signingConfigs.release
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

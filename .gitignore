@@ -48,3 +48,8 @@ next-env.d.ts
 
 # capacitor: config generada del shell sin conexión (scripts/write-shell-config.mjs)
 /capacitor-shell/shell-config.js
+
+# android: firma de release del usuario (nunca se versiona)
+/android/keystore.properties
+*.jks
+*.keystore

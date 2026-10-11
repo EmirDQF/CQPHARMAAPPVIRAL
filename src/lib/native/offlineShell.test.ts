@@ -54,6 +54,15 @@ describe("offline shell", () => {
     expect(shell.resolveAppUrl(undefined)).toBeNull();
   });
 
+  it("accepts http only to the loopback hosts the debug variant allows", () => {
+    const shell = loadShell();
+
+    expect(shell.resolveAppUrl({ appUrl: "http://localhost:3000" })).toBe("http://localhost:3000/");
+    expect(shell.resolveAppUrl({ appUrl: "http://127.0.0.1:3000" })).toBe("http://127.0.0.1:3000/");
+    expect(shell.resolveAppUrl({ appUrl: "http://192.168.1.20:3000" })).toBeNull();
+    expect(shell.resolveAppUrl({ appUrl: "http://localhost.evil.com" })).toBeNull();
+  });
+
   it("explains whether the phone is offline or the server is not answering", () => {
     const shell = loadShell();
 

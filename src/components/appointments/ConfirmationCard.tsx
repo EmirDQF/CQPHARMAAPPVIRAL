@@ -78,7 +78,7 @@ export function ConfirmationCard({ appointment }: ConfirmationCardProps) {
           {appointment.serviceId !== "consulta-reumatologia" && (
             <Link
               href="/citas"
-              className="min-h-12 flex items-center justify-center rounded-xl bg-risk-high text-white font-semibold px-4"
+              className="min-h-12 flex items-center justify-center rounded-xl bg-risk-high text-white text-center font-semibold px-4 py-2"
             >
               Agendar evaluación reumatológica
             </Link>

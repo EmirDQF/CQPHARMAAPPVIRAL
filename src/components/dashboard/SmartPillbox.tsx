@@ -34,7 +34,8 @@ interface DoseSlotCardProps {
 
 function DoseSlotCard({ dose, isTaken, isPending, onTake, onUndo, now }: DoseSlotCardProps) {
   const style = PERIOD_STYLE[dose.period];
-  const status = now ? doseSlotStatus(dose.time, isTaken || isPending, now) : null;
+  // Durante la ventana de deshacer no se afirma "Tomada hoy": aún no se guardó.
+  const status = now && !isPending ? doseSlotStatus(dose.time, isTaken, now) : null;
   return (
     <li className={`rounded-card px-4 py-4 flex flex-col gap-3 ${style.card}`}>
       <div className="flex items-start justify-between gap-3">

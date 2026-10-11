@@ -29,7 +29,7 @@ export function RedFlagBanner() {
       </p>
       <Link
         href="/citas"
-        className="min-h-12 flex items-center justify-center rounded-xl bg-risk-high text-white font-semibold px-5"
+        className="min-h-12 flex items-center justify-center rounded-xl bg-risk-high text-white text-center font-semibold px-5 py-2"
       >
         Agendar evaluación reumatológica
       </Link>

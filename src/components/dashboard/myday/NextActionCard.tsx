@@ -31,7 +31,7 @@ function ActionBody({ action, onOpenBoneTab }: NextActionCardProps) {
       return (
         <>
           <p className="font-semibold">Primero, agenda tu evaluación reumatológica.</p>
-          <Link href="/citas" className="min-h-12 inline-flex items-center justify-center rounded-control bg-risk-high text-white font-semibold px-5">
+          <Link href="/citas" className="min-h-12 inline-flex items-center justify-center rounded-control bg-risk-high text-white text-center font-semibold px-5 py-2">
             Agendar evaluación
           </Link>
         </>

@@ -46,8 +46,14 @@ export type NativePermissionState = "granted" | "prompt" | "denied";
 
 type LocalNotificationsPlugin = (typeof import("@capacitor/local-notifications"))["LocalNotifications"];
 
-async function loadPlugin(): Promise<LocalNotificationsPlugin> {
-  return (await import("@capacitor/local-notifications")).LocalNotifications;
+/**
+ * El plugin se devuelve envuelto: es un proxy de Capacitor y, si una función
+ * async lo devolviera tal cual, el await lo trataría como thenable y llamaría
+ * a `LocalNotifications.then()`, que en Android no existe (no se programaba nada).
+ */
+async function loadPlugin(): Promise<{ plugin: LocalNotificationsPlugin }> {
+  const { LocalNotifications } = await import("@capacitor/local-notifications");
+  return { plugin: LocalNotifications };
 }
 
 /** Mismos ids en cada pase: cancelar y volver a programar es idempotente. */
@@ -65,7 +71,7 @@ function toPermissionState(display: string): NativePermissionState {
 /** Pide permiso (solo tras un toque del paciente) y programa las tomas diarias. */
 export async function enableNativeDoseReminders(now: Date = new Date()): Promise<NativeReminderPermission> {
   try {
-    const plugin = await loadPlugin();
+    const { plugin } = await loadPlugin();
     const { display } = await plugin.requestPermissions();
     if (display !== "granted") return "denied";
 
@@ -84,7 +90,7 @@ export async function enableNativeDoseReminders(now: Date = new Date()): Promise
  */
 export async function syncNativeDoseReminders(now: Date = new Date()): Promise<NativePermissionState> {
   try {
-    const plugin = await loadPlugin();
+    const { plugin } = await loadPlugin();
     const state = toPermissionState((await plugin.checkPermissions()).display);
     if (state === "granted") await scheduleDailyDoses(plugin, now);
     return state;

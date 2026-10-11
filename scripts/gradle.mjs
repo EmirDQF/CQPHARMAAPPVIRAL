@@ -39,8 +39,14 @@ if (tasks.some((task) => RELEASE_TASKS.has(task))) {
   }
 }
 
-const wrapper = process.platform === "win32" ? "gradlew.bat" : "./gradlew";
-const result = spawnSync(wrapper, tasks, { cwd: ANDROID_DIR, stdio: "inherit", shell: process.platform === "win32" });
+// Ruta absoluta: cmd.exe no busca en el directorio actual si
+// NoDefaultCurrentDirectoryInExePath está activo. Entre comillas por si hay espacios.
+const isWindows = process.platform === "win32";
+const wrapperPath = resolve(ANDROID_DIR, isWindows ? "gradlew.bat" : "gradlew");
+const wrapper = isWindows ? `"${wrapperPath}"` : wrapperPath;
+// En Windows, una sola línea (DEP0190); las tareas ya pasaron TASK_NAME_PATTERN.
+const [command, args] = isWindows ? [[wrapper, ...tasks].join(" "), []] : [wrapper, tasks];
+const result = spawnSync(command, args, { cwd: ANDROID_DIR, stdio: "inherit", shell: isWindows });
 if (result.error) {
   process.stderr.write(`No se pudo ejecutar Gradle: ${result.error.message}\n`);
   process.exit(1);

@@ -15,7 +15,19 @@ const plugin = vi.hoisted(() => ({
     notifications: [],
   })),
 }));
-vi.mock("@capacitor/local-notifications", () => ({ LocalNotifications: plugin }));
+// Como el proxy real de Capacitor: toda propiedad, también `then`, es un método
+// nativo; en Android `then()` falla con "not implemented". Si el código devolviera
+// el plugin desde una función async, el await lo trataría como thenable y fallaría.
+vi.mock("@capacitor/local-notifications", () => ({
+  LocalNotifications: new Proxy(plugin, {
+    get: (target, property) =>
+      property === "then"
+        ? () => {
+            throw new Error('"LocalNotifications.then()" is not implemented on android');
+          }
+        : target[property as keyof typeof target],
+  }),
+}));
 
 beforeEach(() => {
   vi.clearAllMocks();

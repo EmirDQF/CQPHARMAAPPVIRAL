@@ -3,7 +3,7 @@
 // localhost), 3) cap sync con CAP_ENV=dev, 4) next dev en 127.0.0.1:3000.
 // Se escucha solo en loopback: adb reverse no necesita exponer el servidor a la red.
 import { spawn } from "node:child_process";
-import { DEV_PORT, androidEnv, fail, requireDevice, reversePort, step, syncCapacitor } from "./lib/mobile.mjs";
+import { DEV_PORT, androidEnv, commandLine, fail, requireDevice, reversePort, step, syncCapacitor } from "./lib/mobile.mjs";
 
 try {
   const env = androidEnv({ CAP_ENV: "dev" });
@@ -23,7 +23,7 @@ try {
     ].join("\n")
   );
   step("next dev");
-  const server = spawn("npx", ["next", "dev", "-H", "127.0.0.1", "-p", DEV_PORT], {
+  const server = spawn(...commandLine("npx", ["next", "dev", "-H", "127.0.0.1", "-p", DEV_PORT]), {
     env,
     stdio: "inherit",
     shell: process.platform === "win32",

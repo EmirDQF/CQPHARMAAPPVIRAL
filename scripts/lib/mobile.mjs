@@ -13,10 +13,18 @@ export const DEBUG_APK = join("android", "app", "build", "outputs", "apk", "debu
 const IS_WINDOWS = process.platform === "win32";
 const LOCAL_PROPERTIES = join("android", "local.properties");
 
+/**
+ * En Windows npx/.bat solo arrancan vía cmd.exe: se pasa una sola línea (Node
+ * desaconseja args sueltos con shell, DEP0190). Los argumentos son constantes
+ * de los scripts o rutas del repo, nunca texto del usuario.
+ */
+export function commandLine(command, args) {
+  return IS_WINDOWS ? [[command, ...args].join(" "), []] : [command, args];
+}
+
 /** Ejecuta un comando heredando la salida; lanza si termina con error. */
 export function run(command, args, { env = process.env, capture = false } = {}) {
-  // En Windows npx/.bat solo arrancan vía cmd.exe; los argumentos son constantes del script.
-  const result = spawnSync(command, args, {
+  const result = spawnSync(...commandLine(command, args), {
     env,
     stdio: capture ? ["ignore", "pipe", "pipe"] : "inherit",
     shell: IS_WINDOWS,

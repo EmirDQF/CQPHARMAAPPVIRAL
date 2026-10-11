@@ -11,7 +11,7 @@ export const INVITE_COPY: Readonly<Record<InviteAudience, string>> = {
   familiar:
     "Hola, encontré un test orientativo de articulaciones y huesos que dura 2 minutos. Me importa cómo estás: hazlo aquí y lo conversamos.",
   autoevaluacion:
-    "Hice el test orientativo de edad articular de Artikare en 2 minutos. Si quieres saber cómo están tus articulaciones y huesos, evalúate aquí.",
+    "Encontré el test orientativo de edad articular de Artikare; dura 2 minutos. Si quieres una orientación rápida sobre tus articulaciones y huesos, hazlo aquí.",
 };
 
 const UTM_CAMPAIGN: Readonly<Record<InviteAudience, string>> = {

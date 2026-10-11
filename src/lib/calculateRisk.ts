@@ -54,7 +54,7 @@ export function calculateRisk(
       label: "RIESGO MODERADO",
       emoji: "🟨",
       message:
-        "Tus respuestas sugieren factores de riesgo óseo y rigidez matutina. Recuerda: la pérdida ósea no avisa con dolor, avisa con fracturas.",
+        "Tus respuestas sugieren factores de riesgo óseo y rigidez matutina. La pérdida ósea suele no dar síntomas; una densitometría permite conocer cómo están tus huesos.",
       diagnosticSuggestion: "Densitometría Ósea Preventiva",
       supplementProtocol: "Nutrición Celular: Protocolo Citrato de Magnesio + D3",
     };

@@ -91,7 +91,7 @@ describe("buildRemindersIcs", () => {
   });
 
   it("carries only the neutral title, without health data or product names", () => {
-    expect(ics).toContain("SUMMARY:Toma tus suplementos");
+    expect(ics).toContain("SUMMARY:Recordatorio de Artikare");
     expect(ics).not.toMatch(/col[aá]geno|magnesio|vitamina|dolor|t-?score|racha/i);
   });
 

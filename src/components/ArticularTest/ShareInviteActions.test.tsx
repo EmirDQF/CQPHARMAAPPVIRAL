@@ -38,7 +38,7 @@ describe("ShareInviteActions", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Compartir el test" }));
 
-    expect(await screen.findByRole("status")).toHaveTextContent("Abrimos WhatsApp");
+    expect(await screen.findByRole("status")).toHaveTextContent("Intentamos abrir WhatsApp");
     expect(openSpy).toHaveBeenCalledWith(expect.stringMatching(/^https:\/\/wa\.me\/\?text=/), "_blank", "noopener,noreferrer");
   });
 

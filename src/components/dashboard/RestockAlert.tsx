@@ -7,7 +7,7 @@ import { bottlesStore, startNewBottle } from "@/lib/dashboard/bottles";
 import { pillboxStore } from "@/lib/dashboard/pillbox";
 import type { DosePeriod } from "@/lib/dashboard/types";
 import { productPacks } from "@/lib/products";
-import { buildProductPackWhatsAppLink } from "@/lib/whatsapp";
+import { buildRestockWhatsAppLink } from "@/lib/whatsapp";
 import { useActiveRedFlags } from "./useActiveRedFlags";
 
 const RESTOCK_PACK_ID_BY_PERIOD: Record<DosePeriod, string> = {
@@ -42,7 +42,7 @@ export function RestockAlert() {
           (candidate) => candidate.id === RESTOCK_PACK_ID_BY_PERIOD[bottle.period]
         );
         if (!pack) return null;
-        const whatsAppLink = buildProductPackWhatsAppLink(pack);
+        const whatsAppLink = buildRestockWhatsAppLink(pack, RESTOCK_DISCOUNT_PERCENT);
 
         return (
           <section
@@ -50,11 +50,12 @@ export function RestockAlert() {
             className="rounded-2xl border-2 border-risk-moderate/50 bg-risk-moderate-bg px-6 py-6 flex flex-col gap-4"
           >
             <p className="font-semibold text-risk-moderate">
-              🔔 Tu frasco de {bottle.label} está al {bottle.percentRemaining}% (
+              <span aria-hidden="true">🔔 </span>Tu frasco de {bottle.label} está al {bottle.percentRemaining}% (
               {bottle.servingsRemaining} tomas)
             </p>
 
-            <div className="h-3 w-full rounded-full bg-white/60 overflow-hidden">
+            {/* Redundante con el texto de arriba: decorativa para lectores de pantalla. */}
+            <div aria-hidden="true" className="h-3 w-full rounded-full bg-white/60 overflow-hidden">
               <div
                 className="h-full rounded-full bg-risk-moderate"
                 style={{ width: `${bottle.percentRemaining}%` }}
@@ -71,9 +72,9 @@ export function RestockAlert() {
                 href={whatsAppLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="min-h-12 flex items-center justify-center rounded-xl bg-risk-moderate text-white font-semibold px-4 transition-colors hover:opacity-90"
+                className="min-h-12 flex items-center justify-center rounded-xl bg-risk-moderate text-white font-semibold px-4 transition-colors hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-risk-moderate"
               >
-                Reponer Mi Pack con Descuento
+                Pedir reposición de {pack.name} ({RESTOCK_DISCOUNT_PERCENT} % de descuento)
               </a>
             ) : (
               <p className="text-base text-neutral-700">WhatsApp no disponible por el momento.</p>
@@ -82,9 +83,9 @@ export function RestockAlert() {
             <button
               type="button"
               onClick={() => startNewBottle(bottle.productId)}
-              className="min-h-12 rounded-xl border-2 border-risk-moderate text-risk-moderate font-semibold px-4 transition-colors hover:bg-white/60"
+              className="min-h-12 rounded-xl border-2 border-risk-moderate text-risk-moderate font-semibold px-4 transition-colors hover:bg-white/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-risk-moderate"
             >
-              Ya repuse mi frasco
+              Ya repuse mi frasco de {bottle.label}
             </button>
           </section>
         );

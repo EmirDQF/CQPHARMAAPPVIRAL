@@ -5,9 +5,12 @@ import { readSiteUrl } from "@/lib/native/appIdentity";
 import { isNativeApp } from "@/lib/native/doseNotifications";
 import { shareInvite, type InviteAudience, type ShareDependencies, type ShareOutcome } from "@/lib/share/inviteShare";
 
+const FOCUS_RING =
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand";
+
 const OUTCOME_MESSAGES: Readonly<Partial<Record<ShareOutcome, string>>> = {
   shared: "¡Gracias por compartir el test!",
-  whatsapp: "Abrimos WhatsApp con la invitación lista para enviar.",
+  whatsapp: "Intentamos abrir WhatsApp con la invitación. Si no se abrió, toca de nuevo.",
   failed: "No pudimos abrir las opciones para compartir. Inténtalo de nuevo.",
 };
 
@@ -42,14 +45,14 @@ export function ShareInviteActions() {
       <button
         type="button"
         onClick={() => void handleShare("familiar")}
-        className="w-full min-h-12 rounded-xl border-2 border-brand text-brand font-semibold px-4 py-3"
+        className={`w-full min-h-12 rounded-xl border-2 border-brand text-brand dark:text-teal-300 font-semibold px-4 py-3 ${FOCUS_RING}`}
       >
         Invitar a mamá, papá o un familiar
       </button>
       <button
         type="button"
         onClick={() => void handleShare("autoevaluacion")}
-        className="w-full min-h-12 rounded-xl border-2 border-neutral-300 dark:border-neutral-700 font-semibold px-4 py-3"
+        className={`w-full min-h-12 rounded-xl border-2 border-neutral-300 dark:border-neutral-700 font-semibold px-4 py-3 ${FOCUS_RING}`}
       >
         Compartir el test
       </button>

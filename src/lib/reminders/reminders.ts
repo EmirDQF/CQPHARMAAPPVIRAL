@@ -8,7 +8,8 @@ import { addDaysToIsoDate, toLimaIsoDate } from "../utils/date";
  * propósito: aparece en la pantalla bloqueada y en calendarios compartidos,
  * así que nunca lleva productos, valores clínicos ni la racha.
  */
-export const REMINDER_TITLE = "Toma tus suplementos";
+// Genérico a propósito: en la pantalla bloqueada no revela que la persona toma suplementos.
+export const REMINDER_TITLE = "Recordatorio de Artikare";
 export const REMINDER_BODY = "Abre Artikare para registrar tu toma.";
 
 const LIMA_TIME_ZONE = "America/Lima";

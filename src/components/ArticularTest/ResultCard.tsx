@@ -7,6 +7,9 @@ import {
 import { WhatsAppCta } from "@/components/ui/WhatsAppCta";
 import { ShareInviteActions } from "./ShareInviteActions";
 
+const FOCUS_RING =
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand";
+
 interface ResultCardProps {
   result: RiskResult;
   onRestart: () => void;
@@ -51,13 +54,23 @@ export function ResultCard({ result, onRestart }: ResultCardProps) {
         <div
           className={`rounded-xl border px-4 py-3 flex items-center gap-2 font-semibold ${riskStyles[result.riskLevel]}`}
         >
-          <span className="text-lg">{result.emoji}</span>
+          <span className="text-lg" aria-hidden="true">{result.emoji}</span>
           <span>{result.label}</span>
         </div>
 
         <p className="text-sm text-neutral-600 dark:text-neutral-300">
           {result.message}
         </p>
+
+        {/* Bandera roja: el reumatólogo va antes que cualquier estudio o suplemento. */}
+        {needsRheumatologyReview && (
+          <Link
+            href="/citas"
+            className={`w-full text-center rounded-xl bg-risk-high text-white font-semibold px-4 py-3 ${FOCUS_RING}`}
+          >
+            Agendar evaluación reumatológica
+          </Link>
+        )}
 
         <div className="flex flex-col gap-2 text-sm">
           <div className="rounded-lg bg-neutral-100 dark:bg-neutral-900 px-4 py-3">
@@ -67,10 +80,11 @@ export function ResultCard({ result, onRestart }: ResultCardProps) {
             </p>
           </div>
           <div className="rounded-lg bg-neutral-100 dark:bg-neutral-900 px-4 py-3">
-            <p className="font-medium">Nutrición celular recomendada</p>
+            <p className="font-medium">Suplementación que puede acompañar tu cuidado</p>
             <p className="text-neutral-600 dark:text-neutral-400">
               {result.supplementProtocol}
             </p>
+            <p className="text-neutral-600 dark:text-neutral-400">Consulta con tu médico antes de empezar.</p>
           </div>
         </div>
 
@@ -80,23 +94,15 @@ export function ResultCard({ result, onRestart }: ResultCardProps) {
         </p>
 
         <div className="flex flex-col gap-3 pt-2">
-          {needsRheumatologyReview && (
-            <Link
-              href="/citas"
-              className="w-full text-center rounded-xl bg-risk-high text-white font-semibold px-4 py-3"
-            >
-              Agendar evaluación reumatológica
-            </Link>
-          )}
           <WhatsAppCta
             href={densitometriaLink}
-            className="w-full text-center rounded-xl bg-brand hover:bg-brand-dark text-white font-semibold px-4 py-3 transition-colors"
+            className={`w-full text-center rounded-xl bg-brand hover:bg-brand-dark text-white font-semibold px-4 py-3 transition-colors ${FOCUS_RING}`}
           >
             Agendar Densitometría por WhatsApp
           </WhatsAppCta>
           <WhatsAppCta
             href={supplementLink}
-            className="w-full text-center rounded-xl border-2 border-brand text-brand hover:bg-brand-light font-semibold px-4 py-3 transition-colors"
+            className={`w-full text-center rounded-xl border-2 border-brand text-brand dark:text-teal-300 hover:bg-brand-light dark:hover:bg-neutral-900 font-semibold px-4 py-3 transition-colors ${FOCUS_RING}`}
           >
             Pedir mi Pack CQ Pharma por WhatsApp
           </WhatsAppCta>

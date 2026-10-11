@@ -7,7 +7,7 @@
   "use strict";
 
   var OFFLINE_MESSAGE =
-    "Parece que estás sin conexión a internet. Tus recordatorios de toma siguen activos en este celular.";
+    "Parece que estás sin conexión a internet. Si activaste los recordatorios, seguirán llegando a este celular.";
   var SERVER_MESSAGE = "Artikare no responde en este momento. Suele ser algo temporal; inténtalo en unos minutos.";
 
   function resolveAppUrl(config) {

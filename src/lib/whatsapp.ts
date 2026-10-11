@@ -33,6 +33,13 @@ export function buildSupplementWhatsAppLink(): string | null {
   );
 }
 
+/** Reposición: el descuento ofrecido en la app viaja en el mensaje, para que el consultorio lo aplique. */
+export function buildRestockWhatsAppLink(pack: ProductPack, discountPercent: number): string | null {
+  return buildWhatsAppLink(
+    `Hola, quiero reponer el ${pack.name} de CQ Pharma con el ${discountPercent} % de descuento de reposición. ¿Me confirman disponibilidad y precio?`
+  );
+}
+
 export function buildProductPackWhatsAppLink(pack: ProductPack): string | null {
   const message = `Hola, quiero reservar el ${pack.name} de CQ Pharma (${pack.tagline}). ¿Me pueden dar disponibilidad y precio?`;
   return buildWhatsAppLink(message);

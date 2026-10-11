@@ -19,9 +19,9 @@
 
 - **Test de edad articular** orientativo con descargo; resultado sin miedo; con riesgo alto, la evaluación reumatológica va antes que estudio y suplemento.
 - **Semáforo óseo OMS**, banderas rojas por encima de cualquier producto, pastillero 08:30/21:30 Lima, diario de dolor, reposición día 50 de 60 con el descuento dentro del mensaje.
-- **Cuenta, respaldo y ARCO** (exportar/rectificar/borrar/oponerse) con CSRF, rate limit en base de datos (10 exportaciones y 3 borrados por hora) y purga diaria con pg_cron.
+- **Cuenta, respaldo y ARCO** (exportar/rectificar/borrar/oponerse) con CSRF, rate limit en base de datos (10 exportaciones y 3 borrados por hora) y purga diaria con pg_cron; la papelera local de invitado se purga igual (>= 30 días) al abrir y al volver a la app.
 - **Compartir ético**: invitación familiar o de autoevaluación sin resultado; Capacitor Share → Web Share → WhatsApp; UTM de derivación familiar; enlace corto `/test`.
-- **Android (Capacitor 8, modo remoto)**: App Links verificables (`/test`, `/blog`), `appUrlOpen` validado con Zod, shell offline con Reintentar y recarga al volver la red, recordatorios nativos que leen el permiso real, `allowBackup=false`.
+- **Android (Capacitor 8, modo remoto)**: App Links verificables (`/test`, `/blog`) y esquema `artikare://test` · `artikare://blog/<slug>` (filtro aparte, sin `autoVerify`), validados con Zod tanto en caliente (`appUrlOpen`) como en arranque en frío (`getLaunchUrl`), shell offline con Reintentar y recarga al volver la red, recordatorios nativos que leen el permiso real, `allowBackup=false`.
 - **Pipeline**: `npm run preflight`, `npm run verify-env [-- --strict]`, `npm run cap:sync`, `npm run build:android` (falla con mensaje claro sin keystore).
 
 ## Solo el usuario (no se simula)

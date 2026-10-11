@@ -18,3 +18,9 @@ Lo que sigue solo puede hacerlo el usuario.
 - Purga diaria de lo borrado en suave e índices parciales (`afac653`).
 - Shell offline del WebView y recordatorios nativos que no se reofrecen (`8b02222`, `f8c8094`, `55a37d1`).
 - Deep links, assetlinks y compartir nativo (`0ffa8c5`) · pipeline `preflight` / `verify-env` / `build:android` (`2f4319a`).
+- Purga de la papelera local de invitado (`artikare_trash_v1`) al abrir y al volver a la app, mismo criterio que la base; pgTAP con el caso límite de 29 días 23 h (`cfd569a`). La purga en Supabase (`20261010150000`, rollback en `supabase/rollbacks/`) ya estaba en verde.
+- Deep links en arranque en frío (`getLaunchUrl`, Android no emite `appUrlOpen` sin `onNewIntent`) y esquema `artikare://test` · `artikare://blog/<slug>` en un intent-filter aparte sin `autoVerify` (`88a07b5`).
+- Lint sin avisos: se ignora la salida generada de Gradle y `cap sync` (`80109a4`).
+
+Última verificación (2026-10-11): `typecheck`, `lint` (0 avisos), `vitest` 794/794, `verify-env` OK (8 avisos de variables de despliegue, ver B3–B4), `next build` OK, pgTAP 6/6 archivos, `processDebugMainManifest` OK.
+No hacen falta variables de entorno nuevas: todas están en `.env.example`.

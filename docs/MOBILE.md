@@ -69,3 +69,20 @@ Huella pública de la clave (para `ANDROID_SHA256_FINGERPRINT`): `keytool -list 
 
 Ambos exigen `CAP_SERVER_URL` https pública y el keystore; la guardia de Gradle rechaza cualquier config con `localhost`, `http://` o cleartext.
 Quien reciba el `.apk` debe permitir "Instalar apps desconocidas" para su navegador o gestor de archivos. Ese `.apk` no se actualiza solo: para actualizaciones automáticas, publica en Play.
+
+## Recordatorios de Artiko por contexto (G6)
+
+| Disparador | Dónde corre | Activado por defecto |
+|---|---|---|
+| Tomas 08:30 y 21:30 (Lima) | `@capacitor/local-notifications`, texto "Recordatorio de Artikare" | Tras aceptar el permiso |
+| Al abrir la app | Globo de Artiko en "Hoy" con la siguiente misión (sin notificación) | Sí |
+| Al conectarse a Wi-Fi, app abierta | `@capacitor/network` (`networkStatusChange`): en pantalla, Artiko lo dice dentro de la app | No (opt-in en Ajustes) |
+| Al conectarse a Wi-Fi, app cerrada (Android) | Plugin propio `ArtikoRemindersPlugin` + `WifiNudgeWorker` (WorkManager 2.12.0, cada 15 min, `NetworkType.UNMETERED`) | No (opt-in en Ajustes) |
+| Uso prolongado | Temporizador dentro de la app: ~10 min seguidos en pantalla → pausa de 1 min | No (opt-in en Ajustes) |
+
+- **Por qué un plugin propio y no uno existente:** `@capacitor/background-runner` 3.0.0 no permite exigir red sin tarifa y embebe un motor JS nativo; `@transistorsoft/capacitor-background-fetch` 8.1.3 tampoco filtra por tipo de red. El plugin propio son 2 clases Java (el proyecto Android ya es Java, sin añadir Kotlin) y solo guarda el estado del día en `SharedPreferences` (`artiko_reminders`), sin datos de salud.
+- **Reglas** (`src/lib/reminders/smart/policy.ts`, replicadas en `WifiNudgeWorker.decide`): silencio 22:00–07:00 (las tomas van aparte), máximo 3 avisos/día contando las 2 tomas (queda 1 de contexto), 1 por franja, nunca con el día completo, "Silenciar hoy", y tras 3 días sin abrir un único "Aquí estaré cuando quieras volver 🦸" y silencio.
+- **Textos:** 27 variantes genéricas (`messages.ts`), sin términos de salud (lo prueba `messages.test.ts`), rotación por día sin repetir en 7 días. La app entrega al plugin los textos ya listos.
+- **Requiere APK nuevo:** cambios nativos (plugin, WorkManager, `@capacitor/haptics`, `@capacitor/network`) llegan solo al recompilar (`npm run mobile:install`).
+- **Probar en el teléfono:** activar "Aviso al conectarte a Wi-Fi" en Ajustes, dejar misiones pendientes, cerrar la app, apagar y encender el Wi-Fi y esperar hasta 15 min; `adb logcat | grep -i WM-` muestra la ejecución de WorkManager. Para forzarlo: `adb shell cmd jobscheduler run -f com.artikare.app <jobId>` (el id aparece en `adb shell dumpsys jobscheduler | grep artikare`).
+- **Tiempo total de pantalla (`PACKAGE_USAGE_STATS`)**: NO implementado (ver `docs/BLOCKERS.md`, G-T2).

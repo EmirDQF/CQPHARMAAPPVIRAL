@@ -22,6 +22,7 @@ import { useDeferredDose } from "@/hooks/useDeferredDose";
 import { useHydrated } from "@/hooks/useHydrated";
 import { useRewards } from "@/hooks/useRewards";
 import { FirstRunFlow } from "@/components/onboarding/FirstRunFlow";
+import { ActiveBreak } from "@/components/today/ActiveBreak";
 import { patientProfileStore } from "@/lib/dashboard/patientProfile";
 import { needsOnboarding, onboardingStore } from "@/lib/onboarding/onboarding";
 import { AchievementsShowcase } from "@/components/rewards/AchievementsShowcase";
@@ -190,6 +191,7 @@ export function AppShell() {
 
         {/* Al final y no en el encabezado: aparece después de hidratar y no debe empujar el contenido (CLS). */}
         <InstallPwaBanner />
+        <ActiveBreak />
       </main>
 
       <nav

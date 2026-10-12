@@ -7,7 +7,7 @@ import { GameButton } from "@/components/ui/GameButton";
 import { WeekStrip } from "@/components/dashboard/WeekStrip";
 import { buildWeekAdherence } from "@/lib/dashboard/weekAdherence";
 import { DOSE_SCHEDULE } from "@/lib/clinical/constants";
-import { doseSlotStatus, type DoseSlotStatus } from "@/lib/dashboard/myDay";
+import { doseSlotStatus, formatMinutesUntil, nextUpcomingDose, type DoseSlotStatus } from "@/lib/dashboard/myDay";
 import type { DosePeriod, DoseSchedule } from "@/lib/dashboard/types";
 import { formatTime24hForDisplay } from "@/lib/utils/date";
 
@@ -135,6 +135,7 @@ export function SmartPillbox(props: SmartPillboxProps) {
   const { takenDoseIds, takenDoseIdsByDate, pendingDoseIds, onTake, onUndo, onConfirm, lastConfirmedDoseId, now } = props;
   const pendingIds = pendingDoseIds.filter((id) => !takenDoseIds.includes(id));
   const takenCount = DOSE_SCHEDULE.filter((dose) => takenDoseIds.includes(dose.id)).length;
+  const nextDose = now ? nextUpcomingDose(DOSE_SCHEDULE, [...takenDoseIds, ...pendingIds], now) : null;
   return (
     <section
       id="pastillero"
@@ -147,6 +148,12 @@ export function SmartPillbox(props: SmartPillboxProps) {
           {takenCount} de {DOSE_SCHEDULE.length} hoy
         </Badge>
       </div>
+      {nextDose && (
+        <p className="rounded-control bg-pastel-sky px-4 py-2 text-base font-bold text-pastel-sky-ink">
+          <Clock aria-hidden="true" className="mr-2 inline size-5 align-text-bottom" />
+          Próxima toma {formatMinutesUntil(nextDose.minutesUntil)}
+        </p>
+      )}
       <ul className="flex flex-col gap-3">
         {DOSE_SCHEDULE.map((dose) => (
           <DoseSlotCard

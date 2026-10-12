@@ -63,6 +63,7 @@ function TodayBoard({ now, firstName, onOpenBoneTab, deferredDose, celebration, 
       <BoneSummaryCard scan={boneScan} onOpenBoneTab={onOpenBoneTab} />
       <SmartPillbox
         takenDoseIds={takenDoseIds}
+        takenDoseIdsByDate={pillbox.takenDoseIdsByDate}
         pendingDoseIds={deferredDose.pendingDoseIds}
         onTake={deferredDose.take}
         onUndo={deferredDose.undo}

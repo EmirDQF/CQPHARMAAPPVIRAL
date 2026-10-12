@@ -3,6 +3,9 @@
 import { BellRing, CheckCircle2, Clock, Moon, Pill, Sun, type LucideIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { GameButton } from "@/components/ui/GameButton";
+import { WeekStrip } from "@/components/dashboard/WeekStrip";
+import { buildWeekAdherence } from "@/lib/dashboard/weekAdherence";
 import { DOSE_SCHEDULE } from "@/lib/clinical/constants";
 import { doseSlotStatus, type DoseSlotStatus } from "@/lib/dashboard/myDay";
 import type { DosePeriod, DoseSchedule } from "@/lib/dashboard/types";
@@ -28,6 +31,7 @@ const STATUS_BADGE: Record<DoseSlotStatus, { text: string; icon: LucideIcon; cla
 
 interface SmartPillboxProps {
   takenDoseIds: readonly string[];
+  takenDoseIdsByDate?: Readonly<Record<string, readonly string[]>>;
   pendingDoseIds: readonly string[];
   onTake: (doseId: string) => void;
   onUndo: (doseId: string) => void;
@@ -112,10 +116,10 @@ function DoseSlotCard({ dose, isTaken, isPending, onTake, onUndo, onConfirm, now
       )}
       {isPending && <PendingConfirmation onUndo={onUndo} onConfirm={onConfirm} />}
       {!isTaken && !isPending && (
-        <Button type="button" size="xl" onClick={onTake} className="w-full">
+        <GameButton tone="vital" size="lg" block onClick={onTake}>
           <Pill aria-hidden="true" />
           Ya me la tomé
-        </Button>
+        </GameButton>
       )}
     </li>
   );
@@ -128,7 +132,7 @@ function statusMessage(pendingCount: number, lastConfirmedLabel: string | null):
 }
 
 export function SmartPillbox(props: SmartPillboxProps) {
-  const { takenDoseIds, pendingDoseIds, onTake, onUndo, onConfirm, lastConfirmedDoseId, now } = props;
+  const { takenDoseIds, takenDoseIdsByDate, pendingDoseIds, onTake, onUndo, onConfirm, lastConfirmedDoseId, now } = props;
   const pendingIds = pendingDoseIds.filter((id) => !takenDoseIds.includes(id));
   const takenCount = DOSE_SCHEDULE.filter((dose) => takenDoseIds.includes(dose.id)).length;
   return (
@@ -157,6 +161,7 @@ export function SmartPillbox(props: SmartPillboxProps) {
           />
         ))}
       </ul>
+      {now && takenDoseIdsByDate && <WeekStrip days={buildWeekAdherence(takenDoseIdsByDate, now)} />}
       <p role="status" className="sr-only">
         {statusMessage(pendingIds.length, DOSE_SCHEDULE.find((dose) => dose.id === lastConfirmedDoseId)?.label ?? null)}
       </p>

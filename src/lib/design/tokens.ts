@@ -36,6 +36,10 @@ export const THEMES = {
     "color-pastel-rose-ink": "#9F1239",
     "color-pastel-lemon": "#FBF3CF",
     "color-pastel-lemon-ink": "#713F12",
+    "color-vital-text": "#15803D",
+    "color-streak-text": "#C2410C",
+    "color-xp-text": "#5B21B6",
+    "color-gold-text": "#A16207",
   },
   dark: {
     "color-canvas": "#0B1220",
@@ -61,6 +65,10 @@ export const THEMES = {
     "color-pastel-rose-ink": "#FECDD3",
     "color-pastel-lemon": "#3A3214",
     "color-pastel-lemon-ink": "#FDE68A",
+    "color-vital-text": "#86EFAC",
+    "color-streak-text": "#FDBA74",
+    "color-xp-text": "#C4B5FD",
+    "color-gold-text": "#FCD34D",
   },
 } as const;
 
@@ -105,6 +113,10 @@ export const CONTRAST_PAIRS: readonly ContrastPair[] = [
   { foreground: "color-ink", background: "color-pastel-mint", minRatio: AA_TEXT },
   { foreground: "color-pastel-mint-ink", background: "color-surface", minRatio: AA_TEXT },
   ...pastelPairs,
+  ...(["vital", "streak", "xp", "gold"] as const).flatMap((name): ContrastPair[] => [
+    { foreground: `color-${name}-text`, background: "color-surface", minRatio: AA_TEXT },
+    { foreground: `color-${name}-text`, background: "color-canvas", minRatio: AA_TEXT },
+  ]),
 ];
 
 /**
@@ -125,4 +137,58 @@ export const RISK_CONTRAST_PAIRS: readonly { foreground: string; background: str
   { label: "riesgo moderado", foreground: RISK_COLORS["color-risk-moderate"], background: RISK_COLORS["color-risk-moderate-bg"] },
   { label: "riesgo alto", foreground: RISK_COLORS["color-risk-high"], background: RISK_COLORS["color-risk-high-bg"] },
   { label: "botón de evaluación reumatológica", foreground: "#FFFFFF", background: RISK_COLORS["color-risk-high"] },
+];
+
+/**
+ * Capa "viva" (gamificación con Artiko): rellenos brillantes iguales en claro y
+ * oscuro, cada uno con su tinta (`-ink`) y su borde 3D (`-deep`). Nunca se usan
+ * para el semáforo OMS ni para la bandera roja, y ninguno repite un color
+ * `risk-*` (lo verifica contrast.test.ts).
+ */
+export const GAME_COLORS = {
+  "color-vital": "#22C55E",
+  "color-vital-strong": "#10B981",
+  "color-vital-ink": "#052E16",
+  "color-vital-deep": "#15803D",
+  "color-lime": "#84CC16",
+  "color-streak": "#F97316",
+  "color-streak-hot": "#FF5A1F",
+  "color-streak-ink": "#431407",
+  "color-streak-deep": "#C2410C",
+  "color-xp": "#8B5CF6",
+  "color-xp-strong": "#7C3AED",
+  "color-xp-ink": "#FFFFFF",
+  "color-xp-deep": "#5B21B6",
+  "color-gold": "#F59E0B",
+  "color-gold-ink": "#451A03",
+  "color-gold-deep": "#A16207",
+  "color-sky": "#38BDF8",
+  "color-sky-ink": "#082F49",
+  "color-sky-deep": "#0369A1",
+  "color-pink": "#FF7EB6",
+  "color-pink-ink": "#500724",
+  "color-pink-deep": "#BE185D",
+  "color-clinic-deep": "#0A365C",
+} as const;
+
+export type GameColorToken = keyof typeof GAME_COLORS;
+
+/** Texto sobre relleno: 4.5:1. Relleno o borde 3D sobre blanco: 3:1 (WCAG 1.4.11). */
+export const GAME_CONTRAST_PAIRS: readonly { foreground: GameColorToken | "white"; background: GameColorToken | "white"; minRatio: number }[] = [
+  { foreground: "color-vital-ink", background: "color-vital", minRatio: AA_TEXT },
+  { foreground: "color-vital-ink", background: "color-vital-strong", minRatio: AA_TEXT },
+  { foreground: "color-streak-ink", background: "color-streak", minRatio: AA_TEXT },
+  { foreground: "color-streak-ink", background: "color-streak-hot", minRatio: AA_TEXT },
+  { foreground: "color-xp-ink", background: "color-xp-strong", minRatio: AA_TEXT },
+  { foreground: "color-gold-ink", background: "color-gold", minRatio: AA_TEXT },
+  { foreground: "color-sky-ink", background: "color-sky", minRatio: AA_TEXT },
+  { foreground: "color-pink-ink", background: "color-pink", minRatio: AA_TEXT },
+  { foreground: "color-vital-deep", background: "white", minRatio: AA_GRAPHIC },
+  { foreground: "color-streak-deep", background: "white", minRatio: AA_GRAPHIC },
+  { foreground: "color-xp", background: "white", minRatio: AA_GRAPHIC },
+  { foreground: "color-xp-deep", background: "white", minRatio: AA_GRAPHIC },
+  { foreground: "color-gold-deep", background: "white", minRatio: AA_GRAPHIC },
+  { foreground: "color-sky-deep", background: "white", minRatio: AA_GRAPHIC },
+  { foreground: "color-pink-deep", background: "white", minRatio: AA_GRAPHIC },
+  { foreground: "color-clinic-deep", background: "white", minRatio: AA_GRAPHIC },
 ];

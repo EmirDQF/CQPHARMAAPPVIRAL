@@ -18,6 +18,28 @@ Fuente de verdad: `src/lib/design/tokens.ts`. `src/app/globals.css` declara exac
 
 Forma: `rounded-card` (20 px) y `rounded-control` (16 px), `shadow-soft`. Movimiento: 150–250 ms (`animate-fade-in`, `animate-confetti`), siempre `motion-safe:`; `prefers-reduced-motion` lo anula globalmente. Foco: `:focus-visible` de 3 px en azul clínico para todo control.
 
+## Capa viva (Artiko)
+
+Rellenos brillantes iguales en claro y oscuro (`GAME_COLORS` en `tokens.ts`), cada uno con su tinta AA y su borde 3D:
+
+| Tono | Relleno | Tinta | Borde 3D (`-deep`) | Uso |
+|---|---|---|---|---|
+| `vital` | `#22C55E` (`vital-strong` `#10B981`) | `#052E16` | `#15803D` | Acción principal del juego, misión lista |
+| `lime` | `#84CC16` | — | — | Solo detalles gráficos |
+| `streak` | `#F97316` (`streak-hot` `#FF5A1F`) | `#431407` | `#C2410C` | Racha y llama |
+| `xp` | `#8B5CF6` gráficos · `xp-strong` `#7C3AED` botones | blanco | `#5B21B6` | XP y nivel |
+| `gold` | `#F59E0B` | `#451A03` | `#A16207` | Logros |
+| `sky` / `pink` | `#38BDF8` / `#FF7EB6` | `#082F49` / `#500724` | `#0369A1` / `#BE185D` | Acentos alegres |
+| `clinic` | `#0F4C81` | blanco | `#0A365C` | Estructura y botones clínicos |
+
+Texto de la capa viva sobre superficie o lienzo: `text-{vital,streak,xp,gold}-text` (cambian con el tema). La prueba `contrast.test.ts` exige AA de cada par y que **ningún** color de juego repita un `risk-*` del semáforo.
+
+**Tipografía:** Nunito (redondeada, 400–900) servida por `next/font` desde el propio dominio, sin peticiones externas. Títulos 32–48 px `font-black`; cuerpo de `/app` 18 px (`text-lg`); XP y racha con números grandes.
+
+**Botón 3D (`GameButton` / `gameButtonClasses`):** `rounded-2xl font-black`, ≥ 48 px, relieve inferior de 4 px en el tono `-deep` (utilidad `pressable-3d`). Al pulsar baja 4 px, escala a 0.96 y pierde el relieve. El relieve es un `box-shadow` y no un `border-b-4` para que pulsar no mueva el resto de la pantalla (CLS 0). Vibra con `@capacitor/haptics` en la app (carga perezosa) o `navigator.vibrate` en la web, salvo que se apague en Ajustes → "Vibración y celebraciones" (`artikare_feedback_prefs_v1`). Sin sonidos. Deshabilitado = `aria-disabled` + motivo visible.
+
+Emojis: solo acento visual, con `aria-hidden="true"` cuando son decorativos y nunca como única información.
+
 ## Reglas de uso
 
 1. Un pastel nunca es color de texto sobre blanco: va de fondo y lleva su `-ink` encima.

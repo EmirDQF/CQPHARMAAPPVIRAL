@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Nunito } from "next/font/google";
 import "./globals.css";
 import { DeepLinkListener } from "@/components/DeepLinkListener";
 import { WhatsAppFloatingButton } from "@/components/landing/WhatsAppFloatingButton";
@@ -9,9 +9,13 @@ import { PendingAssessmentUploader } from "@/components/PendingAssessmentUploade
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
 import { SyncCoordinator } from "@/components/SyncCoordinator";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Redondeada, gruesa y alegre. next/font la descarga en el build y la sirve desde el propio
+// dominio: cero peticiones a Google en tiempo de ejecución (funciona offline en Capacitor).
+const nunito = Nunito({
+  variable: "--font-nunito",
   subsets: ["latin"],
+  weight: ["400", "600", "700", "800", "900"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
@@ -75,7 +79,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     // <html> antes de hidratar; suppressHydrationWarning solo cubre los atributos de <html>.
     <html
       lang="es-PE"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${nunito.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">

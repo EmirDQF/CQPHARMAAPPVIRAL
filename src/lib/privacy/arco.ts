@@ -26,6 +26,7 @@ const LOCAL_SECTION_NAMES: Readonly<Record<string, string>> = {
   artikare_reminder_prompt_v1: "preferenciaDeRecordatorios",
   artikare_sync_state_v1: "estadoDelRespaldo",
   artikare_rewards_v1: "logrosDeConstancia",
+  artikare_feedback_prefs_v1: "preferenciasDeVibracionYCelebraciones",
 };
 
 const EXPORT_NOTICE =

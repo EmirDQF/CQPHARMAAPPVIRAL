@@ -33,6 +33,36 @@
   --color-pastel-lemon: #FBF3CF;
   --color-pastel-lemon-ink: #713F12;
 
+  /* Capa viva (Artiko): rellenos fijos en claro y oscuro, cada uno con su tinta y su borde 3D. */
+  --color-vital: #22C55E;
+  --color-vital-strong: #10B981;
+  --color-vital-ink: #052E16;
+  --color-vital-deep: #15803D;
+  --color-lime: #84CC16;
+  --color-streak: #F97316;
+  --color-streak-hot: #FF5A1F;
+  --color-streak-ink: #431407;
+  --color-streak-deep: #C2410C;
+  --color-xp: #8B5CF6;
+  --color-xp-strong: #7C3AED;
+  --color-xp-ink: #FFFFFF;
+  --color-xp-deep: #5B21B6;
+  --color-gold: #F59E0B;
+  --color-gold-ink: #451A03;
+  --color-gold-deep: #A16207;
+  --color-sky: #38BDF8;
+  --color-sky-ink: #082F49;
+  --color-sky-deep: #0369A1;
+  --color-pink: #FF7EB6;
+  --color-pink-ink: #500724;
+  --color-pink-deep: #BE185D;
+  --color-clinic-deep: #0A365C;
+  /* Texto de la capa viva sobre superficie/lienzo (cambia con el tema). */
+  --color-vital-text: #15803D;
+  --color-streak-text: #C2410C;
+  --color-xp-text: #5B21B6;
+  --color-gold-text: #A16207;
+
   --color-brand: #0f766e;
   --color-brand-dark: #115e59;
   --color-brand-light: #ccfbf1;
@@ -91,6 +121,33 @@
   --color-pastel-rose-ink: var(--color-pastel-rose-ink);
   --color-pastel-lemon: var(--color-pastel-lemon);
   --color-pastel-lemon-ink: var(--color-pastel-lemon-ink);
+  --color-vital: var(--color-vital);
+  --color-vital-strong: var(--color-vital-strong);
+  --color-vital-ink: var(--color-vital-ink);
+  --color-vital-deep: var(--color-vital-deep);
+  --color-lime: var(--color-lime);
+  --color-streak: var(--color-streak);
+  --color-streak-hot: var(--color-streak-hot);
+  --color-streak-ink: var(--color-streak-ink);
+  --color-streak-deep: var(--color-streak-deep);
+  --color-xp: var(--color-xp);
+  --color-xp-strong: var(--color-xp-strong);
+  --color-xp-ink: var(--color-xp-ink);
+  --color-xp-deep: var(--color-xp-deep);
+  --color-gold: var(--color-gold);
+  --color-gold-ink: var(--color-gold-ink);
+  --color-gold-deep: var(--color-gold-deep);
+  --color-sky: var(--color-sky);
+  --color-sky-ink: var(--color-sky-ink);
+  --color-sky-deep: var(--color-sky-deep);
+  --color-pink: var(--color-pink);
+  --color-pink-ink: var(--color-pink-ink);
+  --color-pink-deep: var(--color-pink-deep);
+  --color-clinic-deep: var(--color-clinic-deep);
+  --color-vital-text: var(--color-vital-text);
+  --color-streak-text: var(--color-streak-text);
+  --color-xp-text: var(--color-xp-text);
+  --color-gold-text: var(--color-gold-text);
   --color-brand: var(--color-brand);
   --color-brand-dark: var(--color-brand-dark);
   --color-brand-light: var(--color-brand-light);
@@ -103,9 +160,9 @@
   --radius-card: 1.25rem;
   --radius-control: 1rem;
   --shadow-soft: 0 1px 2px rgb(15 23 42 / 0.04), 0 4px 16px rgb(15 23 42 / 0.06);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-nunito);
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-geist-sans);
+  --font-heading: var(--font-nunito);
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -207,6 +264,23 @@
   & > :nth-child(n + 6) { animation-delay: 200ms; }
 }
 
+/*
+ * Botón "3D pressable" (GameButton): relieve inferior de 4 px en el tono oscuro
+ * del mismo color (--edge). Al pulsar, el botón baja 4 px y el relieve desaparece;
+ * se dibuja con box-shadow para que el resto de la pantalla no salte (sin CLS).
+ */
+@utility pressable-3d {
+  box-shadow: 0 4px 0 0 var(--edge, var(--color-line));
+  transition-property: translate, scale, box-shadow;
+  transition-duration: 90ms;
+  transition-timing-function: ease-out;
+  &:active:not([aria-disabled="true"], :disabled) {
+    translate: 0 4px;
+    scale: 0.96;
+    box-shadow: 0 0 0 0 var(--edge, var(--color-line));
+  }
+}
+
 @keyframes sheen-sweep {
   to {
     transform: translateX(120%);
@@ -238,6 +312,10 @@
     --color-pastel-rose-ink: #FECDD3;
     --color-pastel-lemon: #3A3214;
     --color-pastel-lemon-ink: #FDE68A;
+    --color-vital-text: #86EFAC;
+    --color-streak-text: #FDBA74;
+    --color-xp-text: #C4B5FD;
+    --color-gold-text: #FCD34D;
   }
 }
 

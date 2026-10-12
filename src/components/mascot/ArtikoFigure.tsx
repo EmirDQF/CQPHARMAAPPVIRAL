@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+import { GAME_TONE_PASTEL, THEMES } from "@/lib/design/tokens";
 import {
   ARTIKO_POSES,
   artikoLabel,
@@ -17,6 +19,18 @@ export interface ArtikoFigureProps {
   label?: string;
   className?: string;
 }
+
+/**
+ * Artiko conserva sus colores en modo oscuro: su dibujo usa siempre la
+ * paleta pastel clara (los alias de la capa viva cambian con el tema).
+ */
+const LIGHT = THEMES.light;
+const ARTIKO_PALETTE = Object.fromEntries(
+  Object.entries(GAME_TONE_PASTEL).flatMap(([tone, pastel]) => [
+    [`--color-${tone}`, LIGHT[`color-pastel-${pastel}`]],
+    [`--color-${tone}-deep`, LIGHT[`color-pastel-${pastel}-edge`]],
+  ])
+) as CSSProperties;
 
 const VIEWBOX_WIDTH = 120;
 const VIEWBOX_HEIGHT = 140;
@@ -47,6 +61,7 @@ export function ArtikoFigure({
       width={(size * VIEWBOX_WIDTH) / VIEWBOX_HEIGHT}
       data-emotion={emotion}
       className={className}
+      style={ARTIKO_PALETTE}
       focusable="false"
       {...a11y}
     >

@@ -27,7 +27,7 @@ function StepProgress({ currentStep }: { currentStep: WizardStep }) {
         <div
           key={step}
           className={`h-2 flex-1 rounded-full transition-colors ${
-            step <= currentStep ? "bg-action-strong" : "bg-neutral-200 dark:bg-neutral-800"
+            step <= currentStep ? "bg-progress" : "bg-line"
           }`}
         />
       ))}

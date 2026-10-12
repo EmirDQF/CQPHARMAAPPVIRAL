@@ -22,7 +22,7 @@ export function GameUnlockToast({ game }: { game: GameState }) {
       <span aria-hidden="true" className="text-5xl">{unlock.emoji}</span>
       <div className="flex flex-1 flex-col gap-2">
         <p role="status" className="text-xl font-black">¡Desbloqueaste: {unlock.title}!</p>
-        <p className="text-base">{unlock.description}</p>
+        <p className="text-lg">{unlock.description}</p>
         <div className="flex flex-wrap gap-2">
           {unlock.accessory && !game.progress.equipped.includes(unlock.accessory) && (
             <GameButton
@@ -76,7 +76,7 @@ export function ArtikoShowcase({ game }: { game: GameState }) {
               </GameButton>
             );
           })}
-          <p id="accesorio-bloqueado" className="text-sm text-muted">Los accesorios con candado se ganan con constancia.</p>
+          <p id="accesorio-bloqueado" className="text-lg text-muted">Los accesorios con candado se ganan con constancia.</p>
         </div>
       </div>
       <ul className="grid grid-cols-2 gap-2" aria-label="Insignias">

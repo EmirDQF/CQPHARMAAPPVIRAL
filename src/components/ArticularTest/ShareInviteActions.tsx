@@ -35,7 +35,7 @@ export function ShareInviteActions() {
 
   return (
     <div className="flex flex-col gap-3 border-t border-line pt-4">
-      <p className="text-sm font-medium">¿Conoces a alguien a quien le sirva? Compartes solo la invitación, no tu resultado.</p>
+      <p className="text-lg font-medium">¿Conoces a alguien a quien le sirva? Compartes solo la invitación, no tu resultado.</p>
       <button
         type="button"
         onClick={() => void handleShare("familiar")}
@@ -50,7 +50,7 @@ export function ShareInviteActions() {
       >
         Compartir el test
       </button>
-      <p role="status" className="text-sm text-neutral-600 dark:text-neutral-300 min-h-5">
+      <p role="status" className="text-lg text-muted min-h-5">
         {message}
       </p>
     </div>

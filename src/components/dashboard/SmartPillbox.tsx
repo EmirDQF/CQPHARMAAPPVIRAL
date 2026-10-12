@@ -24,7 +24,7 @@ const PERIOD_STYLE: Record<DosePeriod, PeriodStyle> = {
 };
 
 const STATUS_BADGE: Record<DoseSlotStatus, { text: string; icon: LucideIcon; className: string }> = {
-  due: { text: "Te toca ahora", icon: BellRing, className: "bg-action-strong text-on-action-strong" },
+  due: { text: "Te toca ahora", icon: BellRing, className: "border-2 border-pastel-mint-edge bg-pastel-mint text-pastel-mint-ink" },
   upcoming: { text: "Más tarde", icon: Clock, className: "bg-surface/80 text-current" },
   taken: { text: "Tomada hoy", icon: CheckCircle2, className: "bg-pastel-mint text-pastel-mint-ink" },
 };
@@ -95,11 +95,11 @@ function DoseSlotCard({ dose, isTaken, isPending, onTake, onUndo, onConfirm, now
   return (
     <li
       className={`rounded-card px-4 py-4 flex flex-col gap-3 transition-shadow duration-200 ${style.card} ${
-        isDue ? "ring-2 ring-action-strong shadow-soft" : ""
+        isDue ? "ring-2 ring-progress shadow-soft" : ""
       }`}
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="flex items-center gap-2 text-sm font-bold">
+        <p className="flex items-center gap-2 text-lg font-bold">
           <span className={`grid size-9 shrink-0 place-items-center rounded-control ${style.iconTile}`} aria-hidden="true">
             <PeriodIcon className="size-5" />
           </span>
@@ -149,7 +149,7 @@ export function SmartPillbox(props: SmartPillboxProps) {
         </Badge>
       </div>
       {nextDose && (
-        <p className="rounded-control bg-pastel-sky px-4 py-2 text-base font-bold text-pastel-sky-ink">
+        <p className="rounded-control bg-pastel-sky px-4 py-2 text-lg font-bold text-pastel-sky-ink">
           <Clock aria-hidden="true" className="mr-2 inline size-5 align-text-bottom" />
           Próxima toma {formatMinutesUntil(nextDose.minutesUntil)}
         </p>
@@ -172,7 +172,7 @@ export function SmartPillbox(props: SmartPillboxProps) {
       <p role="status" className="sr-only">
         {statusMessage(pendingIds.length, DOSE_SCHEDULE.find((dose) => dose.id === lastConfirmedDoseId)?.label ?? null)}
       </p>
-      <p className="text-sm text-muted">
+      <p className="text-lg text-muted">
         La constancia diaria apoya tu salud articular y ósea. Tus suplementos complementan, no reemplazan, el tratamiento
         indicado por tu médico.
       </p>

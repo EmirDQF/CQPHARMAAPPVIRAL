@@ -12,8 +12,8 @@ export function AccessScreen() {
   return (
     <main className="w-full max-w-md mx-auto px-4 py-10 flex flex-col gap-6 min-h-dvh">
       <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-bold">Accede a tu cuenta</h1>
-        <p className="text-neutral-600 dark:text-neutral-300">
+        <h1 className="text-[1.75rem] font-bold">Accede a tu cuenta</h1>
+        <p className="text-muted">
           Usa tu correo y un código de 6 dígitos. Sin contraseñas. No necesitas cuenta para usar la app.
         </p>
       </div>

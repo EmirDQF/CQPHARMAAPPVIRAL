@@ -43,7 +43,7 @@ export function WhatsAppCta({
       >
         <span>{children}</span>
       </button>
-      <p id={noticeId} className="text-sm text-neutral-600 dark:text-neutral-400 text-center">
+      <p id={noticeId} className="text-lg text-muted text-center">
         {WHATSAPP_UNAVAILABLE_MESSAGE}
       </p>
     </div>

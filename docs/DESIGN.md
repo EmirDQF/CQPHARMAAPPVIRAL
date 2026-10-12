@@ -1,52 +1,55 @@
-# DESIGN — sistema "Clínico amable"
+# DESIGN — sistema "Clínico sereno" (pastel claro, tinta oscura)
 
-Fuente de verdad: `src/lib/design/tokens.ts`. `src/app/globals.css` declara exactamente esos valores (claro y oscuro) y `src/lib/design/contrast.test.ts` falla si un valor no coincide o si un par texto/fondo baja de AA (4.5:1 texto, 3:1 gráficos). Los componentes usan solo utilidades de Tailwind (`bg-pastel-mint`, `text-clinic`, …), nunca hex sueltos.
+Fuente de verdad: `src/lib/design/tokens.ts`. `src/app/globals.css` declara exactamente esos valores (claro y oscuro) y `src/lib/design/contrast.test.ts` falla si un valor no coincide, si un par texto/fondo baja de AA (4.5:1 texto, 3:1 gráficos y bordes de controles) o si un color decorativo se parece a uno del semáforo (ΔE CIE76 < 10). Los componentes usan solo utilidades de Tailwind (`bg-pastel-mint`, `text-clinic`, …), nunca hex sueltos.
+
+Meta visual: clínico, cálido, humano y sereno. Sin neón, sin rellenos saturados, sin degradados ni brillos, sin relieve 3D.
 
 ## Tokens
 
 | Token | Claro | Oscuro | Uso |
 |---|---|---|---|
-| `canvas` / `surface` | `#F8FAFC` / `#FFFFFF` | `#0B1220` / `#111A2E` | Fondo de página / tarjetas (60 %) |
-| `ink` / `muted` | `#0F172A` / `#64748B` | `#E2E8F0` / `#94A3B8` | Texto / texto secundario |
-| `line` | `#E2E8F0` | `#1E293B` | Bordes |
-| `clinic` | `#0F4C81` | `#7DB7E8` | Títulos, enlaces, navegación (30 %) |
-| `action-strong` + `on-action-strong` | `#0F766E` + blanco | igual | Botón principal (10 %) |
-| `action` + `action-ink` | `#14B8A6` + `#042F2E` | `#2DD4BF` + `#042F2E` | Solo rellenos con su tinta |
-| `progress` | `#0F766E` | `#2DD4BF` | Anillos y barras de gráficas |
-| `pastel-{mint,sky,lavender,peach,rose,lemon}` + `-ink` | ver tokens.ts | ver tokens.ts | Fondos de tarjetas, gráficas e insignias, **siempre con su tinta** |
+| `canvas` / `surface` | `#FBF8F3` (crema) / `#FFFFFF` | `#141A22` / `#1C2430` | Fondo de página / tarjetas. En oscuro, superficies profundas suaves, nunca negro puro |
+| `ink` / `muted` | `#1F2A37` / `#5B6573` | `#E8EDF2` / `#A7B2BE` | Texto / texto secundario |
+| `line` | `#E7E1D7` | `#2E3946` | Bordes neutros |
+| `clinic` | `#1F4E79` | `#9CC3E8` | Azul clínico: títulos, enlaces, navegación, foco |
+| `action` + `action-ink` + `action-edge` | `#C9E8E4` + `#0F3D2E` + `#3F8A7E` | `#234640` + `#C9E8E4` + `#6DB8AA` | Botón principal (`btn-primary`); `action-hover` al pasar el puntero |
+| `progress` | `#3F8A7E` | `#6DB8AA` | Anillos y barras de gráficas (≥ 3:1) |
 | `risk-*` | sin cambios | sin cambios | Semáforo OMS y bandera roja: **no se pastelizan** |
 
-Forma: `rounded-card` (20 px) y `rounded-control` (16 px), `shadow-soft`. Movimiento: 150–250 ms (`animate-fade-in`, `animate-confetti`), siempre `motion-safe:`; `prefers-reduced-motion` lo anula globalmente. Foco: `:focus-visible` de 3 px en azul clínico para todo control.
+Pasteles, cada uno con su tinta (`-ink`, texto AA encima y sobre la tarjeta) y su borde (`-edge`, ≥ 3:1 sobre tarjeta y lienzo):
+
+| Pastel | Claro (relleno / tinta / borde) | Oscuro (relleno / tinta / borde) |
+|---|---|---|
+| `mint` | `#C9E8E4` / `#0F3D2E` / `#3F8A7E` | `#234640` / `#C9E8E4` / `#6DB8AA` |
+| `sky` | `#CFE3F5` / `#123A5C` / `#4F86B8` | `#213A52` / `#CFE3F5` / `#78A9D6` |
+| `lavender` | `#E0DAF2` / `#3A2F66` / `#8273B8` | `#312C4A` / `#E0DAF2` / `#A193D6` |
+| `peach` | `#FBDCC8` / `#6B2E12` / `#C0703F` | `#4A3022` / `#FBDCC8` / `#D99467` |
+| `rose` | `#EED3E6` / `#6B1F36` / `#B5679A` | `#46293A` / `#EED3E6` / `#CF8CB3` |
+| `lemon` | `#F1EBD6` / `#5A4608` / `#8F8045` | `#3D3826` / `#F1EBD6` / `#C2B27A` |
+
+Ajustes respecto de la base sugerida (para no confundirse con el semáforo, ΔE ≥ 10): menta `#CDEBDD` → `#C9E8E4` (se parecía al fondo verde "Normal"), rosa `#F8D9E0` → `#EED3E6` (fondo rojo), limón `#F6EBC0` → `#F1EBD6` (fondo amarillo "Osteopenia").
+
+Forma: `rounded-card` (20 px) y `rounded-control` (16 px), `shadow-soft` muy tenue. Movimiento: 150–250 ms, siempre `motion-safe:`; `prefers-reduced-motion` lo anula globalmente. Foco: `:focus-visible` de 3 px en azul clínico para todo control.
 
 ## Capa viva (Artiko)
 
-Rellenos brillantes iguales en claro y oscuro (`GAME_COLORS` en `tokens.ts`), cada uno con su tinta AA y su borde 3D:
+Los tonos de juego **son alias de la paleta pastel** (`GAME_TONE_PASTEL` en `tokens.ts`), en claro y en oscuro: `vital` = menta, `streak` = durazno, `xp` = lavanda, `gold` = limón, `sky` = cielo, `pink` = rosa. Cada uno trae relleno (`bg-vital`), tinta (`text-vital-ink`, también `-text` sobre tarjeta) y borde (`border-vital-deep`). No hay rellenos saturados propios: la prueba falla si `globals.css` declara un hex para un tono de juego.
 
-| Tono | Relleno | Tinta | Borde 3D (`-deep`) | Uso |
-|---|---|---|---|---|
-| `vital` | `#22C55E` (`vital-strong` `#10B981`) | `#052E16` | `#15803D` | Acción principal del juego, misión lista |
-| `lime` | `#84CC16` | — | — | Solo detalles gráficos |
-| `streak` | `#F97316` (`streak-hot` `#FF5A1F`) | `#431407` | `#C2410C` | Racha y llama |
-| `xp` | `#8B5CF6` gráficos · `xp-strong` `#7C3AED` botones | blanco | `#5B21B6` | XP y nivel |
-| `gold` | `#F59E0B` | `#451A03` | `#A16207` | Logros |
-| `sky` / `pink` | `#38BDF8` / `#FF7EB6` | `#082F49` / `#500724` | `#0369A1` / `#BE185D` | Acentos alegres |
-| `clinic` | `#0F4C81` | blanco | `#0A365C` | Estructura y botones clínicos |
+Artiko se dibuja con la paleta clara fija (también en modo oscuro, para que se reconozca igual) y contorno suave `#2B3A4A` (`--color-clinic-deep`), nunca negro puro.
 
-Texto de la capa viva sobre superficie o lienzo: `text-{vital,streak,xp,gold}-text` (cambian con el tema). La prueba `contrast.test.ts` exige AA de cada par y que **ningún** color de juego repita un `risk-*` del semáforo.
+**Tipografía:** Nunito (redondeada) servida por `next/font` desde el propio dominio. Títulos de pantalla 28–40 px (`text-[1.75rem]` a `text-[2.5rem]`); cuerpo ≥ 18 px (`text-lg`) con interlineado 1.5; etiquetas en mayúsculas pueden ir a 16 px.
 
-**Tipografía:** Nunito (redondeada, 400–900) servida por `next/font` desde el propio dominio, sin peticiones externas. Títulos 32–48 px `font-black`; cuerpo de `/app` 18 px (`text-lg`); XP y racha con números grandes.
+**Botón pastel (`GameButton` / `gameButtonClasses`):** relleno pastel, borde de 2 px en el tono `-deep` y tinta oscura; `rounded-control`, ≥ 48 px (`md`) y ≥ 56 px en los principales (`lg`, `xl`). Al pulsar, `press-scale` (escala 0.97) sin mover el resto de la pantalla (CLS 0). Fuera de la capa viva, el botón principal usa la utilidad `btn-primary` (menta + borde + tinta). Vibra con `@capacitor/haptics` en la app o `navigator.vibrate` en la web, salvo que se apague en Ajustes → "Vibración y celebraciones". Sin sonidos. Deshabilitado = `aria-disabled` + motivo visible.
 
-**Botón 3D (`GameButton` / `gameButtonClasses`):** `rounded-2xl font-black`, ≥ 48 px, relieve inferior de 4 px en el tono `-deep` (utilidad `pressable-3d`). Al pulsar baja 4 px, escala a 0.96 y pierde el relieve. El relieve es un `box-shadow` y no un `border-b-4` para que pulsar no mueva el resto de la pantalla (CLS 0). Vibra con `@capacitor/haptics` en la app (carga perezosa) o `navigator.vibrate` en la web, salvo que se apague en Ajustes → "Vibración y celebraciones" (`artikare_feedback_prefs_v1`). Sin sonidos. Deshabilitado = `aria-disabled` + motivo visible.
-
-Emojis: solo acento visual, con `aria-hidden="true"` cuando son decorativos y nunca como única información.
+Emojis: solo acento visual junto a un texto, con `aria-hidden="true"`; nunca como único elemento gráfico (los indicadores usan iconos de lucide).
 
 ## Reglas de uso
 
-1. Un pastel nunca es color de texto sobre blanco: va de fondo y lleva su `-ink` encima.
+1. Un pastel nunca es color de texto ni de barra sobre blanco: va de fondo con su `-ink` encima; para trazos y barras, su `-edge`.
 2. Clases literales: Tailwind no genera `bg-pastel-${tone}`; usa un mapa (`src/components/rewards/toneClasses.ts`).
 3. ¿Un par nuevo de colores? Agrégalo a `CONTRAST_PAIRS` en `tokens.ts` y corre `npx vitest run src/lib/design`.
 4. Bandera roja y CTA reumatológica siempre por encima de cualquier producto o recompensa.
-5. Objetivos táctiles ≥ 44 px (los botones principales usan 48–56 px). Cuerpo ≥ 16 px.
+5. Objetivos táctiles ≥ 48 px (los botones principales, ≥ 56 px). Cuerpo ≥ 18 px.
 6. Contenido que depende del celular (racha, hora) no va en el HTML prerenderizado: se reserva el mismo alto (sin saltos de diseño) y se pinta al hidratar.
 
 ## Agregar una recompensa en 3 pasos

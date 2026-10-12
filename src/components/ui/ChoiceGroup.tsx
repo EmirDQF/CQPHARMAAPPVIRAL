@@ -36,7 +36,7 @@ export function ChoiceGroup<T extends string>({
     <fieldset aria-describedby={hintId} className="flex flex-col gap-1">
       <legend className={isLegendVisuallyHidden ? "sr-only" : "text-lg font-bold"}>{legend}</legend>
       {hint && (
-        <p id={hintId} className="text-base text-muted">
+        <p id={hintId} className="text-lg text-muted">
           {hint}
         </p>
       )}

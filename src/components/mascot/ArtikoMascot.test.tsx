@@ -1,6 +1,7 @@
 /** @vitest-environment jsdom */
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+import { THEMES } from "@/lib/design/tokens";
 import { ARTIKO_EMOTIONS, artikoLabel } from "@/lib/mascot/mascot";
 import { ArtikoFigure } from "./ArtikoFigure";
 import { ArtikoMascot } from "./ArtikoMascot";
@@ -36,6 +37,11 @@ describe("ArtikoFigure", () => {
 
   it("uses only design tokens, never loose hex colors", () => {
     const { container } = render(<ArtikoFigure emotion="fire_streak" accessories={["cap", "scarf", "glasses"]} />);
+    const svg = container.querySelector("svg");
+    // La única fuente de color es la paleta pastel clara fija (tokens.ts), puesta como variables en la raíz.
+    expect(svg?.style.getPropertyValue("--color-vital").toUpperCase()).toBe(THEMES.light["color-pastel-mint"]);
+    expect(svg?.style.getPropertyValue("--color-streak-deep").toUpperCase()).toBe(THEMES.light["color-pastel-peach-edge"]);
+    svg?.removeAttribute("style");
     expect(container.innerHTML).not.toMatch(/#[0-9a-f]{3,6}\b/i);
   });
 });

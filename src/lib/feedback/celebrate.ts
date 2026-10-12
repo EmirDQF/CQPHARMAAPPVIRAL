@@ -1,4 +1,4 @@
-import { GAME_COLORS } from "../design/tokens";
+import { PASTELS, THEMES } from "../design/tokens";
 import { feedbackPreferencesStore, type FeedbackPreferences } from "./preferences";
 
 /**
@@ -9,10 +9,8 @@ import { feedbackPreferencesStore, type FeedbackPreferences } from "./preference
 const CONFETTI_PARTICLES = 120;
 const CONFETTI_SPREAD = 75;
 const CONFETTI_ORIGIN_Y = 0.6;
-/** Tonos de la capa viva (canvas-confetti necesita valores, no variables CSS). */
-const CONFETTI_COLORS = (["color-vital", "color-streak", "color-xp", "color-gold", "color-sky", "color-pink"] as const).map(
-  (token) => GAME_COLORS[token]
-);
+/** Bordes pastel (visibles sobre el lienzo claro y oscuro); canvas-confetti necesita valores, no variables CSS. */
+const CONFETTI_COLORS = PASTELS.map((name) => THEMES.light[`color-pastel-${name}-edge`]);
 
 export interface CelebrateDependencies {
   readPreferences: () => FeedbackPreferences;

@@ -19,7 +19,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
       </div>
 
       <h3 className="text-lg font-bold text-balance">{article.title}</h3>
-      <p className="text-sm text-neutral-600 dark:text-neutral-300">
+      <p className="text-lg text-muted">
         {article.excerpt}
       </p>
 

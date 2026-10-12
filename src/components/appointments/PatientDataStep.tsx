@@ -37,7 +37,7 @@ export function PatientDataStep({ onBack, onSubmit }: PatientDataStepProps) {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <div>
-        <p className="text-sm font-semibold text-clinic">Paso 3 de 3</p>
+        <p className="text-lg font-semibold text-clinic">Paso 3 de 3</p>
         <h2 className="text-xl font-bold">Datos del paciente</h2>
       </div>
 
@@ -46,7 +46,7 @@ export function PatientDataStep({ onBack, onSubmit }: PatientDataStepProps) {
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="min-h-12 rounded-xl border-2 border-neutral-200 dark:border-neutral-700 px-4 text-base bg-transparent"
+          className="min-h-12 rounded-xl border-2 border-line px-4 text-base bg-transparent"
           placeholder="Ej. María Torres"
         />
       </label>
@@ -57,7 +57,7 @@ export function PatientDataStep({ onBack, onSubmit }: PatientDataStepProps) {
           value={age}
           onChange={(e) => setAge(e.target.value)}
           inputMode="numeric"
-          className="min-h-12 rounded-xl border-2 border-neutral-200 dark:border-neutral-700 px-4 text-base bg-transparent"
+          className="min-h-12 rounded-xl border-2 border-line px-4 text-base bg-transparent"
           placeholder="Ej. 58"
         />
       </label>
@@ -68,13 +68,13 @@ export function PatientDataStep({ onBack, onSubmit }: PatientDataStepProps) {
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           inputMode="tel"
-          className="min-h-12 rounded-xl border-2 border-neutral-200 dark:border-neutral-700 px-4 text-base bg-transparent"
+          className="min-h-12 rounded-xl border-2 border-line px-4 text-base bg-transparent"
           placeholder="Ej. 987654321"
         />
       </label>
 
       <div>
-        <p className="text-sm font-medium mb-2">¿Quién agenda esta cita?</p>
+        <p className="text-lg font-medium mb-2">¿Quién agenda esta cita?</p>
         <div className="flex gap-3">
           <button
             type="button"
@@ -83,7 +83,7 @@ export function PatientDataStep({ onBack, onSubmit }: PatientDataStepProps) {
             className={`flex-1 min-h-12 rounded-xl border-2 font-semibold transition-colors ${
               bookedBy === "propia"
                 ? "border-brand bg-pastel-mint text-pastel-mint-ink"
-                : "border-neutral-200 dark:border-neutral-700"
+                : "border-line"
             }`}
           >
             Por mi cuenta
@@ -95,7 +95,7 @@ export function PatientDataStep({ onBack, onSubmit }: PatientDataStepProps) {
             className={`flex-1 min-h-12 rounded-xl border-2 font-semibold transition-colors ${
               bookedBy === "hijo"
                 ? "border-brand bg-pastel-mint text-pastel-mint-ink"
-                : "border-neutral-200 dark:border-neutral-700"
+                : "border-line"
             }`}
           >
             La agenda un hijo/a
@@ -109,14 +109,14 @@ export function PatientDataStep({ onBack, onSubmit }: PatientDataStepProps) {
         <button
           type="button"
           onClick={onBack}
-          className="min-h-12 flex-1 rounded-xl border-2 border-neutral-200 dark:border-neutral-700 font-semibold"
+          className="min-h-12 flex-1 rounded-xl border-2 border-line font-semibold"
         >
           ← Atrás
         </button>
         <button
           type="submit"
           disabled={!isValid}
-          className="min-h-12 flex-[2] rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold text-lg transition-colors"
+          className="min-h-12 flex-[2] rounded-xl btn-primary disabled:opacity-40 disabled:cursor-not-allowed font-semibold text-lg"
         >
           Confirmar Cita
         </button>

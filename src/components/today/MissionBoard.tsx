@@ -68,7 +68,7 @@ export function MissionBoard({ game, onTakeDose, onOpenCheckIn }: MissionBoardPr
       </h2>
       {nextMission && !game.goal.met && (
         <div className="flex flex-col gap-2 rounded-2xl bg-pastel-mint p-4 text-pastel-mint-ink">
-          <p className="text-base font-black uppercase tracking-wide">Tu siguiente paso</p>
+          <p className="text-lg font-black uppercase tracking-wide">Tu siguiente paso</p>
           <GameButton tone="vital" size="xl" block onClick={() => act(nextMission)} aria-label={`Siguiente paso: ${nextMission.title}`}>
             {nextMission.title}
           </GameButton>
@@ -89,7 +89,7 @@ export function MissionBoard({ game, onTakeDose, onOpenCheckIn }: MissionBoardPr
           />
         ))}
       </ul>
-      {hasPhysical && <p className="text-base text-muted">{PHYSICAL_ACTIVITY_DISCLAIMER}</p>}
+      {hasPhysical && <p className="text-lg text-muted">{PHYSICAL_ACTIVITY_DISCLAIMER}</p>}
       <p className="sr-only" aria-live="polite">
         {announcement}
       </p>

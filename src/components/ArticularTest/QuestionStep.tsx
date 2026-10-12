@@ -30,7 +30,7 @@ export function QuestionStep({
               className={`w-full text-left px-4 py-3 rounded-xl border-2 transition-colors ${
                 isSelected
                   ? "border-brand bg-pastel-mint text-pastel-mint-ink"
-                  : "border-neutral-200 dark:border-neutral-700 hover:border-brand/50"
+                  : "border-line hover:border-brand/50"
               }`}
             >
               {option.label}

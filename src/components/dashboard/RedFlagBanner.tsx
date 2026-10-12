@@ -24,7 +24,7 @@ export function RedFlagBanner() {
           <li key={flag}>{RED_FLAG_DESCRIPTION[flag]}</li>
         ))}
       </ul>
-      <p className="text-sm">
+      <p className="text-lg">
         Consulta con tu reumatólogo antes de iniciar o cambiar cualquier suplemento. Los
         suplementos no reemplazan el tratamiento médico.
       </p>

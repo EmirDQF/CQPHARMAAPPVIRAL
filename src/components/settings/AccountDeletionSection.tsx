@@ -81,12 +81,12 @@ export function AccountDeletionSection({ authStatus, onDeleted = reloadSettings 
             <span>Entiendo que el borrado es definitivo.</span>
           </label>
           {!isAcknowledged && (
-            <p id={CONFIRM_HINT_ID} className="text-sm text-neutral-600 dark:text-neutral-400">
+            <p id={CONFIRM_HINT_ID} className="text-lg text-muted">
               Marca la casilla para activar el botón de borrado.
             </p>
           )}
           {phase === "failed" && (
-            <p role="alert" className="text-base font-medium text-red-700 dark:text-red-400">
+            <p role="alert" className="text-lg font-medium text-red-700 dark:text-red-400">
               No pudimos borrar tu cuenta. No borramos nada de este celular; revisa tu conexión e inténtalo de nuevo.
             </p>
           )}

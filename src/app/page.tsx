@@ -16,12 +16,12 @@ export default function Home() {
       <SiteHeader />
 
       <main className="flex-1 flex flex-col">
-        <div className="flex flex-col items-center px-4 pt-10 pb-16 gap-10 bg-gradient-to-b from-pastel-sky to-canvas">
+        <div className="flex flex-col items-center px-4 pt-10 pb-16 gap-10 bg-pastel-sky">
           <div className="max-w-2xl text-center flex flex-col items-center gap-5">
-            <p className="text-pastel-sky-ink font-bold uppercase tracking-wide text-base">
+            <p className="text-pastel-sky-ink font-bold uppercase tracking-wide text-lg">
               Artikare · Respaldado por CQ Pharma
             </p>
-            <h1 className="text-4xl sm:text-5xl font-black leading-tight tracking-tight text-balance text-pastel-sky-ink">
+            <h1 className="text-[2rem] sm:text-[2.5rem] font-black leading-tight tracking-tight text-balance text-pastel-sky-ink">
               Descubre la salud real de tus articulaciones y huesos antes de
               que el dolor limite tu vida.
             </h1>

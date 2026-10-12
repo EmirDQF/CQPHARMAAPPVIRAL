@@ -34,7 +34,7 @@ function AppointmentItem({ appointment, isNext = false }: AppointmentItemProps) 
       }`}
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="text-sm font-semibold first-letter:uppercase">
+        <p className="text-lg font-semibold first-letter:uppercase">
           {formatAppointmentDate(appointment.date)} · {SLOT_LABELS[appointment.slot]}
         </p>
         {isNext && (
@@ -44,11 +44,11 @@ function AppointmentItem({ appointment, isNext = false }: AppointmentItemProps) 
         )}
       </div>
       <p className="text-lg font-bold leading-snug">{service?.name}</p>
-      <p className="text-sm">
+      <p className="text-lg">
         Código <span className="font-mono font-semibold tracking-wide">{appointment.code}</span>
       </p>
       {isNext && service?.prepInstructions && (
-        <p className="mt-1 flex items-start gap-2 rounded-control bg-surface/70 px-3 py-2 text-sm">
+        <p className="mt-1 flex items-start gap-2 rounded-control bg-surface/70 px-3 py-2 text-lg">
           <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
           <span>{service.prepInstructions}</span>
         </p>
@@ -63,7 +63,7 @@ function EmptyAppointments() {
       <p className="font-semibold">Aún no tienes una cita agendada.</p>
       <Link
         href="/citas"
-        className="min-h-12 flex items-center justify-center gap-2 rounded-control bg-action-strong px-5 font-semibold text-on-action-strong shadow-sm transition-all hover:bg-brand-dark active:scale-[0.98]"
+        className="min-h-12 flex items-center justify-center gap-2 rounded-control btn-primary px-5 font-bold"
       >
         <CalendarPlus aria-hidden="true" className="size-5" />
         Agendar mi cita
@@ -115,7 +115,7 @@ export function NextAppointmentCard() {
           </TabsContent>
           <TabsContent value="historial" className="pt-2 animate-fade-in">
             {past.length === 0 ? (
-              <p className="rounded-control bg-canvas px-4 py-4 text-sm text-muted">
+              <p className="rounded-control bg-canvas px-4 py-4 text-lg text-muted">
                 Aquí verás tus citas anteriores para llevar el control de tus chequeos.
               </p>
             ) : (

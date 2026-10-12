@@ -53,7 +53,7 @@ export function AccountInvite({ moment, streakDays = 0 }: AccountInviteProps) {
           <h2 id={titleId} className="text-lg font-bold">
             {ACCOUNT_INVITE_COPY.title}
           </h2>
-          <p className="text-neutral-700 dark:text-neutral-300">{ACCOUNT_INVITE_COPY.body}</p>
+          <p className="text-muted">{ACCOUNT_INVITE_COPY.body}</p>
           <div className="flex gap-3">
             <button
               type="button"
@@ -65,7 +65,7 @@ export function AccountInvite({ moment, streakDays = 0 }: AccountInviteProps) {
             <button
               type="button"
               onClick={() => setIsAccessOpen(true)}
-              className="flex-1 min-h-12 rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] text-white font-semibold transition-colors"
+              className="flex-1 min-h-12 rounded-xl btn-primary font-semibold"
             >
               {ACCOUNT_INVITE_COPY.accept}
             </button>

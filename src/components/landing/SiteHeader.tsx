@@ -11,7 +11,7 @@ export function SiteHeader() {
 
         <Link
           href="/citas"
-          className="btn-sheen min-h-11 inline-flex items-center rounded-control bg-action-strong hover:bg-brand-dark active:scale-[0.98] text-white text-sm font-semibold px-4 transition-colors"
+          className="min-h-11 inline-flex items-center rounded-control btn-primary text-sm font-semibold px-4"
         >
           Agendar Densitometría
         </Link>

@@ -10,7 +10,7 @@ interface ConsentCheckboxProps {
 /** Casilla de consentimiento (Ley 29733): siempre inicia sin marcar y es obligatoria. */
 export function ConsentCheckbox({ checked, onChange }: ConsentCheckboxProps) {
   return (
-    <label className="flex items-start gap-3 rounded-xl border-2 border-neutral-200 dark:border-neutral-700 px-4 py-3 cursor-pointer">
+    <label className="flex items-start gap-3 rounded-xl border-2 border-line px-4 py-3 cursor-pointer">
       <input
         type="checkbox"
         required

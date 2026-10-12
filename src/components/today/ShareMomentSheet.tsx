@@ -43,7 +43,7 @@ export function ShareMomentSheet({ moment, onShared, onClose }: ShareMomentSheet
         <p className="text-lg font-bold">{card.body}</p>
         <figcaption className="text-sm font-bold">Artikare · {card.disclaimer}</figcaption>
       </figure>
-      <p className="text-base text-muted">Solo se comparte esta tarjeta y un enlace al test. Nunca tus registros ni tu nombre.</p>
+      <p className="text-lg text-muted">Solo se comparte esta tarjeta y un enlace al test. Nunca tus registros ni tu nombre.</p>
       {outcome && OUTCOME_TEXT[outcome] && (
         <p role="status" className="text-lg font-bold">
           {OUTCOME_TEXT[outcome]}

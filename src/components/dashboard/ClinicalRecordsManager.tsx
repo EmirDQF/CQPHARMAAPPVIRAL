@@ -74,7 +74,7 @@ export function ClinicalRecordsManager() {
     <section className="rounded-card border border-line bg-surface shadow-soft px-6 py-6 flex flex-col gap-5">
       <div>
         <h2 className="text-xl font-bold">Mis registros</h2>
-        <p className="text-sm text-muted">
+        <p className="text-lg text-muted">
           Si te equivocaste al registrar algo, puedes borrarlo y deshacerlo durante 30 días.
         </p>
       </div>

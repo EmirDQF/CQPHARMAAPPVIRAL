@@ -41,7 +41,7 @@ function CalendarButton() {
 function OfferMessage({ support }: { support: Exclude<ReminderSupport, "granted"> }) {
   if (support === "ios-install") {
     return (
-      <p className="text-sm text-neutral-600 dark:text-neutral-300">
+      <p className="text-lg text-muted">
         En iPhone, los avisos funcionan con Artikare instalada: toca Compartir y luego
         «Agregar a inicio». Mientras tanto, puedes usar tu calendario.
       </p>
@@ -49,13 +49,13 @@ function OfferMessage({ support }: { support: Exclude<ReminderSupport, "granted"
   }
   if (support === "calendar") {
     return (
-      <p className="text-sm text-neutral-600 dark:text-neutral-300">
+      <p className="text-lg text-muted">
         Este navegador no permite avisos. Agrega las tomas a tu calendario y te avisará cada día.
       </p>
     );
   }
   return (
-    <p className="text-sm text-neutral-600 dark:text-neutral-300">
+    <p className="text-lg text-muted">
       Un aviso discreto a las {DOSE_TIMES_LABEL} (hora de Lima), sin mostrar tus datos de salud.
     </p>
   );
@@ -83,7 +83,7 @@ export function ReminderOffer({ support, onEnable, onSnooze }: ReminderOfferProp
           <button
             type="button"
             onClick={onEnable}
-            className="min-h-12 rounded-xl bg-action-strong text-white font-semibold px-4"
+            className="min-h-12 rounded-xl btn-primary font-bold px-4"
           >
             Activar recordatorios
           </button>
@@ -94,7 +94,7 @@ export function ReminderOffer({ support, onEnable, onSnooze }: ReminderOfferProp
           type="button"
           onClick={onSnooze}
           aria-label="Ahora no, recordármelo más adelante"
-          className="min-h-12 rounded-xl text-neutral-600 dark:text-neutral-300 font-semibold px-4"
+          className="min-h-12 rounded-xl text-muted font-semibold px-4"
         >
           Ahora no
         </button>

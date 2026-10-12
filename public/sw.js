@@ -34,7 +34,7 @@ const OFFLINE_HTML = `<!doctype html>
 <html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sin conexión | Artikare</title>
-<style>body{font-family:system-ui,sans-serif;margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#fff;color:#0f172a;padding:16px;text-align:center}button{margin-top:16px;padding:12px 20px;border:0;border-radius:12px;background:#0f766e;color:#fff;font-size:16px}</style>
+<style>body{font-family:system-ui,sans-serif;margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#FBF8F3;color:#1F2A37;padding:16px;text-align:center}button{margin-top:16px;padding:12px 20px;border:2px solid #3F8A7E;border-radius:16px;background:#C9E8E4;color:#0F3D2E;font-size:18px;font-weight:700;min-height:56px}</style>
 </head><body><main>
 <h1>Sin conexión</h1>
 <p>No pudimos conectarnos. Tus registros siguen guardados en este dispositivo.</p>

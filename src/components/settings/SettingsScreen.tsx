@@ -33,14 +33,14 @@ export function SettingsScreen() {
       </Link>
       <header className="flex flex-col gap-2">
         <h1 className="text-3xl font-extrabold">Ajustes y privacidad</h1>
-        <p className="text-base text-neutral-700 dark:text-neutral-300">
+        <p className="text-lg text-muted">
           Tus derechos sobre tus datos (Ley N.º 29733): acceder, corregir, retirar autorizaciones y borrar. Todo se
           hace aquí mismo.
         </p>
       </header>
 
       {wasJustDeleted && (
-        <p role="status" className="rounded-2xl bg-pastel-mint px-5 py-4 text-base font-semibold">
+        <p role="status" className="rounded-2xl bg-pastel-mint px-5 py-4 text-lg font-semibold">
           Listo: borramos tus datos de este celular y, si tenías cuenta, también la cuenta.
         </p>
       )}
@@ -53,7 +53,7 @@ export function SettingsScreen() {
       <OppositionSection />
       <AccountDeletionSection authStatus={authStatus} />
 
-      <p className="text-sm text-muted">
+      <p className="text-lg text-muted">
         <Link href={PRIVACY_POLICY_PATH} className="text-clinic font-semibold underline">
           Política de Privacidad
         </Link>{" "}

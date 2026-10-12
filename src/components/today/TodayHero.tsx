@@ -32,7 +32,7 @@ function GoalRing({ done, goal }: { done: number; goal: number }) {
         {done}/{goal}
       </p>
       </div>
-      <p className="text-base font-bold">Meta 🎯</p>
+      <p className="text-lg font-bold">Meta 🎯</p>
     </div>
   );
 }
@@ -44,8 +44,8 @@ function StreakTile({ days, shields }: { days: number; shields: number }) {
         <span aria-hidden="true" className="text-4xl">🔥</span>
         <span className="text-6xl font-black tabular-nums text-streak-text">{days}</span>
       </p>
-      <p className="text-base font-bold">{days === 1 ? "día activo" : "días activos"}</p>
-      <p className="text-sm text-muted">
+      <p className="text-lg font-bold">{days === 1 ? "día activo" : "días activos"}</p>
+      <p className="text-lg text-muted">
         <span aria-hidden="true">❄️ </span>
         {shields > 0 ? `${shields} ${shields === 1 ? "día de gracia" : "días de gracia"}` : `Gracia cada ${STREAK_DAYS_PER_SHIELD} días`}
       </p>
@@ -72,7 +72,7 @@ function XpTile({ xp, level, xpIntoLevel, xpForLevel }: { xp: number; level: num
         aria-valuenow={xpIntoLevel}
         className="h-3 w-full overflow-hidden rounded-full bg-pastel-lavender"
       >
-        <div className="h-full rounded-full bg-xp transition-[width] duration-500" style={{ width: `${(xpIntoLevel / xpForLevel) * 100}%` }} />
+        <div className="h-full rounded-full bg-xp-deep transition-[width] duration-500" style={{ width: `${(xpIntoLevel / xpForLevel) * 100}%` }} />
       </div>
     </div>
   );
@@ -90,7 +90,7 @@ export function TodayHero({ game, firstName, now }: TodayHeroProps) {
   return (
     <section aria-labelledby="mi-dia-saludo" className="flex flex-col gap-4">
       <div>
-        <p className="text-base font-bold text-muted first-letter:uppercase">{formatLimaLongDate(now)}</p>
+        <p className="text-lg font-bold text-muted first-letter:uppercase">{formatLimaLongDate(now)}</p>
         <h1 id="mi-dia-saludo" className="text-4xl font-black leading-tight tracking-tight text-clinic">
           {limaGreeting(now)}
           {firstName ? `, ${firstName}` : ""}

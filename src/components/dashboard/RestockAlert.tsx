@@ -63,7 +63,7 @@ export function RestockAlert() {
               />
             </div>
 
-            <p className="text-base text-neutral-700">
+            <p className="text-lg text-neutral-700">
               Si te quedan pocas tomas, puedes pedir tu reposición de {pack.name} con{" "}
               {RESTOCK_DISCOUNT_PERCENT}% de descuento.
             </p>
@@ -78,7 +78,7 @@ export function RestockAlert() {
                 Pedir reposición de {pack.name} ({RESTOCK_DISCOUNT_PERCENT} % de descuento)
               </a>
             ) : (
-              <p className="text-base text-neutral-700">WhatsApp no disponible por el momento.</p>
+              <p className="text-lg text-neutral-700">WhatsApp no disponible por el momento.</p>
             )}
 
             <button

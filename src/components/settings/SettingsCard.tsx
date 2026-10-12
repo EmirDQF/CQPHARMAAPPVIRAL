@@ -17,7 +17,7 @@ export function SettingsCard({ id, title, description, children }: SettingsCardP
       <h2 id={id} className="text-xl font-bold">
         {title}
       </h2>
-      <p className="text-base text-neutral-700 dark:text-neutral-300">{description}</p>
+      <p className="text-lg text-muted">{description}</p>
       {children}
     </section>
   );

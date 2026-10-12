@@ -28,11 +28,13 @@ describe("GameButton", () => {
     expect(button).not.toBeDisabled();
   });
 
-  it("is a non-submit 48px+ pressable button by default", () => {
+  it("is a non-submit 48px+ pastel button with a 2px edge and no 3D relief", () => {
     render(<GameButton size="md">Listo</GameButton>);
     const button = screen.getByRole("button", { name: "Listo" });
     expect(button).toHaveAttribute("type", "button");
     expect(button.className).toMatch(/min-h-12/);
-    expect(button.className).toMatch(/pressable-3d/);
+    expect(button.className).toMatch(/border-2/);
+    expect(button.className).toMatch(/border-vital-deep bg-vital text-vital-ink/);
+    expect(button.className).not.toMatch(/pressable-3d|shadow|gradient/);
   });
 });

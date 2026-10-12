@@ -98,12 +98,12 @@ export function DexaVaultModal({ isOpen, onClose }: DexaVaultModalProps) {
 
         {summary && (
           <div className="rounded-xl border-2 border-brand px-4 py-3">
-            <p className="text-sm font-semibold">
+            <p className="text-lg font-semibold">
               {summary.diagnosisLabel} · Peor T-Score: {summary.worstTScore.toFixed(1)}
             </p>
-            <p className="text-sm">{summary.diagnosisMessage}</p>
+            <p className="text-lg">{summary.diagnosisMessage}</p>
             {summary.profileNote && (
-              <p role="note" className="flex items-start gap-1.5 text-sm font-semibold">
+              <p role="note" className="flex items-start gap-1.5 text-lg font-semibold">
                 <TriangleAlert aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
                 <span className="sr-only">Aviso: </span>
                 {summary.profileNote}
@@ -126,7 +126,7 @@ export function DexaVaultModal({ isOpen, onClose }: DexaVaultModalProps) {
                 inputMode="decimal"
                 aria-invalid={lumbarError !== null}
                 aria-describedby={lumbarError ? "dexa-lumbar-error" : undefined}
-                className="min-h-12 rounded-xl border-2 border-neutral-200 dark:border-neutral-700 px-3 bg-transparent"
+                className="min-h-12 rounded-xl border-2 border-line px-3 bg-transparent"
                 placeholder="-1.6"
               />
             </label>
@@ -139,7 +139,7 @@ export function DexaVaultModal({ isOpen, onClose }: DexaVaultModalProps) {
                 inputMode="decimal"
                 aria-invalid={femoralError !== null}
                 aria-describedby={femoralError ? "dexa-femoral-error" : undefined}
-                className="min-h-12 rounded-xl border-2 border-neutral-200 dark:border-neutral-700 px-3 bg-transparent"
+                className="min-h-12 rounded-xl border-2 border-line px-3 bg-transparent"
                 placeholder="-1.4"
               />
             </label>
@@ -172,7 +172,7 @@ export function DexaVaultModal({ isOpen, onClose }: DexaVaultModalProps) {
               onBlur={() => markTouched("date")}
               aria-invalid={dateError !== null}
               aria-describedby={dateError ? "dexa-date-error" : undefined}
-              className="min-h-12 rounded-xl border-2 border-neutral-200 dark:border-neutral-700 px-3 bg-transparent"
+              className="min-h-12 rounded-xl border-2 border-line px-3 bg-transparent"
             />
           </label>
           <p id="dexa-date-error" aria-live="polite" className="text-risk-high dark:text-red-300 empty:hidden">
@@ -186,7 +186,7 @@ export function DexaVaultModal({ isOpen, onClose }: DexaVaultModalProps) {
               onBlur={() => markTouched("center")}
               aria-invalid={centerError !== null}
               aria-describedby={centerError ? "dexa-center-error" : undefined}
-              className="min-h-12 rounded-xl border-2 border-neutral-200 dark:border-neutral-700 px-3 bg-transparent"
+              className="min-h-12 rounded-xl border-2 border-line px-3 bg-transparent"
               placeholder="Ej. Clínica San Pablo"
             />
           </label>
@@ -195,7 +195,7 @@ export function DexaVaultModal({ isOpen, onClose }: DexaVaultModalProps) {
           </p>
           <button
             type="submit"
-            className="min-h-12 rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] text-white font-semibold text-lg transition-colors"
+            className="min-h-12 rounded-xl btn-primary font-semibold text-lg"
           >
             Guardar Estudio
           </button>

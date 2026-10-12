@@ -8,7 +8,7 @@ export function ProductShopSection() {
         <h2 className="text-2xl sm:text-3xl font-bold text-clinic">
           Packs Clínicos CQ Pharma
         </h2>
-        <p className="text-neutral-600 dark:text-neutral-300 max-w-2xl mx-auto">
+        <p className="text-muted max-w-2xl mx-auto">
           Suplementación de alta absorción, prescrita según tu diagnóstico.
         </p>
       </div>

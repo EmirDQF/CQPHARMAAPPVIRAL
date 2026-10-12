@@ -44,7 +44,7 @@ export function RewardCelebration({ celebrations, onDismiss, onOpenAchievements 
           <h2 id="nuevo-logro" className="text-sm font-bold uppercase tracking-wide">¡Nuevo logro!</h2>
           <p className="text-lg font-extrabold">{first.reward.title}</p>
           <p>{first.reward.description}</p>
-          {extra > 0 && <p className="text-sm font-semibold">Y {extra} {extra === 1 ? "logro más" : "logros más"}.</p>}
+          {extra > 0 && <p className="text-lg font-semibold">Y {extra} {extra === 1 ? "logro más" : "logros más"}.</p>}
         </div>
       </div>
       <div className="flex flex-wrap gap-3">
@@ -54,7 +54,7 @@ export function RewardCelebration({ celebrations, onDismiss, onOpenAchievements 
             onDismiss();
             onOpenAchievements();
           }}
-          className="min-h-12 rounded-control bg-action-strong text-on-action-strong font-semibold px-5 active:scale-[0.98] transition-transform duration-150"
+          className="min-h-12 rounded-control btn-primary font-bold px-5"
         >
           Ver mis logros
         </button>

@@ -86,10 +86,10 @@ export default function PrivacidadPage() {
 
       <header className="flex flex-col gap-2">
         <h1 className="text-3xl font-extrabold">Política de Privacidad</h1>
-        <p className="text-sm text-muted">
+        <p className="text-lg text-muted">
           Versión provisional {CONSENT_VERSION} · Ley N.º 29733 de Protección de Datos Personales
         </p>
-        <p className="rounded-xl bg-amber-100 dark:bg-amber-900/40 px-4 py-2 text-sm font-semibold text-amber-900 dark:text-amber-100">
+        <p className="rounded-xl bg-amber-100 dark:bg-amber-900/40 px-4 py-2 text-lg font-semibold text-amber-900 dark:text-amber-100">
           Pendiente de revisión legal: este texto puede cambiar antes de la publicación definitiva.
         </p>
       </header>
@@ -98,7 +98,7 @@ export default function PrivacidadPage() {
         <section key={section.title} className="flex flex-col gap-2">
           <h2 className="text-xl font-bold">{section.title}</h2>
           {section.paragraphs.map((paragraph) => (
-            <p key={paragraph} className="text-base text-neutral-700 dark:text-neutral-300">
+            <p key={paragraph} className="text-lg text-muted">
               {paragraph}
             </p>
           ))}

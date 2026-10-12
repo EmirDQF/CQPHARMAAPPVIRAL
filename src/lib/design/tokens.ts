@@ -1,74 +1,82 @@
 /**
- * Sistema de diseño "Clínico amable" (V1). Fuente de verdad de los colores:
- * src/app/globals.css declara exactamente estos valores (lo verifica
- * contrast.test.ts) y los componentes solo usan las utilidades de Tailwind que
- * salen de ellos (bg-pastel-mint, text-clinic, …), nunca hex sueltos.
+ * Sistema de diseño "Clínico sereno" (pastel claro, tinta oscura). Fuente de
+ * verdad de los colores: src/app/globals.css declara exactamente estos
+ * valores (lo verifica contrast.test.ts) y los componentes solo usan las
+ * utilidades de Tailwind que salen de ellos (bg-pastel-mint, text-clinic, …),
+ * nunca hex sueltos.
  *
  * Reglas de uso (docs/DESIGN.md):
- * - Pasteles = fondos de tarjetas, gráficas e insignias, siempre con su tinta.
- * - `action` (teal claro) solo como relleno detrás de `action-ink`; botones
- *   con texto blanco, `action-strong`; anillos y barras de gráficas, `progress`.
+ * - Pasteles = rellenos de botones, tarjetas, gráficas e insignias, siempre
+ *   con su tinta (`-ink`) encima y su borde (`-edge`) cuando delimitan un control.
+ * - `-edge` es el único tono que sirve como trazo o barra sobre el lienzo (≥ 3:1).
  * - Los colores del semáforo OMS y de la bandera roja (`--color-risk-*`) NO
- *   pertenecen a esta capa y no se pastelizan.
+ *   pertenecen a esta capa, no se pastelizan y ningún pastel se les parece.
  */
+export const PASTELS = ["mint", "sky", "lavender", "peach", "rose", "lemon"] as const;
+export type PastelName = (typeof PASTELS)[number];
+
 export const THEMES = {
   light: {
-    "color-canvas": "#F8FAFC",
+    "color-canvas": "#FBF8F3",
     "color-surface": "#FFFFFF",
-    "color-ink": "#0F172A",
-    "color-muted": "#64748B",
-    "color-line": "#E2E8F0",
-    "color-clinic": "#0F4C81",
-    "color-action": "#14B8A6",
-    "color-action-ink": "#042F2E",
-    "color-action-strong": "#0F766E",
-    "color-on-action-strong": "#FFFFFF",
-    "color-progress": "#0F766E",
-    "color-pastel-mint": "#D9F5EF",
-    "color-pastel-mint-ink": "#0B4F47",
-    "color-pastel-sky": "#DCEEFB",
-    "color-pastel-sky-ink": "#0F4C81",
-    "color-pastel-lavender": "#E8E7FB",
-    "color-pastel-lavender-ink": "#3730A3",
-    "color-pastel-peach": "#FDEBDD",
-    "color-pastel-peach-ink": "#7C2D12",
-    "color-pastel-rose": "#FBE4EA",
-    "color-pastel-rose-ink": "#9F1239",
-    "color-pastel-lemon": "#FBF3CF",
-    "color-pastel-lemon-ink": "#713F12",
-    "color-vital-text": "#15803D",
-    "color-streak-text": "#C2410C",
-    "color-xp-text": "#5B21B6",
-    "color-gold-text": "#A16207",
+    "color-ink": "#1F2A37",
+    "color-muted": "#5B6573",
+    "color-line": "#E7E1D7",
+    "color-clinic": "#1F4E79",
+    "color-action": "#C9E8E4",
+    "color-action-hover": "#B4DDD7",
+    "color-action-ink": "#0F3D2E",
+    "color-action-edge": "#3F8A7E",
+    "color-progress": "#3F8A7E",
+    "color-pastel-mint": "#C9E8E4",
+    "color-pastel-mint-ink": "#0F3D2E",
+    "color-pastel-mint-edge": "#3F8A7E",
+    "color-pastel-sky": "#CFE3F5",
+    "color-pastel-sky-ink": "#123A5C",
+    "color-pastel-sky-edge": "#4F86B8",
+    "color-pastel-lavender": "#E0DAF2",
+    "color-pastel-lavender-ink": "#3A2F66",
+    "color-pastel-lavender-edge": "#8273B8",
+    "color-pastel-peach": "#FBDCC8",
+    "color-pastel-peach-ink": "#6B2E12",
+    "color-pastel-peach-edge": "#C0703F",
+    "color-pastel-rose": "#EED3E6",
+    "color-pastel-rose-ink": "#6B1F36",
+    "color-pastel-rose-edge": "#B5679A",
+    "color-pastel-lemon": "#F1EBD6",
+    "color-pastel-lemon-ink": "#5A4608",
+    "color-pastel-lemon-edge": "#8F8045",
   },
   dark: {
-    "color-canvas": "#0B1220",
-    "color-surface": "#111A2E",
-    "color-ink": "#E2E8F0",
-    "color-muted": "#94A3B8",
-    "color-line": "#1E293B",
-    "color-clinic": "#7DB7E8",
-    "color-action": "#2DD4BF",
-    "color-action-ink": "#042F2E",
-    "color-action-strong": "#0F766E",
-    "color-on-action-strong": "#FFFFFF",
-    "color-progress": "#2DD4BF",
-    "color-pastel-mint": "#123B36",
-    "color-pastel-mint-ink": "#A7F3D0",
-    "color-pastel-sky": "#13324F",
-    "color-pastel-sky-ink": "#BAE6FD",
-    "color-pastel-lavender": "#26244A",
-    "color-pastel-lavender-ink": "#C7D2FE",
-    "color-pastel-peach": "#3D2618",
-    "color-pastel-peach-ink": "#FED7AA",
-    "color-pastel-rose": "#3F1D27",
-    "color-pastel-rose-ink": "#FECDD3",
-    "color-pastel-lemon": "#3A3214",
-    "color-pastel-lemon-ink": "#FDE68A",
-    "color-vital-text": "#86EFAC",
-    "color-streak-text": "#FDBA74",
-    "color-xp-text": "#C4B5FD",
-    "color-gold-text": "#FCD34D",
+    "color-canvas": "#141A22",
+    "color-surface": "#1C2430",
+    "color-ink": "#E8EDF2",
+    "color-muted": "#A7B2BE",
+    "color-line": "#2E3946",
+    "color-clinic": "#9CC3E8",
+    "color-action": "#234640",
+    "color-action-hover": "#2B544D",
+    "color-action-ink": "#C9E8E4",
+    "color-action-edge": "#6DB8AA",
+    "color-progress": "#6DB8AA",
+    "color-pastel-mint": "#234640",
+    "color-pastel-mint-ink": "#C9E8E4",
+    "color-pastel-mint-edge": "#6DB8AA",
+    "color-pastel-sky": "#213A52",
+    "color-pastel-sky-ink": "#CFE3F5",
+    "color-pastel-sky-edge": "#78A9D6",
+    "color-pastel-lavender": "#312C4A",
+    "color-pastel-lavender-ink": "#E0DAF2",
+    "color-pastel-lavender-edge": "#A193D6",
+    "color-pastel-peach": "#4A3022",
+    "color-pastel-peach-ink": "#FBDCC8",
+    "color-pastel-peach-edge": "#D99467",
+    "color-pastel-rose": "#46293A",
+    "color-pastel-rose-ink": "#EED3E6",
+    "color-pastel-rose-edge": "#CF8CB3",
+    "color-pastel-lemon": "#3D3826",
+    "color-pastel-lemon-ink": "#F1EBD6",
+    "color-pastel-lemon-edge": "#C2B27A",
   },
 } as const;
 
@@ -85,13 +93,16 @@ export interface ContrastPair {
   minRatio: number;
 }
 
-const PASTELS = ["mint", "sky", "lavender", "peach", "rose", "lemon"] as const;
-
-const pastelPairs: ContrastPair[] = PASTELS.map((name) => ({
-  foreground: `color-pastel-${name}-ink`,
-  background: `color-pastel-${name}`,
-  minRatio: AA_TEXT,
-}));
+const pastelPairs: ContrastPair[] = PASTELS.flatMap((name): ContrastPair[] => [
+  { foreground: `color-pastel-${name}-ink`, background: `color-pastel-${name}`, minRatio: AA_TEXT },
+  { foreground: "color-ink", background: `color-pastel-${name}`, minRatio: AA_TEXT },
+  // La tinta también se usa como texto de color sobre la tarjeta y el lienzo (XP, racha, logros).
+  { foreground: `color-pastel-${name}-ink`, background: "color-surface", minRatio: AA_TEXT },
+  { foreground: `color-pastel-${name}-ink`, background: "color-canvas", minRatio: AA_TEXT },
+  // Borde de un control pastel y barras de progreso: deben verse sobre la tarjeta y el lienzo.
+  { foreground: `color-pastel-${name}-edge`, background: "color-surface", minRatio: AA_GRAPHIC },
+  { foreground: `color-pastel-${name}-edge`, background: "color-canvas", minRatio: AA_GRAPHIC },
+]);
 
 /** Todo par texto/fondo o gráfico/fondo que la UI usa. Si se agrega uno, va aquí. */
 export const CONTRAST_PAIRS: readonly ContrastPair[] = [
@@ -101,22 +112,15 @@ export const CONTRAST_PAIRS: readonly ContrastPair[] = [
   { foreground: "color-muted", background: "color-surface", minRatio: AA_TEXT },
   { foreground: "color-clinic", background: "color-surface", minRatio: AA_TEXT },
   { foreground: "color-clinic", background: "color-canvas", minRatio: AA_TEXT },
-  { foreground: "color-action-ink", background: "color-action", minRatio: AA_TEXT },
-  { foreground: "color-on-action-strong", background: "color-action-strong", minRatio: AA_TEXT },
-  { foreground: "color-action-strong", background: "color-surface", minRatio: AA_GRAPHIC },
-  { foreground: "color-progress", background: "color-surface", minRatio: AA_GRAPHIC },
-  { foreground: "color-progress", background: "color-pastel-mint", minRatio: AA_GRAPHIC },
-  { foreground: "color-progress", background: "color-pastel-sky", minRatio: AA_GRAPHIC },
-  { foreground: "color-ink", background: "color-pastel-sky", minRatio: AA_TEXT },
   { foreground: "color-clinic", background: "color-pastel-mint", minRatio: AA_TEXT },
   { foreground: "color-clinic", background: "color-pastel-sky", minRatio: AA_TEXT },
-  { foreground: "color-ink", background: "color-pastel-mint", minRatio: AA_TEXT },
-  { foreground: "color-pastel-mint-ink", background: "color-surface", minRatio: AA_TEXT },
+  { foreground: "color-action-ink", background: "color-action", minRatio: AA_TEXT },
+  { foreground: "color-action-ink", background: "color-action-hover", minRatio: AA_TEXT },
+  { foreground: "color-action-edge", background: "color-surface", minRatio: AA_GRAPHIC },
+  { foreground: "color-action-edge", background: "color-canvas", minRatio: AA_GRAPHIC },
+  { foreground: "color-progress", background: "color-surface", minRatio: AA_GRAPHIC },
+  { foreground: "color-progress", background: "color-canvas", minRatio: AA_GRAPHIC },
   ...pastelPairs,
-  ...(["vital", "streak", "xp", "gold"] as const).flatMap((name): ContrastPair[] => [
-    { foreground: `color-${name}-text`, background: "color-surface", minRatio: AA_TEXT },
-    { foreground: `color-${name}-text`, background: "color-canvas", minRatio: AA_TEXT },
-  ]),
 ];
 
 /**
@@ -140,55 +144,35 @@ export const RISK_CONTRAST_PAIRS: readonly { foreground: string; background: str
 ];
 
 /**
- * Capa "viva" (gamificación con Artiko): rellenos brillantes iguales en claro y
- * oscuro, cada uno con su tinta (`-ink`) y su borde 3D (`-deep`). Nunca se usan
- * para el semáforo OMS ni para la bandera roja, y ninguno repite un color
- * `risk-*` (lo verifica contrast.test.ts).
+ * Distancia perceptual mínima (CIE76 ΔE) entre cualquier color decorativo y
+ * cualquier color del semáforo: por debajo de ~10 dos colores se confunden a
+ * simple vista, y un logro no puede parecer una alerta clínica.
  */
-export const GAME_COLORS = {
-  "color-vital": "#22C55E",
-  "color-vital-strong": "#10B981",
-  "color-vital-ink": "#052E16",
-  "color-vital-deep": "#15803D",
-  "color-lime": "#84CC16",
-  "color-streak": "#F97316",
-  "color-streak-hot": "#FF5A1F",
-  "color-streak-ink": "#431407",
-  "color-streak-deep": "#C2410C",
-  "color-xp": "#8B5CF6",
-  "color-xp-strong": "#7C3AED",
-  "color-xp-ink": "#FFFFFF",
-  "color-xp-deep": "#5B21B6",
-  "color-gold": "#F59E0B",
-  "color-gold-ink": "#451A03",
-  "color-gold-deep": "#A16207",
-  "color-sky": "#38BDF8",
-  "color-sky-ink": "#082F49",
-  "color-sky-deep": "#0369A1",
-  "color-pink": "#FF7EB6",
-  "color-pink-ink": "#500724",
-  "color-pink-deep": "#BE185D",
-  "color-clinic-deep": "#0A365C",
-} as const;
+export const MIN_DISTANCE_FROM_RISK = 10;
 
-export type GameColorToken = keyof typeof GAME_COLORS;
+/** Tokens que no son decorativos (lienzo, texto, bordes neutros): no compiten con el semáforo. */
+export const NEUTRAL_TOKENS: ReadonlySet<ColorToken> = new Set([
+  "color-canvas",
+  "color-surface",
+  "color-ink",
+  "color-muted",
+  "color-line",
+  "color-clinic",
+]);
 
-/** Texto sobre relleno: 4.5:1. Relleno o borde 3D sobre blanco: 3:1 (WCAG 1.4.11). */
-export const GAME_CONTRAST_PAIRS: readonly { foreground: GameColorToken | "white"; background: GameColorToken | "white"; minRatio: number }[] = [
-  { foreground: "color-vital-ink", background: "color-vital", minRatio: AA_TEXT },
-  { foreground: "color-vital-ink", background: "color-vital-strong", minRatio: AA_TEXT },
-  { foreground: "color-streak-ink", background: "color-streak", minRatio: AA_TEXT },
-  { foreground: "color-streak-ink", background: "color-streak-hot", minRatio: AA_TEXT },
-  { foreground: "color-xp-ink", background: "color-xp-strong", minRatio: AA_TEXT },
-  { foreground: "color-gold-ink", background: "color-gold", minRatio: AA_TEXT },
-  { foreground: "color-sky-ink", background: "color-sky", minRatio: AA_TEXT },
-  { foreground: "color-pink-ink", background: "color-pink", minRatio: AA_TEXT },
-  { foreground: "color-vital-deep", background: "white", minRatio: AA_GRAPHIC },
-  { foreground: "color-streak-deep", background: "white", minRatio: AA_GRAPHIC },
-  { foreground: "color-xp", background: "white", minRatio: AA_GRAPHIC },
-  { foreground: "color-xp-deep", background: "white", minRatio: AA_GRAPHIC },
-  { foreground: "color-gold-deep", background: "white", minRatio: AA_GRAPHIC },
-  { foreground: "color-sky-deep", background: "white", minRatio: AA_GRAPHIC },
-  { foreground: "color-pink-deep", background: "white", minRatio: AA_GRAPHIC },
-  { foreground: "color-clinic-deep", background: "white", minRatio: AA_GRAPHIC },
-];
+/**
+ * Capa viva (Artiko): los tonos de juego son alias de la paleta pastel, en
+ * claro y en oscuro (`--color-vital` = `--color-pastel-mint`, `-ink` y `-deep`
+ * = su tinta y su borde). No existen rellenos saturados propios.
+ */
+export const GAME_TONE_PASTEL = {
+  vital: "mint",
+  streak: "peach",
+  xp: "lavender",
+  gold: "lemon",
+  sky: "sky",
+  pink: "rose",
+} as const satisfies Record<string, PastelName>;
+
+/** Contorno de Artiko e ilustraciones: tinta suave fija (no negro puro), igual en ambos temas. */
+export const ILLUSTRATION_OUTLINE = "#2B3A4A";

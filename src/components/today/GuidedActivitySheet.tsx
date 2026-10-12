@@ -63,7 +63,7 @@ export function GuidedActivitySheet({ activity, onComplete, onClose }: GuidedAct
       <div className="flex items-center gap-3">
         <ArtikoMascot emotion={isFinished ? "celebrating" : "flexing"} size={88} decorative />
         <div className="flex-1">
-          <p className="text-base font-bold text-muted">
+          <p className="text-lg font-bold text-muted">
             Paso {stepIndex + 1} de {stepCount}
           </p>
           <p className="text-xl font-bold">{isFinished ? "¡Lo hiciste! Respira con calma. 🎉" : step?.text}</p>

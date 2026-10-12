@@ -8,7 +8,7 @@ export function BlogHubSection() {
         <h2 className="text-2xl sm:text-3xl font-bold text-clinic">
           Educación en Salud Ósea y Articular
         </h2>
-        <p className="text-neutral-600 dark:text-neutral-300 max-w-2xl mx-auto">
+        <p className="text-muted max-w-2xl mx-auto">
           Contenido clínico, sin mitos, para que decidas con evidencia.
         </p>
       </div>

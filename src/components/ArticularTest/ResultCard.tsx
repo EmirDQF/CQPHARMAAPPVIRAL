@@ -43,7 +43,7 @@ export function ResultCard({ result, onRestart }: ResultCardProps) {
           <ArtikoFigure emotion={ARTIKO_BY_RISK[result.riskLevel]} size={64} decorative />
         </span>
         <div>
-          <p className="text-base font-bold">
+          <p className="text-lg font-bold">
             <span aria-hidden="true">🦴 </span>Reporte de Salud Ósea &amp; Articular
           </p>
           <p className="text-2xl font-black">Artikare</p>
@@ -53,13 +53,13 @@ export function ResultCard({ result, onRestart }: ResultCardProps) {
       <div className="px-6 py-5 flex flex-col gap-5">
         <div className="flex justify-between gap-4">
           <div>
-            <p className="text-xs text-muted uppercase tracking-wide">
+            <p className="text-base text-muted uppercase tracking-wide">
               Edad real
             </p>
             <p className="text-3xl font-black">{result.chronologicalAge} años</p>
           </div>
           <div className="text-right">
-            <p className="text-xs text-muted uppercase tracking-wide">
+            <p className="text-base text-muted uppercase tracking-wide">
               Edad articular estimada
             </p>
             <p className="text-3xl font-black">{result.articularAge} años</p>
@@ -73,7 +73,7 @@ export function ResultCard({ result, onRestart }: ResultCardProps) {
           <span>{result.label}</span>
         </div>
 
-        <p className="text-base text-ink">
+        <p className="text-lg text-ink">
           {result.message}
         </p>
 
@@ -103,7 +103,7 @@ export function ResultCard({ result, onRestart }: ResultCardProps) {
           </div>
         </div>
 
-        <p className="text-sm text-muted">
+        <p className="text-lg text-muted">
           Este test es orientativo y no reemplaza un diagnóstico médico
           profesional. Consulta a tu especialista en reumatología.
         </p>

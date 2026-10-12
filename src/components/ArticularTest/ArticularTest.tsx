@@ -150,7 +150,7 @@ export function ArticularTest() {
             Siguiente
           </button>
           {(!ageInput || !sex) && (
-            <p id="test-siguiente-motivo" className="-mt-2 text-base text-muted">
+            <p id="test-siguiente-motivo" className="-mt-2 text-lg text-muted">
               Escribe tu edad y elige una opción para seguir.
             </p>
           )}

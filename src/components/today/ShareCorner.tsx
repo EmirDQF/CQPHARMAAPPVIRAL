@@ -1,5 +1,6 @@
 "use client";
 
+import { Flame } from "lucide-react";
 import { useState } from "react";
 import { GameButton } from "@/components/ui/GameButton";
 import type { GameState } from "@/hooks/useGame";
@@ -21,9 +22,9 @@ function WeeklyChallenge({ activeDays, target, done, activeByWeekday }: GameStat
         {WEEK_DAY_LABELS.map((label, index) => (
           <li
             key={`${label}-${index}`}
-            className={`flex size-9 items-center justify-center rounded-full text-base font-black ${activeByWeekday[index] ? "bg-streak text-streak-ink" : "bg-surface text-muted"}`}
+            className={`flex size-9 items-center justify-center rounded-full text-base font-black ${activeByWeekday[index] ? "border-2 border-streak-deep bg-streak text-streak-ink" : "bg-surface text-muted"}`}
           >
-            {activeByWeekday[index] ? "🔥" : label}
+            {activeByWeekday[index] ? <Flame className="size-5" /> : label}
           </li>
         ))}
       </ol>

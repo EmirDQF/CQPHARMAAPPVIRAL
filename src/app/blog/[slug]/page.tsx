@@ -47,15 +47,15 @@ export default async function BlogArticlePage({ params }: BlogArticlePageProps) 
         <span className="text-muted">Lectura {article.readTimeMinutes} min</span>
       </div>
 
-      <h1 className="text-2xl sm:text-3xl font-bold text-balance">{article.title}</h1>
+      <h1 className="text-[1.75rem] sm:text-3xl font-bold text-balance">{article.title}</h1>
 
-      <div className="flex flex-col gap-4 text-neutral-700 dark:text-neutral-300">
+      <div className="flex flex-col gap-4 text-muted">
         {article.content.map((paragraph, index) => (
           <p key={index}>{paragraph}</p>
         ))}
       </div>
 
-      <div className="rounded-xl bg-neutral-100 dark:bg-neutral-900 px-4 py-3 text-xs text-muted">
+      <div className="rounded-xl bg-canvas px-4 py-3 text-xs text-muted">
         Este contenido es informativo y no reemplaza un diagnóstico médico
         profesional.
       </div>

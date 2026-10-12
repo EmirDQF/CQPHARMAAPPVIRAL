@@ -24,10 +24,10 @@ export function ProductCard({ pack }: ProductCardProps) {
 
       <div>
         <h3 className="text-lg font-bold">{pack.name}</h3>
-        <p className="text-sm text-neutral-600 dark:text-neutral-300">{pack.tagline}</p>
+        <p className="text-lg text-muted">{pack.tagline}</p>
       </div>
 
-      <ul className="text-sm text-neutral-600 dark:text-neutral-300 flex flex-col gap-1">
+      <ul className="text-sm text-muted flex flex-col gap-1">
         {pack.formula.map((item) => (
           <li key={item} className="flex gap-2">
             <span className="text-clinic" aria-hidden="true">
@@ -38,11 +38,11 @@ export function ProductCard({ pack }: ProductCardProps) {
         ))}
       </ul>
 
-      <p className="text-xs text-muted mt-auto">{pack.indication}</p>
+      <p className="text-lg text-muted mt-auto">{pack.indication}</p>
 
       <WhatsAppCta
         href={whatsAppLink}
-        className="w-full text-center rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] text-white font-semibold px-4 py-3 transition-colors"
+        className="w-full text-center rounded-xl btn-primary font-semibold px-4 py-3"
       >
         Reservar por WhatsApp
       </WhatsAppCta>

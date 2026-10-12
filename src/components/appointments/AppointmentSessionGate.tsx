@@ -63,14 +63,14 @@ export function AppointmentSessionGate({
     <section aria-label="Registro de tu cita en el consultorio" className="flex flex-col gap-2 print:hidden">
       {usesCaptcha && captchaSiteKey && (
         <>
-          <p className="text-sm text-neutral-600 dark:text-neutral-300">
+          <p className="text-lg text-muted">
             Para registrar tu cita en el consultorio, completa esta verificación rápida.
           </p>
           <TurnstileWidget siteKey={captchaSiteKey} onToken={handleToken} />
         </>
       )}
       {hasFailed && (
-        <p role="status" className="text-sm text-neutral-700 dark:text-neutral-300">
+        <p role="status" className="text-lg text-muted">
           {SESSION_FAILED_MESSAGE}
         </p>
       )}

@@ -76,7 +76,7 @@ export function PainTrendChart() {
         </div>
       )}
 
-      <p className="text-sm text-muted">
+      <p className="text-lg text-muted">
         Cada barra es el nivel de dolor que anotaste ese día (0–10). Una línea baja marca un día registrado sin dolor.
       </p>
     </section>

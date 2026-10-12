@@ -2,19 +2,19 @@ import { Check } from "lucide-react";
 import type { DayAdherence, WeekDay } from "@/lib/dashboard/weekAdherence";
 
 const DAY_STYLE: Record<DayAdherence, { dot: string; label: string }> = {
-  complete: { dot: "bg-vital text-vital-ink", label: "tomas completas" },
-  partial: { dot: "bg-gold text-gold-ink", label: "una toma" },
+  complete: { dot: "border-2 border-vital-deep bg-vital text-vital-ink", label: "tomas completas" },
+  partial: { dot: "border-2 border-gold-deep bg-gold text-gold-ink", label: "una toma" },
   none: { dot: "border-2 border-dashed border-line bg-canvas text-muted", label: "sin tomas" },
 };
 
-/** Tira de 7 días: verde = día completo, dorado = una toma, punteado = sin registro. Solo constancia, sin culpa. */
+/** Tira de 7 días: menta = día completo, limón = una toma, punteado = sin registro. Solo constancia, sin culpa. */
 export function WeekStrip({ days }: { days: readonly WeekDay[] }) {
   const completeDays = days.filter((day) => day.adherence === "complete").length;
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-baseline justify-between gap-2">
         <h3 className="text-base font-black text-clinic">Tu semana</h3>
-        <p className="text-sm font-bold text-vital-text">
+        <p className="text-lg font-bold text-vital-text">
           {completeDays} {completeDays === 1 ? "día completo" : "días completos"}
         </p>
       </div>

@@ -44,20 +44,20 @@ export function ConfirmationCard({ appointment }: ConfirmationCardProps) {
   return (
     <section className="rounded-2xl border-2 border-risk-low bg-risk-low-bg px-6 py-6 flex flex-col gap-4">
       <div>
-        <p className="text-sm font-semibold text-risk-low">✓ Cita confirmada</p>
+        <p className="text-lg font-semibold text-risk-low">✓ Cita confirmada</p>
         <h2 className="text-2xl font-bold text-neutral-900">{service?.name}</h2>
       </div>
 
       <div className="rounded-xl bg-white/70 px-4 py-3 flex flex-col gap-1 text-neutral-900">
-        <p className="text-sm">Código de cita</p>
+        <p className="text-lg">Código de cita</p>
         <p className="text-3xl font-extrabold tracking-wide">{appointment.code}</p>
-        <p className="text-base font-medium">
+        <p className="text-lg font-medium">
           {formatAppointmentDate(appointment.date)} · {SLOT_LABELS[appointment.slot]}
         </p>
       </div>
 
       {service?.prepInstructions && (
-        <p className="flex items-start gap-1.5 text-sm font-medium text-neutral-900">
+        <p className="flex items-start gap-1.5 text-lg font-medium text-neutral-900">
           <TriangleAlert aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
           {service.prepInstructions}
         </p>
@@ -65,7 +65,7 @@ export function ConfirmationCard({ appointment }: ConfirmationCardProps) {
 
       <WhatsAppCta
         href={whatsAppLink}
-        className="min-h-12 flex items-center justify-center rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] text-white font-semibold px-4 transition-colors"
+        className="min-h-12 flex items-center justify-center rounded-xl btn-primary font-semibold px-4"
       >
         Confirmar por WhatsApp
       </WhatsAppCta>
@@ -89,7 +89,7 @@ export function ConfirmationCard({ appointment }: ConfirmationCardProps) {
 
       {crossSell && (
         <div className="rounded-xl border-2 border-dashed border-brand/40 px-4 py-3">
-          <p className="text-sm font-semibold mb-2 text-neutral-900">
+          <p className="text-lg font-semibold mb-2 text-neutral-900">
             Agrega tu {crossSell.pack.name} con {DENSITOMETRY_UPSELL_DISCOUNT_PERCENT}% OFF al acudir a tu cita.
           </p>
           <WhatsAppCta

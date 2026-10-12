@@ -41,10 +41,10 @@ export function TreatmentTracker() {
                 {bottle.servingsRemaining} tomas restantes
               </span>
             </div>
-            <div className="h-3 w-full rounded-full bg-neutral-200 dark:bg-neutral-800 overflow-hidden">
+            <div className="h-3 w-full rounded-full bg-line overflow-hidden">
               <div
                 className={`h-full rounded-full ${
-                  bottle.needsRestock ? "bg-risk-moderate" : "bg-action-strong"
+                  bottle.needsRestock ? "bg-risk-moderate" : "bg-progress"
                 }`}
                 style={{ width: `${bottle.percentRemaining}%` }}
               />
@@ -54,9 +54,9 @@ export function TreatmentTracker() {
       </div>
 
       <div className="flex flex-col gap-2 pt-2 border-t border-line">
-        <p className="text-sm font-semibold">Consejos clínicos de absorción</p>
+        <p className="text-lg font-semibold">Consejos clínicos de absorción</p>
         {ABSORPTION_TIPS.map((tip) => (
-          <p key={tip} className="flex items-start gap-2 text-sm text-muted">
+          <p key={tip} className="flex items-start gap-2 text-lg text-muted">
             <Lightbulb aria-hidden="true" className="mt-0.5 size-4 text-clinic shrink-0" />
             <span>{tip}</span>
           </p>

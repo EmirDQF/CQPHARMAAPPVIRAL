@@ -19,7 +19,7 @@ export function RectificationSection() {
         <button
           type="button"
           onClick={() => setIsProfileOpen(true)}
-          className="min-h-12 rounded-xl bg-action-strong text-white font-semibold px-5"
+          className="min-h-12 rounded-xl btn-primary font-bold px-5"
         >
           Corregir mi perfil médico
         </button>

@@ -22,7 +22,7 @@ export function DateTimeStep({ availableDays, onBack, onSelect }: DateTimeStepPr
   return (
     <section className="flex flex-col gap-4">
       <div>
-        <p className="text-sm font-semibold text-clinic">Paso 2 de 3</p>
+        <p className="text-lg font-semibold text-clinic">Paso 2 de 3</p>
         <h2 className="text-xl font-bold">Elige fecha y turno</h2>
       </div>
 
@@ -36,7 +36,7 @@ export function DateTimeStep({ availableDays, onBack, onSelect }: DateTimeStepPr
             className={`min-h-12 rounded-xl border-2 font-semibold text-sm px-2 py-2 transition-colors capitalize ${
               selectedDate === day.date
                 ? "border-brand bg-pastel-mint text-pastel-mint-ink"
-                : "border-neutral-200 dark:border-neutral-700 hover:border-brand/50"
+                : "border-line hover:border-brand/50"
             }`}
           >
             {day.label}
@@ -46,7 +46,7 @@ export function DateTimeStep({ availableDays, onBack, onSelect }: DateTimeStepPr
 
       {selectedDay && (
         <div>
-          <p className="text-sm font-medium mb-2">Turno disponible</p>
+          <p className="text-lg font-medium mb-2">Turno disponible</p>
           <div className="flex gap-3">
             {(Object.keys(SLOT_LABELS) as AppointmentSlot[]).map((slot) => {
               const isAvailable = selectedDay.slots[slot];
@@ -58,8 +58,8 @@ export function DateTimeStep({ availableDays, onBack, onSelect }: DateTimeStepPr
                   onClick={() => onSelect(selectedDay.date, slot)}
                   className={`flex-1 min-h-12 rounded-xl border-2 font-semibold transition-colors ${
                     isAvailable
-                      ? "border-neutral-200 dark:border-neutral-700 hover:border-brand"
-                      : "border-neutral-100 dark:border-neutral-800 text-neutral-400 cursor-not-allowed"
+                      ? "border-line hover:border-brand"
+                      : "border-line text-muted cursor-not-allowed"
                   }`}
                 >
                   {SLOT_LABELS[slot]} {isAvailable ? "" : "· Sin cupo"}

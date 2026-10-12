@@ -43,7 +43,7 @@ export function DexaTrendChart({ entries }: DexaTrendChartProps) {
 
   return (
     <div>
-      <p className="text-sm font-medium mb-2">Evolución del T-Score</p>
+      <p className="text-lg font-medium mb-2">Evolución del T-Score</p>
       <svg
         viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`}
         className="w-full h-28"

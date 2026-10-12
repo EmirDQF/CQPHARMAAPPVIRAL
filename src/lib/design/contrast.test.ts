@@ -1,17 +1,29 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { contrastRatio } from "./contrast";
+import { colorDistance, contrastRatio } from "./contrast";
 import {
   AA_TEXT,
   CONTRAST_PAIRS,
-  GAME_COLORS,
-  GAME_CONTRAST_PAIRS,
+  GAME_TONE_PASTEL,
+  ILLUSTRATION_OUTLINE,
+  MIN_DISTANCE_FROM_RISK,
+  NEUTRAL_TOKENS,
   RISK_COLORS,
   RISK_CONTRAST_PAIRS,
   THEMES,
+  type ColorToken,
   type ThemeName,
 } from "./tokens";
+
+const css = readFileSync(join(process.cwd(), "src", "app", "globals.css"), "utf8");
+const DARK_MEDIA = "@media (prefers-color-scheme: dark)";
+
+/** Bloque CSS de cada tema: `:root` claro (antes del media query) y el `:root` oscuro dentro de él. */
+function themeBlock(themeName: ThemeName): string {
+  if (themeName === "light") return css.split(DARK_MEDIA)[0];
+  return css.split(DARK_MEDIA)[1].split("}")[0];
+}
 
 describe("contrastRatio", () => {
   it("matches the WCAG reference values", () => {
@@ -22,6 +34,13 @@ describe("contrastRatio", () => {
 
   it("rejects malformed colors instead of guessing", () => {
     expect(() => contrastRatio("teal", "#FFFFFF")).toThrow(/hex/);
+  });
+});
+
+describe("colorDistance (CIE76 ΔE)", () => {
+  it("is 0 for the same color and ~100 between black and white", () => {
+    expect(colorDistance("#B45309", "#b45309")).toBeCloseTo(0, 5);
+    expect(colorDistance("#000000", "#FFFFFF")).toBeCloseTo(100, 0);
   });
 });
 
@@ -37,22 +56,21 @@ describe.each(Object.keys(THEMES) as ThemeName[])("tema %s", (themeName) => {
       );
     }
   );
-});
 
-describe("globals.css", () => {
-  const css = readFileSync(join(process.cwd(), "src", "app", "globals.css"), "utf8");
-
-  it.each(Object.keys(THEMES) as ThemeName[])("declares every %s token with the same value", (themeName) => {
-    const block = themeName === "light" ? css.split("@media (prefers-color-scheme: dark)")[0] : css.split("@media (prefers-color-scheme: dark)")[1];
-    Object.entries(THEMES[themeName]).forEach(([token, value]) => {
+  it("declares every token in globals.css with the same value", () => {
+    const block = themeBlock(themeName);
+    Object.entries(theme).forEach(([token, value]) => {
       expect(block, `--${token}`).toMatch(new RegExp(`--${token}:\\s*${value};`, "i"));
     });
+  });
+
+  it("uses soft deep surfaces in dark mode, never pure black", () => {
+    expect(theme["color-canvas"].toUpperCase()).not.toBe("#000000");
+    expect(theme["color-surface"].toUpperCase()).not.toBe("#000000");
   });
 });
 
 describe("semáforo OMS y bandera roja", () => {
-  const css = readFileSync(join(process.cwd(), "src", "app", "globals.css"), "utf8");
-
   it.each(RISK_CONTRAST_PAIRS.map((pair) => [pair.label, pair] as const))("%s cumple AA", (_label, pair) => {
     expect(contrastRatio(pair.foreground, pair.background)).toBeGreaterThanOrEqual(AA_TEXT);
   });
@@ -67,31 +85,34 @@ describe("semáforo OMS y bandera roja", () => {
 });
 
 describe("capa viva (Artiko)", () => {
-  const css = readFileSync(join(process.cwd(), "src", "app", "globals.css"), "utf8");
-  const hexOf = (token: keyof typeof GAME_COLORS | "white") => (token === "white" ? "#FFFFFF" : GAME_COLORS[token]);
+  it.each(Object.entries(GAME_TONE_PASTEL))("%s is an alias of the %s pastel (fill, ink and edge)", (tone, pastel) => {
+    expect(css).toMatch(new RegExp(`--color-${tone}:\\s*var\\(--color-pastel-${pastel}\\);`));
+    expect(css).toMatch(new RegExp(`--color-${tone}-ink:\\s*var\\(--color-pastel-${pastel}-ink\\);`));
+    expect(css).toMatch(new RegExp(`--color-${tone}-deep:\\s*var\\(--color-pastel-${pastel}-edge\\);`));
+  });
 
-  it.each(GAME_CONTRAST_PAIRS.map((pair) => [`${pair.foreground} sobre ${pair.background}`, pair] as const))(
-    "%s cumple AA",
-    (_label, pair) => {
-      const ratio = contrastRatio(hexOf(pair.foreground), hexOf(pair.background));
-      expect(ratio, `${pair.foreground}/${pair.background} = ${ratio.toFixed(2)}`).toBeGreaterThanOrEqual(pair.minRatio);
+  it("has no saturated fill of its own: every game color in globals.css is an alias", () => {
+    const ownHexes = css.match(/--color-(vital|streak|xp|gold|sky|pink|lime)[a-z-]*:\s*#[0-9a-f]{3,8};/gi) ?? [];
+    expect(ownHexes).toEqual([]);
+  });
+
+  it("draws Artiko with a soft outline, not pure black", () => {
+    expect(css).toMatch(new RegExp(`--color-clinic-deep:\\s*${ILLUSTRATION_OUTLINE};`, "i"));
+    expect(ILLUSTRATION_OUTLINE.toUpperCase()).not.toBe("#000000");
+  });
+
+  it.each(Object.keys(THEMES) as ThemeName[])(
+    "never uses a decorative color that looks like a traffic-light (risk) color in the %s theme",
+    (themeName) => {
+      const theme = THEMES[themeName];
+      const tooClose = (Object.entries(theme) as [ColorToken, string][])
+        .filter(([token]) => !NEUTRAL_TOKENS.has(token))
+        .flatMap(([token, hex]) =>
+          Object.entries(RISK_COLORS)
+            .map(([riskToken, riskHex]) => ({ token, riskToken, distance: colorDistance(hex, riskHex) }))
+            .filter(({ distance }) => distance < MIN_DISTANCE_FROM_RISK)
+        );
+      expect(tooClose).toEqual([]);
     }
   );
-
-  it("declares every game token once in globals.css with the same value", () => {
-    Object.entries(GAME_COLORS).forEach(([token, value]) => {
-      const declarations = css.match(new RegExp(`--${token}:\\s*#[0-9a-f]{6};`, "gi")) ?? [];
-      expect(declarations, `--${token}`).toHaveLength(1);
-      expect(declarations[0]?.toLowerCase()).toContain(value.toLowerCase());
-    });
-  });
-
-  it("never reuses a traffic-light (risk) color as decoration", () => {
-    const riskHexes = new Set(Object.values(RISK_COLORS).map((hex) => hex.toLowerCase()));
-    const gameHexes = [
-      ...Object.values(GAME_COLORS),
-      ...Object.values(THEMES).flatMap((theme) => Object.values(theme)),
-    ].map((hex) => hex.toLowerCase());
-    expect(gameHexes.filter((hex) => riskHexes.has(hex))).toEqual([]);
-  });
 });

@@ -18,7 +18,7 @@ export function StepProgress({ current, total }: StepProgressProps) {
           />
         ))}
       </ol>
-      <p className="text-base font-bold text-muted">
+      <p className="text-lg font-bold text-muted">
         Paso {current} de {total}
       </p>
     </div>

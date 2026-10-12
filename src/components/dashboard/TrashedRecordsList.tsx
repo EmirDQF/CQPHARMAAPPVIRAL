@@ -22,7 +22,7 @@ export function TrashedRecordsList({ items, onRestore }: TrashedRecordsListProps
           return (
             <li
               key={item.id}
-              className="flex items-center justify-between gap-3 rounded-xl bg-neutral-100 dark:bg-neutral-800 px-4 py-3"
+              className="flex items-center justify-between gap-3 rounded-xl bg-canvas px-4 py-3"
             >
               <span>
                 {label}

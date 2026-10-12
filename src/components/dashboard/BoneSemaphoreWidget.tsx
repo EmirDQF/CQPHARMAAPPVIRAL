@@ -52,7 +52,7 @@ function DexaEmptyState({ onUploadClick }: DexaEmptyStateProps) {
           <h2 id="semaforo-vacio-heading" className="text-xl font-bold text-clinic">
             Sin densitometría registrada
           </h2>
-          <p className="text-sm text-muted">
+          <p className="text-lg text-muted">
             Tu Semáforo Óseo se activa cuando registras los T-score de tu densitometría
             (columna lumbar y cuello femoral).
           </p>
@@ -83,7 +83,7 @@ function ScoreBlock({ scan }: { scan: BoneScanSummary }) {
         <p id="semaforo-oseo-heading" className="text-2xl font-bold">
           {scan.diagnosisLabel}
         </p>
-        <p className="text-sm text-muted">
+        <p className="text-lg text-muted">
           T-score registrado: <span className="tabular-nums">{scan.worstTScore.toFixed(1)}</span> (en tu perfil no
           se interpreta con el semáforo OMS)
         </p>
@@ -93,7 +93,7 @@ function ScoreBlock({ scan }: { scan: BoneScanSummary }) {
   return (
     <div className="flex flex-wrap items-end gap-x-4 gap-y-2">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-wide">Peor T-Score (lumbar / cuello femoral)</p>
+        <p className="text-base font-semibold uppercase tracking-wide">Peor T-Score (lumbar / cuello femoral)</p>
         <p id="semaforo-oseo-heading" className="text-6xl font-extrabold leading-none tabular-nums">
           {scan.worstTScore.toFixed(1)}
         </p>
@@ -116,7 +116,7 @@ export function BoneSemaphoreWidget({ scan, onUploadClick }: BoneSemaphoreWidget
       className={`rounded-card border-2 shadow-soft px-5 py-6 flex flex-col gap-4 ${scan.riskLevel ? semaphoreStyles[scan.riskLevel] : Z_SCORE_STYLE}`}
     >
       <div className="flex items-center justify-between gap-4">
-        <p className="text-sm font-semibold">
+        <p className="text-lg font-semibold">
           Tu última densitometría: {formatScanDate(scan.scanDate)}
         </p>
         <span aria-hidden="true" className="grid size-11 shrink-0 place-items-center rounded-full bg-surface/80">
@@ -126,7 +126,7 @@ export function BoneSemaphoreWidget({ scan, onUploadClick }: BoneSemaphoreWidget
 
       <ScoreBlock scan={scan} />
 
-      <p className="text-base font-medium">{scan.diagnosisMessage}</p>
+      <p className="text-lg font-medium">{scan.diagnosisMessage}</p>
 
       {scan.riskLevel === "alto" && (
         <Link
@@ -162,7 +162,7 @@ export function BoneSemaphoreWidget({ scan, onUploadClick }: BoneSemaphoreWidget
         </span>
       </div>
 
-      <p className="text-sm">
+      <p className="text-lg">
         Resultado informativo. La interpretación y el tratamiento los define tu médico.
       </p>
     </section>

@@ -204,7 +204,7 @@ export function PatientProfileModal({ onClose }: PatientProfileModalProps) {
             Guardar perfil
           </GameButton>
           {needsConsent && !hasConsented && (
-            <p className="text-base text-muted">Para guardar, marca primero la autorización.</p>
+            <p className="text-lg text-muted">Para guardar, marca primero la autorización.</p>
           )}
         </form>
     </ModalDialog>

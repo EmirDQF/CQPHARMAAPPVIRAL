@@ -6,69 +6,44 @@
 @custom-variant easy-read (html[data-text-size="xlarge"] &);
 
 /*
- * Sistema de diseño "Clínico amable" (docs/DESIGN.md). Los valores --color-*
- * de la capa nueva deben coincidir con src/lib/design/tokens.ts: lo verifica
- * src/lib/design/contrast.test.ts junto con el contraste AA de cada par.
+ * Sistema de diseño "Clínico sereno" (docs/DESIGN.md): pasteles claros con
+ * tinta oscura. Los valores --color-* deben coincidir con src/lib/design/tokens.ts:
+ * lo verifica src/lib/design/contrast.test.ts junto con el contraste AA de cada par.
  * El semáforo OMS y la bandera roja (--color-risk-*) no se pastelizan.
  */
 :root {
-  --color-canvas: #F8FAFC;
+  --color-canvas: #FBF8F3;
   --color-surface: #FFFFFF;
-  --color-ink: #0F172A;
-  --color-muted: #64748B;
-  --color-line: #E2E8F0;
-  --color-clinic: #0F4C81;
-  --color-action: #14B8A6;
-  --color-action-ink: #042F2E;
-  --color-action-strong: #0F766E;
-  --color-on-action-strong: #FFFFFF;
-  --color-progress: #0F766E;
-  --color-pastel-mint: #D9F5EF;
-  --color-pastel-mint-ink: #0B4F47;
-  --color-pastel-sky: #DCEEFB;
-  --color-pastel-sky-ink: #0F4C81;
-  --color-pastel-lavender: #E8E7FB;
-  --color-pastel-lavender-ink: #3730A3;
-  --color-pastel-peach: #FDEBDD;
-  --color-pastel-peach-ink: #7C2D12;
-  --color-pastel-rose: #FBE4EA;
-  --color-pastel-rose-ink: #9F1239;
-  --color-pastel-lemon: #FBF3CF;
-  --color-pastel-lemon-ink: #713F12;
+  --color-ink: #1F2A37;
+  --color-muted: #5B6573;
+  --color-line: #E7E1D7;
+  --color-clinic: #1F4E79;
+  --color-action: #C9E8E4;
+  --color-action-hover: #B4DDD7;
+  --color-action-ink: #0F3D2E;
+  --color-action-edge: #3F8A7E;
+  --color-progress: #3F8A7E;
+  --color-pastel-mint: #C9E8E4;
+  --color-pastel-mint-ink: #0F3D2E;
+  --color-pastel-mint-edge: #3F8A7E;
+  --color-pastel-sky: #CFE3F5;
+  --color-pastel-sky-ink: #123A5C;
+  --color-pastel-sky-edge: #4F86B8;
+  --color-pastel-lavender: #E0DAF2;
+  --color-pastel-lavender-ink: #3A2F66;
+  --color-pastel-lavender-edge: #8273B8;
+  --color-pastel-peach: #FBDCC8;
+  --color-pastel-peach-ink: #6B2E12;
+  --color-pastel-peach-edge: #C0703F;
+  --color-pastel-rose: #EED3E6;
+  --color-pastel-rose-ink: #6B1F36;
+  --color-pastel-rose-edge: #B5679A;
+  --color-pastel-lemon: #F1EBD6;
+  --color-pastel-lemon-ink: #5A4608;
+  --color-pastel-lemon-edge: #8F8045;
 
-  /* Capa viva (Artiko): rellenos fijos en claro y oscuro, cada uno con su tinta y su borde 3D. */
-  --color-vital: #22C55E;
-  --color-vital-strong: #10B981;
-  --color-vital-ink: #052E16;
-  --color-vital-deep: #15803D;
-  --color-lime: #84CC16;
-  --color-streak: #F97316;
-  --color-streak-hot: #FF5A1F;
-  --color-streak-ink: #431407;
-  --color-streak-deep: #C2410C;
-  --color-xp: #8B5CF6;
-  --color-xp-strong: #7C3AED;
-  --color-xp-ink: #FFFFFF;
-  --color-xp-deep: #5B21B6;
-  --color-gold: #F59E0B;
-  --color-gold-ink: #451A03;
-  --color-gold-deep: #A16207;
-  --color-sky: #38BDF8;
-  --color-sky-ink: #082F49;
-  --color-sky-deep: #0369A1;
-  --color-pink: #FF7EB6;
-  --color-pink-ink: #500724;
-  --color-pink-deep: #BE185D;
-  --color-clinic-deep: #0A365C;
-  /* Texto de la capa viva sobre superficie/lienzo (cambia con el tema). */
-  --color-vital-text: #15803D;
-  --color-streak-text: #C2410C;
-  --color-xp-text: #5B21B6;
-  --color-gold-text: #A16207;
-
-  --color-brand: #0f766e;
-  --color-brand-dark: #115e59;
-  --color-brand-light: #ccfbf1;
+  /* Contorno de Artiko e ilustraciones: tinta suave fija en ambos temas. */
+  --color-clinic-deep: #2B3A4A;
 
   --color-risk-low: #166534;
   --color-risk-low-bg: #dcfce7;
@@ -76,15 +51,15 @@
   --color-risk-moderate-bg: #fef3c7;
   --color-risk-high: #b91c1c;
   --color-risk-high-bg: #fee2e2;
-  /* Tokens shadcn/ui mapeados al sistema "Clínico amable": siguen el modo oscuro del sistema. */
+  /* Tokens shadcn/ui mapeados al sistema: siguen el modo oscuro del sistema. */
   --background: var(--color-canvas);
   --foreground: var(--color-ink);
   --card: var(--color-surface);
   --card-foreground: var(--color-ink);
   --popover: var(--color-surface);
   --popover-foreground: var(--color-ink);
-  --primary: var(--color-action-strong);
-  --primary-foreground: var(--color-on-action-strong);
+  --primary: var(--color-action);
+  --primary-foreground: var(--color-action-ink);
   --secondary: var(--color-pastel-sky);
   --secondary-foreground: var(--color-pastel-sky-ink);
   --muted: var(--color-canvas);
@@ -108,52 +83,54 @@
   --color-line: var(--color-line);
   --color-clinic: var(--color-clinic);
   --color-action: var(--color-action);
+  --color-action-hover: var(--color-action-hover);
   --color-action-ink: var(--color-action-ink);
-  --color-action-strong: var(--color-action-strong);
-  --color-on-action-strong: var(--color-on-action-strong);
+  --color-action-edge: var(--color-action-edge);
   --color-progress: var(--color-progress);
   --color-pastel-mint: var(--color-pastel-mint);
   --color-pastel-mint-ink: var(--color-pastel-mint-ink);
+  --color-pastel-mint-edge: var(--color-pastel-mint-edge);
   --color-pastel-sky: var(--color-pastel-sky);
   --color-pastel-sky-ink: var(--color-pastel-sky-ink);
+  --color-pastel-sky-edge: var(--color-pastel-sky-edge);
   --color-pastel-lavender: var(--color-pastel-lavender);
   --color-pastel-lavender-ink: var(--color-pastel-lavender-ink);
+  --color-pastel-lavender-edge: var(--color-pastel-lavender-edge);
   --color-pastel-peach: var(--color-pastel-peach);
   --color-pastel-peach-ink: var(--color-pastel-peach-ink);
+  --color-pastel-peach-edge: var(--color-pastel-peach-edge);
   --color-pastel-rose: var(--color-pastel-rose);
   --color-pastel-rose-ink: var(--color-pastel-rose-ink);
+  --color-pastel-rose-edge: var(--color-pastel-rose-edge);
   --color-pastel-lemon: var(--color-pastel-lemon);
   --color-pastel-lemon-ink: var(--color-pastel-lemon-ink);
-  --color-vital: var(--color-vital);
-  --color-vital-strong: var(--color-vital-strong);
-  --color-vital-ink: var(--color-vital-ink);
-  --color-vital-deep: var(--color-vital-deep);
-  --color-lime: var(--color-lime);
-  --color-streak: var(--color-streak);
-  --color-streak-hot: var(--color-streak-hot);
-  --color-streak-ink: var(--color-streak-ink);
-  --color-streak-deep: var(--color-streak-deep);
-  --color-xp: var(--color-xp);
-  --color-xp-strong: var(--color-xp-strong);
-  --color-xp-ink: var(--color-xp-ink);
-  --color-xp-deep: var(--color-xp-deep);
-  --color-gold: var(--color-gold);
-  --color-gold-ink: var(--color-gold-ink);
-  --color-gold-deep: var(--color-gold-deep);
-  --color-sky: var(--color-sky);
-  --color-sky-ink: var(--color-sky-ink);
-  --color-sky-deep: var(--color-sky-deep);
-  --color-pink: var(--color-pink);
-  --color-pink-ink: var(--color-pink-ink);
-  --color-pink-deep: var(--color-pink-deep);
+  --color-pastel-lemon-edge: var(--color-pastel-lemon-edge);
+  /* Capa viva (Artiko): alias de la paleta pastel (relleno, tinta y borde), sin tonos saturados propios. */
+  --color-vital: var(--color-pastel-mint);
+  --color-vital-ink: var(--color-pastel-mint-ink);
+  --color-vital-deep: var(--color-pastel-mint-edge);
+  --color-vital-text: var(--color-pastel-mint-ink);
+  --color-streak: var(--color-pastel-peach);
+  --color-streak-ink: var(--color-pastel-peach-ink);
+  --color-streak-deep: var(--color-pastel-peach-edge);
+  --color-streak-text: var(--color-pastel-peach-ink);
+  --color-xp: var(--color-pastel-lavender);
+  --color-xp-ink: var(--color-pastel-lavender-ink);
+  --color-xp-deep: var(--color-pastel-lavender-edge);
+  --color-xp-text: var(--color-pastel-lavender-ink);
+  --color-gold: var(--color-pastel-lemon);
+  --color-gold-ink: var(--color-pastel-lemon-ink);
+  --color-gold-deep: var(--color-pastel-lemon-edge);
+  --color-gold-text: var(--color-pastel-lemon-ink);
+  --color-sky: var(--color-pastel-sky);
+  --color-sky-ink: var(--color-pastel-sky-ink);
+  --color-sky-deep: var(--color-pastel-sky-edge);
+  --color-pink: var(--color-pastel-rose);
+  --color-pink-ink: var(--color-pastel-rose-ink);
+  --color-pink-deep: var(--color-pastel-rose-edge);
   --color-clinic-deep: var(--color-clinic-deep);
-  --color-vital-text: var(--color-vital-text);
-  --color-streak-text: var(--color-streak-text);
-  --color-xp-text: var(--color-xp-text);
-  --color-gold-text: var(--color-gold-text);
-  --color-brand: var(--color-brand);
-  --color-brand-dark: var(--color-brand-dark);
-  --color-brand-light: var(--color-brand-light);
+  /* Nombre heredado: el borde de los controles secundarios es el borde menta. */
+  --color-brand: var(--color-action-edge);
   --color-risk-low: var(--color-risk-low);
   --color-risk-low-bg: var(--color-risk-low-bg);
   --color-risk-moderate: var(--color-risk-moderate);
@@ -162,7 +139,7 @@
   --color-risk-high-bg: var(--color-risk-high-bg);
   --radius-card: 1.25rem;
   --radius-control: 1rem;
-  --shadow-soft: 0 1px 2px rgb(15 23 42 / 0.04), 0 4px 16px rgb(15 23 42 / 0.06);
+  --shadow-soft: 0 1px 2px rgb(31 42 55 / 0.04), 0 4px 16px rgb(31 42 55 / 0.05);
   --font-sans: var(--font-nunito);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-nunito);
@@ -221,38 +198,9 @@
   }
 }
 
-/*
- * Profundidad sin oscurecer: dos brillos radiales tenues (menta arriba-izquierda, celeste
- * arriba-derecha) sobre el lienzo. Solo fondo: nunca detrás de texto del semáforo.
- */
+/* Lienzo crema liso: la calidez viene del color, no de brillos ni degradados. */
 @utility ambient-canvas {
   background-color: var(--color-canvas);
-  background-image:
-    radial-gradient(60rem 28rem at -10% -8%, color-mix(in oklch, var(--color-pastel-mint) 70%, transparent), transparent 70%),
-    radial-gradient(48rem 24rem at 110% -4%, color-mix(in oklch, var(--color-pastel-sky) 65%, transparent), transparent 70%);
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-}
-
-/* Barrido de brillo del botón primario al pasar el puntero (600 ms, una vez). */
-@utility btn-sheen {
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.28) 50%, transparent 70%);
-    transform: translateX(-120%);
-  }
-  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-    &:hover::after {
-      animation: sheen-sweep 600ms ease-out;
-    }
-  }
 }
 
 /* Entrada escalonada de las tarjetas de una vista: 40 ms entre hijos, tope en el 6.º. */
@@ -268,19 +216,33 @@
 }
 
 /*
- * Botón "3D pressable" (GameButton): relieve inferior de 4 px en el tono oscuro
- * del mismo color (--edge). Al pulsar, el botón baja 4 px y el relieve desaparece;
- * se dibuja con box-shadow para que el resto de la pantalla no salte (sin CLS).
+ * Botón principal: relleno pastel menta, borde de 2 px más oscuro y tinta oscura.
+ * Sin relieve ni brillo; al pulsar, una ligera escala (anulada con movimiento reducido).
  */
-@utility pressable-3d {
-  box-shadow: 0 4px 0 0 var(--edge, var(--color-line));
-  transition-property: translate, scale, box-shadow;
-  transition-duration: 90ms;
+@utility btn-primary {
+  background-color: var(--color-action);
+  color: var(--color-action-ink);
+  border: 2px solid var(--color-action-edge);
+  transition-property: background-color, scale;
+  transition-duration: 150ms;
+  transition-timing-function: ease-out;
+  @media (hover: hover) {
+    &:hover:not([aria-disabled="true"], :disabled) {
+      background-color: var(--color-action-hover);
+    }
+  }
+  &:active:not([aria-disabled="true"], :disabled) {
+    scale: 0.97;
+  }
+}
+
+/* Pulsado de los botones pastel (GameButton): ligera escala; no mueve el resto de la pantalla (CLS 0). */
+@utility press-scale {
+  transition-property: background-color, scale;
+  transition-duration: 150ms;
   transition-timing-function: ease-out;
   &:active:not([aria-disabled="true"], :disabled) {
-    translate: 0 4px;
-    scale: 0.96;
-    box-shadow: 0 0 0 0 var(--edge, var(--color-line));
+    scale: 0.97;
   }
 }
 
@@ -359,46 +321,43 @@
   to { transform: translateY(3px); }
 }
 
-@keyframes sheen-sweep {
-  to {
-    transform: translateX(120%);
-  }
-}
-
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-canvas: #0B1220;
-    --color-surface: #111A2E;
-    --color-ink: #E2E8F0;
-    --color-muted: #94A3B8;
-    --color-line: #1E293B;
-    --color-clinic: #7DB7E8;
-    --color-action: #2DD4BF;
-    --color-action-ink: #042F2E;
-    --color-action-strong: #0F766E;
-    --color-on-action-strong: #FFFFFF;
-    --color-progress: #2DD4BF;
-    --color-pastel-mint: #123B36;
-    --color-pastel-mint-ink: #A7F3D0;
-    --color-pastel-sky: #13324F;
-    --color-pastel-sky-ink: #BAE6FD;
-    --color-pastel-lavender: #26244A;
-    --color-pastel-lavender-ink: #C7D2FE;
-    --color-pastel-peach: #3D2618;
-    --color-pastel-peach-ink: #FED7AA;
-    --color-pastel-rose: #3F1D27;
-    --color-pastel-rose-ink: #FECDD3;
-    --color-pastel-lemon: #3A3214;
-    --color-pastel-lemon-ink: #FDE68A;
-    --color-vital-text: #86EFAC;
-    --color-streak-text: #FDBA74;
-    --color-xp-text: #C4B5FD;
-    --color-gold-text: #FCD34D;
+    --color-canvas: #141A22;
+    --color-surface: #1C2430;
+    --color-ink: #E8EDF2;
+    --color-muted: #A7B2BE;
+    --color-line: #2E3946;
+    --color-clinic: #9CC3E8;
+    --color-action: #234640;
+    --color-action-hover: #2B544D;
+    --color-action-ink: #C9E8E4;
+    --color-action-edge: #6DB8AA;
+    --color-progress: #6DB8AA;
+    --color-pastel-mint: #234640;
+    --color-pastel-mint-ink: #C9E8E4;
+    --color-pastel-mint-edge: #6DB8AA;
+    --color-pastel-sky: #213A52;
+    --color-pastel-sky-ink: #CFE3F5;
+    --color-pastel-sky-edge: #78A9D6;
+    --color-pastel-lavender: #312C4A;
+    --color-pastel-lavender-ink: #E0DAF2;
+    --color-pastel-lavender-edge: #A193D6;
+    --color-pastel-peach: #4A3022;
+    --color-pastel-peach-ink: #FBDCC8;
+    --color-pastel-peach-edge: #D99467;
+    --color-pastel-rose: #46293A;
+    --color-pastel-rose-ink: #EED3E6;
+    --color-pastel-rose-edge: #CF8CB3;
+    --color-pastel-lemon: #3D3826;
+    --color-pastel-lemon-ink: #F1EBD6;
+    --color-pastel-lemon-edge: #C2B27A;
   }
 }
 
 body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  line-height: 1.5;
 }
 
 /* WCAG 2.4.7/2.4.13: foco visible y grueso en todo control, sin depender del color de marca. */

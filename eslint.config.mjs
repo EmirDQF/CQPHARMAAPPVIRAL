@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Informe de cobertura de vitest (generado, ignorado por git).
+    "coverage/**",
     // Salida de Gradle y del cap sync (generada, ignorada por git).
     "android/**/build/**",
     "android/app/src/main/assets/**",

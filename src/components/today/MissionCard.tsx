@@ -41,10 +41,10 @@ export function MissionCard({ activity, isDone, justEarned, onAction, onUndo }: 
         <h3 id={titleId} className="text-xl font-black leading-tight easy-read:text-2xl">
           {activity.title}
         </h3>
-        <p data-testid="mission-description" className="text-base easy-read:hidden">
+        <p data-testid="mission-description" className="text-lg easy-read:hidden">
           {activity.description}
         </p>
-        <p className="text-sm font-bold">
+        <p className="text-lg font-bold">
           <span aria-hidden="true">⏱️ </span>
           {activity.durationMinutes} min · <span className="text-xp-text">+{activity.xp} XP</span>
           {activity.safety === "physical" && <span> · con apoyo</span>}
@@ -67,7 +67,7 @@ export function MissionCard({ activity, isDone, justEarned, onAction, onUndo }: 
         </div>
       </div>
       {justEarned && (
-        <span aria-hidden="true" className="xp-pop pointer-events-none absolute right-4 top-2 rounded-full bg-xp-strong px-3 py-1 text-lg font-black text-xp-ink">
+        <span aria-hidden="true" className="xp-pop pointer-events-none absolute right-4 top-2 rounded-full border-2 border-xp-deep bg-xp px-3 py-1 text-lg font-black text-xp-ink">
           +{activity.xp} XP ⭐
         </span>
       )}

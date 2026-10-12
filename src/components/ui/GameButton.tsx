@@ -12,7 +12,7 @@ export type GameButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
     haptic?: HapticStrength | false;
   };
 
-/** Botón 3D con vibración opcional al tocar; para un <Link> con el mismo aspecto, usa `gameButtonClasses`. */
+/** Botón pastel con vibración opcional al tocar; para un <Link> con el mismo aspecto, usa `gameButtonClasses`. */
 export function GameButton({
   className,
   tone,

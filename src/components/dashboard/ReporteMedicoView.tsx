@@ -154,8 +154,8 @@ export function ReporteMedicoView() {
 
         <header className="border-b-2 border-clinic print:border-black pb-4">
           <p className="text-lg font-bold text-clinic print:text-black">Artikare • Respaldo Clínico CQ Pharma</p>
-          <h1 className="text-2xl font-extrabold tracking-tight">Reporte Osteoarticular</h1>
-          <p className="text-xs text-muted print:text-black mt-1">
+          <h1 className="text-[1.75rem] font-extrabold tracking-tight">Reporte Osteoarticular</h1>
+          <p className="text-base text-muted print:text-black mt-1">
             Generado el {formatGeneratedDate()}
           </p>
         </header>
@@ -205,7 +205,7 @@ export function ReporteMedicoView() {
         {scan ? (
           <section className={`${SECTION_CARD} flex flex-col gap-2`}>
             <div className="flex items-center justify-between gap-3">
-              <p className="text-sm font-semibold">
+              <p className="text-lg font-semibold">
                 Densitometría más reciente: {formatScanDate(scan.scanDate)}
               </p>
               {scan.riskLevel ? (
@@ -214,16 +214,16 @@ export function ReporteMedicoView() {
                 <Stethoscope aria-hidden="true" className="size-5 shrink-0 text-muted" />
               )}
             </div>
-            <p className="text-xs font-medium uppercase tracking-wide">
+            <p className="text-base font-medium uppercase tracking-wide">
               Peor T-Score (lumbar / cuello femoral)
             </p>
             <p className="text-4xl font-extrabold">{scan.worstTScore.toFixed(1)}</p>
             <p className={`font-bold uppercase print:text-black ${scan.riskLevel ? semaphoreText[scan.riskLevel] : ""}`}>
               {scan.diagnosisLabel}
             </p>
-            <p className="text-sm">{scan.diagnosisMessage}</p>
+            <p className="text-lg">{scan.diagnosisMessage}</p>
             {scan.profileNote && (
-              <p role="note" className="flex items-start gap-2 text-sm font-semibold">
+              <p role="note" className="flex items-start gap-2 text-lg font-semibold">
                 <TriangleAlert aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
                 <span>
                   <span className="sr-only">Aviso: </span>
@@ -257,10 +257,10 @@ export function ReporteMedicoView() {
 
         <section className={`${SECTION_CARD} flex flex-col gap-1`}>
           <SectionTitle icon={Activity}>Seguimiento de 30 días</SectionTitle>
-          <p className="text-sm font-semibold">
+          <p className="text-lg font-semibold">
             Adherencia a suplementación CQ Pharma (30 días): {summary.adherencePercent}%
           </p>
-          <p className="text-sm">
+          <p className="text-lg">
             Dolor promedio reportado:{" "}
             {summary.averagePainLevel !== null
               ? `${summary.averagePainLevel}/10 (${summary.daysTracked} días registrados)`
@@ -277,7 +277,7 @@ export function ReporteMedicoView() {
           </ul>
         </section>
 
-        <p className="text-xs text-muted print:text-black">
+        <p className="text-base text-muted print:text-black">
           Este reporte es generado por el paciente a partir de su seguimiento en la app Artikare
           y no reemplaza una evaluación clínica presencial.
         </p>

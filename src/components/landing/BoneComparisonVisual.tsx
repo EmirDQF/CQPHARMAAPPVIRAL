@@ -55,7 +55,7 @@ function BoneCrossSection({ variant, label }: BoneCrossSectionProps) {
         })}
         <circle cx="80" cy="80" r="10" fill={strokeColor} opacity={0.9} />
       </svg>
-      <p className="text-sm font-semibold text-center">{label}</p>
+      <p className="text-lg font-semibold text-center">{label}</p>
     </div>
   );
 }

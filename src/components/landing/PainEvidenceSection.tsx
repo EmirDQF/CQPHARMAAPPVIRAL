@@ -7,7 +7,7 @@ export function PainEvidenceSection() {
         <h2 className="text-2xl sm:text-3xl font-bold text-clinic text-balance">
           ¿Sabías que la osteoporosis no avisa con dolor, sino con fracturas?
         </h2>
-        <p className="text-neutral-600 dark:text-neutral-300 max-w-2xl mx-auto text-balance">
+        <p className="text-muted max-w-2xl mx-auto text-balance">
           La pérdida de masa ósea es silenciosa: puede avanzar durante años sin
           síntomas evidentes, hasta que una caída menor termina en una
           fractura. Por eso la evaluación preventiva es la única forma real de
@@ -23,7 +23,7 @@ export function PainEvidenceSection() {
         <p className="font-semibold text-risk-moderate">
           La trampa del colágeno común
         </p>
-        <p className="text-sm text-neutral-700 dark:text-neutral-800">
+        <p className="text-lg text-neutral-700 dark:text-neutral-800">
           La Vitamina C contribuye a la formación normal de colágeno y el
           Magnesio contribuye al mantenimiento normal de los huesos. Por eso
           nuestros packs combinan estos nutrientes, siempre como complemento

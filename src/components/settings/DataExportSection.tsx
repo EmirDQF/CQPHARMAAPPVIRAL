@@ -67,7 +67,7 @@ export function DataExportSection({ authStatus }: DataExportSectionProps) {
           type="button"
           onClick={handleDownload}
           disabled={isWorking}
-          className="min-h-12 rounded-xl bg-action-strong text-white font-semibold px-5 disabled:opacity-60"
+          className="min-h-12 rounded-xl btn-primary font-bold px-5 disabled:opacity-60"
         >
           {status === "working" ? "Preparando…" : "Descargar mis datos (JSON)"}
         </button>
@@ -82,7 +82,7 @@ export function DataExportSection({ authStatus }: DataExportSectionProps) {
         </button>
       </div>
       {(status === "done" || status === "partial") && (
-        <p role="status" className="text-base font-medium">
+        <p role="status" className="text-lg font-medium">
           {STATUS_MESSAGE[status]}
         </p>
       )}
@@ -90,7 +90,7 @@ export function DataExportSection({ authStatus }: DataExportSectionProps) {
         <pre
           aria-label="Mis datos en formato JSON"
           tabIndex={0}
-          className="max-h-80 overflow-auto rounded-xl bg-neutral-100 dark:bg-neutral-900 p-3 text-xs whitespace-pre-wrap break-all"
+          className="max-h-80 overflow-auto rounded-xl bg-canvas p-3 text-xs whitespace-pre-wrap break-all"
         >
           {preview}
         </pre>

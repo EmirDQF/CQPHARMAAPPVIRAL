@@ -17,7 +17,7 @@ export function SocialProofSection() {
         {stats.map((stat) => (
           <div key={stat.label} className="flex flex-col gap-1">
             <p className="text-3xl font-bold text-clinic">{stat.value}</p>
-            <p className="text-sm text-neutral-600 dark:text-neutral-300">
+            <p className="text-lg text-muted">
               {stat.label}
             </p>
           </div>

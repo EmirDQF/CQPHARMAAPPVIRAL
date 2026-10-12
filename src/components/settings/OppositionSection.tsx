@@ -43,12 +43,12 @@ export function OppositionSection() {
         </button>
       )}
       {isBackupActive && isConfirming && (
-        <div className="flex flex-col gap-3 rounded-xl bg-neutral-100 dark:bg-neutral-900 p-4">
-          <p className="text-base">
+        <div className="flex flex-col gap-3 rounded-xl bg-canvas p-4">
+          <p className="text-lg">
             Tus registros seguirán en este celular. Lo ya respaldado queda en tu cuenta hasta que la borres.
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
-            <button type="button" onClick={handleRevoke} className="min-h-12 rounded-xl bg-action-strong text-white font-semibold px-5">
+            <button type="button" onClick={handleRevoke} className="min-h-12 rounded-xl btn-primary font-bold px-5">
               Sí, dejar de respaldar
             </button>
             <button
@@ -62,13 +62,13 @@ export function OppositionSection() {
         </div>
       )}
       {!isBackupActive && (
-        <p role={wasRevoked ? "status" : undefined} className="text-base font-medium">
+        <p role={wasRevoked ? "status" : undefined} className="text-lg font-medium">
           {wasRevoked
             ? "Listo: dejamos de respaldar tus registros en la cuenta."
             : "El respaldo en la cuenta está desactivado: Mi Panel se guarda solo en este celular."}
         </p>
       )}
-      <p className="text-base text-neutral-700 dark:text-neutral-300">
+      <p className="text-lg text-muted">
         Los recordatorios se desactivan desde los permisos de notificaciones de tu celular. Para oponerte a cualquier
         otro uso de tus datos, escríbenos por el canal indicado en la{" "}
         <Link href={PRIVACY_POLICY_PATH} className="text-clinic font-semibold underline">

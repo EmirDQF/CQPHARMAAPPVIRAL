@@ -77,8 +77,8 @@ export function AccountBackupOffer() {
       <h2 id={titleId} className="text-lg font-bold">
         {ACCOUNT_BACKUP_OFFER_COPY.title}
       </h2>
-      <p className="text-neutral-700 dark:text-neutral-300">{ACCOUNT_BACKUP_OFFER_COPY.body}</p>
-      <label className="flex items-start gap-3 rounded-xl border-2 border-neutral-200 dark:border-neutral-700 px-4 py-3 cursor-pointer">
+      <p className="text-muted">{ACCOUNT_BACKUP_OFFER_COPY.body}</p>
+      <label className="flex items-start gap-3 rounded-xl border-2 border-line px-4 py-3 cursor-pointer">
         <input
           type="checkbox"
           checked={hasAccepted}
@@ -110,7 +110,7 @@ export function AccountBackupOffer() {
           type="button"
           onClick={handleActivate}
           disabled={!hasAccepted}
-          className="flex-1 min-h-12 rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] text-white font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex-1 min-h-12 rounded-xl btn-primary font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {ACCOUNT_BACKUP_OFFER_COPY.accept}
         </button>

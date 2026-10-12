@@ -149,8 +149,8 @@ export function CapsuleBody() {
       <circle cx={40} cy={47} r={4} fill="var(--color-pink)" opacity={0.6} />
       <circle cx={80} cy={47} r={4} fill="var(--color-pink)" opacity={0.6} />
       <rect x={27} y={56} width={66} height={9} rx={4.5} fill="var(--color-gold)" stroke="var(--color-gold-deep)" strokeWidth={1.5} />
-      <circle className="artiko-glow" cx={60} cy={60.5} r={10} fill="var(--color-lime)" opacity={0.35} />
-      <circle cx={60} cy={60.5} r={6} fill="var(--color-lime)" stroke="var(--color-vital-deep)" strokeWidth={1.5} />
+      <circle className="artiko-glow" cx={60} cy={60.5} r={10} fill="var(--color-vital)" opacity={0.6} />
+      <circle cx={60} cy={60.5} r={6} fill="var(--color-vital)" stroke="var(--color-vital-deep)" strokeWidth={1.5} />
       <circle cx={58} cy={58.5} r={1.6} fill={LIGHT} />
     </g>
   );
@@ -174,7 +174,7 @@ const CONFETTI: readonly [number, number, string][] = [
   [108, 18, "var(--color-pink)"],
   [18, 6, "var(--color-gold)"],
   [100, 4, "var(--color-xp)"],
-  [6, 44, "var(--color-lime)"],
+  [6, 44, "var(--color-vital-deep)"],
   [114, 40, "var(--color-streak)"],
 ];
 
@@ -188,8 +188,8 @@ export function FrontEffects({ effects }: { effects: readonly ArtikoEffect[] }) 
     <g>
       {effects.includes("headband") && (
         <g>
-          <rect x={31} y={19} width={58} height={7} rx={3} fill="var(--color-streak-hot)" />
-          <path d="M88,22 L104,15 L101,23 L106,29 z" fill="var(--color-streak-hot)" />
+          <rect x={31} y={19} width={58} height={7} rx={3} fill="var(--color-streak-deep)" />
+          <path d="M88,22 L104,15 L101,23 L106,29 z" fill="var(--color-streak-deep)" />
         </g>
       )}
       {effects.includes("confetti") && (

@@ -23,7 +23,7 @@ const UNAVAILABLE_MESSAGE =
   "El acceso con cuenta aún no está disponible. Tus registros siguen guardados en este celular.";
 
 const primaryButtonClassName =
-  "min-h-12 rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold text-lg transition-colors";
+  "min-h-12 rounded-xl btn-primary disabled:opacity-40 disabled:cursor-not-allowed font-semibold text-lg";
 // Bordes con contraste ≥ 3:1 (WCAG 1.4.11) en claro y oscuro.
 const inputClassName =
   "min-h-12 w-full rounded-xl border-2 border-neutral-500 dark:border-neutral-400 bg-background px-4 text-lg focus:border-brand focus:outline-none";
@@ -76,7 +76,7 @@ export function AccessPanel({
 
   // Fail-closed: sin captcha configurado donde es obligatorio no se envían códigos.
   if (!channel || (isCaptchaRequired && !captchaSiteKey)) {
-    return <p className="text-neutral-600 dark:text-neutral-300">{UNAVAILABLE_MESSAGE}</p>;
+    return <p className="text-muted">{UNAVAILABLE_MESSAGE}</p>;
   }
 
   async function run(action: () => Promise<AuthOutcome>, onOk: () => void) {
@@ -160,7 +160,7 @@ export function AccessPanel({
             <>
               <TurnstileWidget key={captchaRound} siteKey={captchaSiteKey} onToken={setCaptchaToken} />
               {isCaptchaMissing && (
-                <p id={captchaHintId} className="text-sm text-neutral-600 dark:text-neutral-300">
+                <p id={captchaHintId} className="text-lg text-muted">
                   Esperando la verificación de seguridad. Si no avanza en unos segundos, recarga la página.
                 </p>
               )}

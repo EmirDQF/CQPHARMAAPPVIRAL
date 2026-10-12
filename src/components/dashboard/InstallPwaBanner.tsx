@@ -39,8 +39,8 @@ export function InstallPwaBanner() {
   }
 
   return (
-    <div className="rounded-xl bg-action-strong text-white px-4 py-3 flex flex-wrap items-center justify-between gap-3">
-      <p className="flex items-start gap-2 text-sm font-medium">
+    <div className="rounded-card border-2 border-pastel-mint-edge bg-pastel-mint text-pastel-mint-ink px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      <p className="flex items-start gap-2 text-lg font-medium">
         <Smartphone aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
         Instala Artikare en tu pantalla de inicio para no perder tus recordatorios médicos.
       </p>

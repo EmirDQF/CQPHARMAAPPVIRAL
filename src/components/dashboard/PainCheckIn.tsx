@@ -98,11 +98,11 @@ export function PainCheckIn({ anchorId = "chequeo", onSaved }: PainCheckInProps)
     >
       <div>
         <h2 className="text-xl font-bold text-clinic">¿Cómo amanecieron tus articulaciones hoy?</h2>
-        <p className="text-sm text-muted">Chequeo diario · 10 segundos</p>
+        <p className="text-lg text-muted">Chequeo diario · 10 segundos</p>
       </div>
 
       <div>
-        <p className="text-sm font-medium mb-2">
+        <p className="text-lg font-medium mb-2">
           Nivel de dolor <span aria-hidden="true">😌</span> 0 = sin dolor · <span aria-hidden="true">😣</span> 10 = el peor
         </p>
         <div className="grid grid-cols-5 sm:grid-cols-10 gap-2">
@@ -129,7 +129,7 @@ export function PainCheckIn({ anchorId = "chequeo", onSaved }: PainCheckInProps)
       </div>
 
       <div>
-        <p className="text-sm font-medium mb-2">Rigidez al despertar</p>
+        <p className="text-lg font-medium mb-2">Rigidez al despertar</p>
         <div className="flex gap-3">
           {STIFFNESS_OPTIONS.map((option) => (
             <button
@@ -150,12 +150,12 @@ export function PainCheckIn({ anchorId = "chequeo", onSaved }: PainCheckInProps)
         onClick={handleSave}
         disabled={painLevel === null || stiffness === null}
         aria-describedby={painLevel === null || stiffness === null ? "chequeo-guardar-motivo" : undefined}
-        className="min-h-14 rounded-control bg-action-strong hover:bg-brand-dark active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed text-on-action-strong font-bold text-lg transition-[background-color,transform] duration-150"
+        className="min-h-14 rounded-control btn-primary disabled:opacity-40 disabled:cursor-not-allowed font-bold text-lg transition-[background-color,transform] duration-150"
       >
         {todayEntry ? "✓ Registrado hoy — actualizar" : "Guardar registro de hoy"}
       </button>
       {(painLevel === null || stiffness === null) && (
-        <p id="chequeo-guardar-motivo" className="-mt-3 text-sm text-muted">
+        <p id="chequeo-guardar-motivo" className="-mt-3 text-lg text-muted">
           Elige tu nivel de dolor y la rigidez para guardar.
         </p>
       )}
@@ -177,7 +177,7 @@ export function PainCheckIn({ anchorId = "chequeo", onSaved }: PainCheckInProps)
             <button
               type="button"
               onClick={saveEntry}
-              className="flex-1 min-h-12 rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] text-white font-semibold"
+              className="flex-1 min-h-12 rounded-xl btn-primary font-semibold"
             >
               Sí, corregir a {painLevel}
             </button>

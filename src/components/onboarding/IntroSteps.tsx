@@ -40,7 +40,7 @@ export function WelcomeStep({ onNext }: { onNext: () => void }) {
         Te hago unas preguntas cortas, una por pantalla, y te acompaño cada día con tus tomas y tu diario.
       </p>
       <p className="text-lg text-muted">
-        {MASCOT.name} acompaña y recuerda; no da diagnósticos ni reemplaza a tu médico.
+        {MASCOT.name} acompaña y recuerda: no da diagnósticos y no reemplaza a tu médico.
       </p>
       <GameButton tone="vital" size="xl" block onClick={onNext}>
         Empezar

@@ -94,7 +94,7 @@ Las reglas de Google Play cambian: los puntos ⚠️ se confirman en la consola 
 ## 8. Material para la consola
 
 ✅ `docs/PLAY-LISTING.md`: descripción corta (69 caracteres, ≤ 80 verificado por `src/lib/playListing.test.ts`), descripción larga, respuestas sugeridas de Data safety, cuestionario de clasificación, otras declaraciones y lista de capturas.
-✅ Icono 512 px y gráfico de funciones 1024×500 en `docs/play-assets/`. Icono adaptativo (con monocromo de Android 13+), iconos legacy y splash en `android/app/src/main/res/`, todos en la paleta pastel (`npm run generate:android-assets`). Antes eran los genéricos de Capacitor.
+✅ Icono 512 px y gráfico de funciones 1024×500 en `docs/play-assets/`. Icono adaptativo (con monocromo de Android 13+), iconos legacy y splash en `android/app/src/main/res/`, todos con **Artiko, la mascota**, sobre la paleta pastel (`npm run generate:android-assets`, que dibuja el mismo componente de la app). Antes eran los genéricos de Capacitor.
 
 ## 9. App Links
 

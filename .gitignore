@@ -61,3 +61,4 @@ scripts/mirofish/out/
 # export estático de la app empaquetada (scripts/build-mobile-web.mjs) y su apartado temporal
 /out-mobile/
 /.mobile-stash/
+/scripts/artiko/.out/

@@ -81,7 +81,7 @@ Datos que **nunca** salen del celular: progreso del juego de Artiko (`artikare_g
 
 | Recurso | Tamaño | Estado |
 |---|---|---|
-| Icono de la app | 512 × 512 PNG (32 bits, sin transparencia) | ✅ `docs/play-assets/icono-512.png` (hueso azul clínico sobre menta, sin transparencia; lo genera `npm run generate:android-assets`) |
-| Gráfico de funciones | 1024 × 500 PNG/JPG | ✅ `docs/play-assets/grafico-funciones-1024x500.png` (lienzo crema, círculo menta con el hueso y acentos pastel; sin texto, así no hay copy clínico que revisar) |
+| Icono de la app | 512 × 512 PNG (32 bits, sin transparencia) | ✅ `docs/play-assets/icono-512.png` (Artiko, la mascota, saludando sobre menta, sin transparencia; lo genera `npm run generate:android-assets`) |
+| Gráfico de funciones | 1024 × 500 PNG/JPG | ✅ `docs/play-assets/grafico-funciones-1024x500.png` (lienzo crema, Artiko en un círculo menta y acentos pastel; sin texto, así no hay copy clínico que revisar) |
 | Capturas de teléfono | 2 a 8, 16:9 o 9:16, lado mínimo 320 px | Generar con `CAPTURAS=1 npx playwright test e2e/capturas.spec.ts` (paleta final) y elegir: bienvenida de Artiko, Hoy, Pastillero, Semáforo Óseo (con una densitometría registrada por ti, nunca inventada), Logros, Ajustes de privacidad |
 | Capturas de tableta 7" y 10" | Opcional | No aplica por ahora |

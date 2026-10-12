@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { apiFetch } from "../api/apiFetch";
 import { ACCOUNT_DELETION_CONFIRMATION } from "../api/handleArcoDelete";
 import type { AuthStatus } from "../auth/types";
 
@@ -21,7 +22,7 @@ const deletionResponseSchema = z.object({
 
 export type AccountExportOutcome = { ok: true; data: Record<string, unknown> } | { ok: false };
 
-export async function fetchAccountExport(fetcher: typeof fetch = fetch): Promise<AccountExportOutcome> {
+export async function fetchAccountExport(fetcher: typeof fetch = apiFetch): Promise<AccountExportOutcome> {
   try {
     const response = await fetcher("/api/arco/export", { cache: "no-store", credentials: "same-origin" });
     if (!response.ok) return { ok: false };
@@ -33,7 +34,7 @@ export async function fetchAccountExport(fetcher: typeof fetch = fetch): Promise
 }
 
 /** true solo si el servidor confirma que la cuenta se borró. */
-export async function requestAccountDeletion(fetcher: typeof fetch = fetch): Promise<boolean> {
+export async function requestAccountDeletion(fetcher: typeof fetch = apiFetch): Promise<boolean> {
   try {
     const response = await fetcher("/api/arco/delete", {
       method: "POST",

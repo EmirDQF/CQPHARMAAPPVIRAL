@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { apiFetch } from "./apiFetch";
 import { consentRecordSchema } from "../privacy/consent";
 import { createPersistentStore } from "../storage/persistentStore";
 
@@ -330,7 +331,7 @@ async function runFlush({ now, fetchImpl, random, ignoreBackoff }: FlushRun): Pr
 /** Envía las entradas vencidas. Llamadas simultáneas comparten el mismo vaciado. */
 export function flushOutbox({
   now = Date.now(),
-  fetchImpl = fetch,
+  fetchImpl = apiFetch,
   random = Math.random,
   ignoreBackoff = false,
 }: FlushOptions = {}): Promise<void> {

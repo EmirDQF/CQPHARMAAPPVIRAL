@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isSameOriginRequest } from "./sameOrigin";
+import { hasBearerAuthorization, isSameOriginRequest } from "./sameOrigin";
 
 describe("isSameOriginRequest", () => {
   it("accepts a browser request marked as same-origin", () => {
@@ -32,5 +32,15 @@ describe("isSameOriginRequest", () => {
   it("rejects requests without any origin signal or with a malformed Origin", () => {
     expect(isSameOriginRequest(new Headers({ host: "artikare.com" }))).toBe(false);
     expect(isSameOriginRequest(new Headers({ origin: "null", host: "artikare.com" }))).toBe(false);
+  });
+});
+
+
+describe("hasBearerAuthorization", () => {
+  it("acepta solo un Bearer con token", () => {
+    expect(hasBearerAuthorization(new Headers({ authorization: "Bearer abc.def.ghi" }))).toBe(true);
+    expect(hasBearerAuthorization(new Headers({ authorization: "Basic abc" }))).toBe(false);
+    expect(hasBearerAuthorization(new Headers({ authorization: "Bearer " }))).toBe(false);
+    expect(hasBearerAuthorization(new Headers())).toBe(false);
   });
 });

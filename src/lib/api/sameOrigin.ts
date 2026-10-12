@@ -17,3 +17,11 @@ export function isSameOriginRequest(headers: Pick<Headers, "get">): boolean {
     return false;
   }
 }
+
+/**
+ * Una petición con Authorization: Bearer no usa cookies del navegador, así que
+ * un sitio ajeno no puede forzarla: no aplica la defensa CSRF de mismo origen.
+ */
+export function hasBearerAuthorization(headers: Pick<Headers, "get">): boolean {
+  return /^Bearer\s+\S+$/.test(headers.get("authorization")?.trim() ?? "");
+}

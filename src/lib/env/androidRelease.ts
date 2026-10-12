@@ -39,7 +39,11 @@ export function findReleaseSourceIssues({ manifest, xmlFiles }: ReleaseSources):
 }
 
 const generatedConfigSchema = z.object({
-  server: z.object({ url: z.string(), cleartext: z.boolean().optional() }),
+  // Sin `server.url` = app empaquetada (bundled): la interfaz va dentro del APK.
+  server: z
+    .object({ url: z.string().optional(), cleartext: z.boolean().optional(), androidScheme: z.string().optional() })
+    .optional(),
+  android: z.object({ allowMixedContent: z.boolean().optional() }).optional(),
 });
 
 function parseGeneratedConfig(raw: string | null): z.infer<typeof generatedConfigSchema> | null {
@@ -50,6 +54,17 @@ function parseGeneratedConfig(raw: string | null): z.infer<typeof generatedConfi
   } catch {
     return null;
   }
+}
+
+/** Empaquetada: sin servidor remoto no hay URL que revisar, solo que no se admita contenido mixto. */
+function findBundledIssues(config: z.infer<typeof generatedConfigSchema>): string[] {
+  return [
+    ...(config.android?.allowMixedContent === true ? ["capacitor.config.json: allowMixedContent activado"] : []),
+    ...(config.server?.cleartext === true ? ["capacitor.config.json: cleartext activado"] : []),
+    ...(config.server?.androidScheme !== undefined && config.server.androidScheme !== "https"
+      ? ["capacitor.config.json: androidScheme no es https"]
+      : []),
+  ];
 }
 
 function findServerIssues(raw: string, server: { url: string; cleartext?: boolean }): string[] {
@@ -72,7 +87,9 @@ export function findGeneratedConfigIssues({ capacitorConfigJson, pluginsManifest
   const configIssues =
     config === null || capacitorConfigJson === null
       ? ["capacitor.config.json: no existe o no es JSON válido (ejecuta cap sync)"]
-      : findServerIssues(capacitorConfigJson, config.server);
+      : config.server?.url !== undefined
+        ? findServerIssues(capacitorConfigJson, { url: config.server.url, cleartext: config.server.cleartext })
+        : findBundledIssues(config);
   const pluginIssues =
     pluginsManifest !== null && USES_CLEARTEXT.test(pluginsManifest)
       ? ["capacitor-cordova-android-plugins: AndroidManifest.xml declara usesCleartextTraffic"]

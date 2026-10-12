@@ -5,6 +5,7 @@ import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { javaHomeCandidates, parseAdbDevices, pickDevice, readSdkDir } from "../../src/lib/env/androidTooling.ts";
+import { resolveCapMode } from "../../src/lib/env/capacitorEnv.ts";
 
 export const NODE_TS_FLAGS = ["--disable-warning=MODULE_TYPELESS_PACKAGE_JSON"];
 export const DEV_PORT = "3000";
@@ -78,9 +79,17 @@ export function reversePort(env, serial) {
   run("adb", ["-s", serial, "reverse", `tcp:${DEV_PORT}`, `tcp:${DEV_PORT}`], { env });
 }
 
-/** Hornea el servidor de CAP_ENV en el proyecto Android (shell offline + cap sync). */
+/**
+ * Sincroniza Capacitor con el proyecto Android. remote: hornea el servidor de
+ * CAP_ENV (shell offline + cap sync). bundled: la interfaz ya está en out-mobile
+ * (npm run build:mobile-web) y no hay servidor ni shell que generar.
+ */
 export function syncCapacitor(env) {
-  run("node", [...NODE_TS_FLAGS, join("scripts", "build-shell.mjs")], { env });
+  if (resolveCapMode(env) === "bundled") {
+    if (!existsSync("out-mobile")) throw new Error("Falta out-mobile/: corre npm run build:mobile-web antes");
+  } else {
+    run("node", [...NODE_TS_FLAGS, join("scripts", "build-shell.mjs")], { env });
+  }
   run("npx", ["cap", "sync", "android"], { env });
 }
 

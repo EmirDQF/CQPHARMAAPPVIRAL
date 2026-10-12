@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { APP_URL_SCHEME, SHAREABLE_PATH_PREFIXES, resolveDeepLink } from "./deepLinks";
+import { APP_URL_SCHEME, SHAREABLE_PATH_PREFIXES, resolveDeepLink, toInAppRoute } from "./deepLinks";
 
 const SITE = "https://artikare.com";
 
@@ -65,5 +65,17 @@ describe("resolveDeepLink", () => {
     ["a non-string", 42],
   ])("ignores %s", (_label, raw) => {
     expect(resolveDeepLink(raw, SITE)).toBeNull();
+  });
+});
+
+describe("toInAppRoute", () => {
+  it("lleva /test a la landing conservando la query", () => {
+    expect(toInAppRoute("/test")).toBe("/");
+    expect(toInAppRoute("/test?utm_source=whatsapp")).toBe("/?utm_source=whatsapp");
+  });
+
+  it("deja el resto de rutas intactas", () => {
+    expect(toInAppRoute("/blog/prueba-de-la-silla")).toBe("/blog/prueba-de-la-silla");
+    expect(toInAppRoute("/testimonios")).toBe("/testimonios");
   });
 });

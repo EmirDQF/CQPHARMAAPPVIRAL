@@ -41,6 +41,25 @@ describe("findGeneratedConfigIssues", () => {
     expect(findGeneratedConfigIssues({ capacitorConfigJson: releaseJson, pluginsManifest: "<manifest/>" })).toEqual([]);
   });
 
+  it("accepts a bundled config (no remote server) and flags mixed content in it", () => {
+    const bundled = JSON.stringify({
+      appId: "com.artikare.app",
+      webDir: "out-mobile",
+      server: { androidScheme: "https" },
+      android: { allowMixedContent: false },
+    });
+    expect(findGeneratedConfigIssues({ capacitorConfigJson: bundled, pluginsManifest: "<manifest/>" })).toEqual([]);
+    const mixed = JSON.stringify({ webDir: "out-mobile", android: { allowMixedContent: true } });
+    expect(findGeneratedConfigIssues({ capacitorConfigJson: mixed, pluginsManifest: "<manifest/>" })).toEqual([
+      "capacitor.config.json: allowMixedContent activado",
+    ]);
+    const insecure = JSON.stringify({ server: { androidScheme: "http", cleartext: true } });
+    expect(findGeneratedConfigIssues({ capacitorConfigJson: insecure, pluginsManifest: "<manifest/>" })).toEqual([
+      "capacitor.config.json: cleartext activado",
+      "capacitor.config.json: androidScheme no es https",
+    ]);
+  });
+
   it("flags a dev config left in the assets", () => {
     const devJson = JSON.stringify({ server: { url: "http://localhost:3000/", cleartext: true } });
     expect(findGeneratedConfigIssues({ capacitorConfigJson: devJson, pluginsManifest: "<manifest/>" })).toEqual([

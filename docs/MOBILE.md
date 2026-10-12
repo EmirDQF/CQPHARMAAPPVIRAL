@@ -10,6 +10,16 @@ La app es Next con servidor (no admite export estático): el WebView siempre car
 
 No hace falta tener `JAVA_HOME`, `ANDROID_HOME` ni `adb` en el PATH: los scripts usan el JBR de Android Studio y el SDK de `android/local.properties`.
 
+## Modo empaquetado (`CAP_MODE=bundled`, el de Google Play)
+
+La interfaz (export estático de Next) va **dentro del APK** y abre sin internet. Solo el respaldo, las cuentas, ARCO y las citas llaman al servidor de `NEXT_PUBLIC_API_BASE_URL` (https), con la sesión como `Authorization: Bearer` y CORS limitado a `https://localhost` y `capacitor://localhost`.
+
+- `npm run build:mobile-web`: genera `out-mobile/`. Aparta durante el build lo que solo vive en el servidor (`src/app/api`, `src/proxy.ts`, `.well-known`, `/test`, imágenes OG, robots y sitemap) y lo devuelve siempre, aunque falle.
+- `npm run mobile:bundle`: build:mobile-web → `cap sync` → `assembleDebug`. El APK queda en `android/app/build/outputs/apk/debug/app-debug.apk`. Con `-- --install` lo instala en el teléfono por USB.
+- `npm run mobile:bundle -- --guest-only`: para probar **sin servidor**. Usa un dominio reservado que no existe (`.invalid`): la app funciona completa como invitado y el respaldo no conecta. Nunca para la tienda.
+- `npm run build:android`: ahora es empaquetado por defecto (exige `NEXT_PUBLIC_API_BASE_URL`); `CAP_MODE=remote npm run build:android` conserva el modo anterior.
+- En el servidor no cambia nada: la web sigue con cookies de mismo origen. Si usas Turnstile en la app, agrega `localhost` a los dominios permitidos del widget en Cloudflare.
+
 ## `npm run mobile:dev`
 
 - Verifica que haya un teléfono en estado `device` (si no, te dice qué hacer: conectar USB o aceptar la depuración).

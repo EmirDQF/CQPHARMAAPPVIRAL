@@ -24,10 +24,18 @@ const REQUIRED_FOR_RELEASE: Readonly<Record<string, (value: string) => boolean>>
   NEXT_PUBLIC_SUPABASE_ANON_KEY: (value) => nonEmptyKey.safeParse(value).success,
   SUPABASE_SERVICE_ROLE_KEY: (value) => nonEmptyKey.safeParse(value).success,
   NEXT_PUBLIC_SITE_URL: (value) => httpsUrl.safeParse(value).success,
-  CAP_SERVER_URL: (value) => httpsUrl.safeParse(value).success,
   ANDROID_SHA256_FINGERPRINT: (value) => parseAndroidFingerprints(value) !== null,
   NEXT_PUBLIC_WHATSAPP_NUMBER: (value) => /^519\d{8}$/.test(value),
   NEXT_PUBLIC_TURNSTILE_SITE_KEY: (value) => value.trim().length > 0,
+};
+
+/**
+ * Según CAP_MODE: remote carga un servidor (CAP_SERVER_URL); bundled lleva la
+ * interfaz dentro del APK y solo necesita la API remota (NEXT_PUBLIC_API_BASE_URL).
+ */
+const REQUIRED_BY_CAP_MODE: Readonly<Record<"remote" | "bundled", Readonly<Record<string, (value: string) => boolean>>>> = {
+  remote: { CAP_SERVER_URL: (value) => httpsUrl.safeParse(value).success },
+  bundled: { NEXT_PUBLIC_API_BASE_URL: (value) => httpsUrl.safeParse(value).success },
 };
 
 /** Nombres que delatan un secreto; las claves públicas por diseño se excluyen. */
@@ -51,7 +59,8 @@ function findExposedSecrets(env: EnvMap): string[] {
 }
 
 function findInvalidRequired(env: EnvMap): string[] {
-  return Object.entries(REQUIRED_FOR_RELEASE).flatMap(([name, isValid]) => {
+  const mode = env.CAP_MODE?.trim() === "bundled" ? "bundled" : "remote";
+  return Object.entries({ ...REQUIRED_FOR_RELEASE, ...REQUIRED_BY_CAP_MODE[mode] }).flatMap(([name, isValid]) => {
     const value = env[name];
     if (value === undefined || value.trim() === "") return [`${name}: falta`];
     return isValid(value) ? [] : [`${name}: formato inválido`];

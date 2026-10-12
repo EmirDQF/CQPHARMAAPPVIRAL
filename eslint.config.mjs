@@ -19,6 +19,8 @@ const eslintConfig = defineConfig([
     "android/app/src/main/assets/**",
     // Shell offline generado por scripts/build-shell.mjs (fuente: capacitor-shell-src/).
     "capacitor-shell/**",
+    // Export estático de la app empaquetada (scripts/build-mobile-web.mjs).
+    "out-mobile/**",
   ]),
 ]);
 

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { normalizeApiBase } from "../api/apiBase.ts";
 
 /**
  * Servidor que carga el WebView de Capacitor, según CAP_ENV (no NODE_ENV:
@@ -83,4 +84,45 @@ export function resolveCapacitorServer(env: EnvMap): CapacitorServer {
   }
   const url = resolveReleaseUrl(env.CAP_SERVER_URL);
   return { env: capEnv, url: url.href, cleartext: false, allowMixedContent: false };
+}
+
+/**
+ * Modo de empaquetado, según CAP_MODE.
+ * - bundled: la interfaz (export estático) va dentro del APK y abre sin red; solo
+ *   respaldo, cuentas y ARCO llaman a la API remota (NEXT_PUBLIC_API_BASE_URL).
+ * - remote: el WebView carga un servidor (CAP_ENV + CAP_SERVER_URL), como hasta ahora.
+ * Sin definir = remote, para no cambiar los flujos existentes por sorpresa.
+ */
+export const CAP_MODES = ["bundled", "remote"] as const;
+export type CapMode = (typeof CAP_MODES)[number];
+
+/** Carpeta del export estático móvil (webDir en modo bundled). Ignorada por git. */
+export const BUNDLED_WEB_DIR = "out-mobile";
+
+const capModeSchema = z.enum(CAP_MODES);
+
+export function resolveCapMode(env: EnvMap): CapMode {
+  const value = env.CAP_MODE?.trim() ? env.CAP_MODE.trim() : "remote";
+  const parsed = capModeSchema.safeParse(value);
+  if (!parsed.success) throw new Error(`CAP_MODE debe ser ${CAP_MODES.join(" o ")}`);
+  return parsed.data;
+}
+
+/**
+ * La app empaquetada necesita saber a qué servidor llamar. Falla con el nombre
+ * de la variable (nunca su valor) si falta, no es https o apunta a un host local.
+ */
+export function resolveBundledApiBase(env: EnvMap): string {
+  const raw = env.NEXT_PUBLIC_API_BASE_URL;
+  if (!raw?.trim()) throw new Error("NEXT_PUBLIC_API_BASE_URL falta: la app empaquetada necesita la URL https de la API");
+  let base: string;
+  try {
+    base = normalizeApiBase(raw);
+  } catch {
+    throw new Error("NEXT_PUBLIC_API_BASE_URL debe ser una URL https válida");
+  }
+  if (isLocalHost(new URL(base).hostname)) {
+    throw new Error("NEXT_PUBLIC_API_BASE_URL apunta a un host local o IP; usa el dominio público");
+  }
+  return base;
 }

@@ -69,3 +69,12 @@ export function resolveDeepLink(rawUrl: unknown, siteUrl: string): string | null
   if (path === null || !isShareablePath(path)) return null;
   return `${path}${keepAllowedQuery(parsed.data.searchParams)}`;
 }
+
+/**
+ * Ruta de la interfaz a la que ir con un enlace ya resuelto. `/test` es un
+ * redirect de servidor hacia el test de la landing ("/"): la app empaquetada no
+ * lo trae, así que se salta directo (misma query, mismo destino).
+ */
+export function toInAppRoute(path: string): string {
+  return path === "/test" || path.startsWith("/test?") ? `/${path.slice("/test".length)}` : path;
+}

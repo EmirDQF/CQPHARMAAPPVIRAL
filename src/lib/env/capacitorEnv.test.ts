@@ -1,7 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { DEV_CLEARTEXT_HOSTS, DEV_DEFAULT_SERVER_URL, resolveCapacitorServer } from "./capacitorEnv";
+import {
+  DEV_CLEARTEXT_HOSTS,
+  DEV_DEFAULT_SERVER_URL,
+  resolveBundledApiBase,
+  resolveCapMode,
+  resolveCapacitorServer,
+} from "./capacitorEnv";
 
 describe("resolveCapacitorServer", () => {
   it("dev without URL uses localhost over http with cleartext", () => {
@@ -83,5 +89,32 @@ describe("DEV_CLEARTEXT_HOSTS", () => {
 
     expect(domains).toEqual(DEV_CLEARTEXT_HOSTS);
     expect(shellHosts).toEqual(DEV_CLEARTEXT_HOSTS);
+  });
+});
+
+describe("resolveCapMode", () => {
+  it("sin definir sigue en remote y acepta bundled", () => {
+    expect(resolveCapMode({})).toBe("remote");
+    expect(resolveCapMode({ CAP_MODE: " bundled " })).toBe("bundled");
+  });
+
+  it("rechaza un modo desconocido en vez de adivinar", () => {
+    expect(() => resolveCapMode({ CAP_MODE: "hibrido" })).toThrow(/CAP_MODE/);
+  });
+});
+
+describe("resolveBundledApiBase", () => {
+  it("devuelve la base https normalizada", () => {
+    expect(resolveBundledApiBase({ NEXT_PUBLIC_API_BASE_URL: "https://api.artikare.com/" })).toBe("https://api.artikare.com");
+  });
+
+  it.each([
+    ["falta", undefined, /falta/],
+    ["http", "http://api.artikare.com", /https/],
+    ["no es URL", "artikare", /https/],
+    ["localhost", "https://localhost:3000", /local/],
+    ["IP privada", "https://192.168.1.5", /local/],
+  ])("falla si %s, sin repetir el valor", (_label, value, message) => {
+    expect(() => resolveBundledApiBase({ NEXT_PUBLIC_API_BASE_URL: value })).toThrow(message);
   });
 });

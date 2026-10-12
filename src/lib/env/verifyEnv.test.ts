@@ -38,8 +38,8 @@ describe("verifyEnv", () => {
 
     expect(report.errors).toEqual([
       "SUPABASE_SERVICE_ROLE_KEY: falta",
-      "CAP_SERVER_URL: formato inválido",
       "ANDROID_SHA256_FINGERPRINT: formato inválido",
+      "CAP_SERVER_URL: formato inválido",
     ]);
   });
 
@@ -67,5 +67,24 @@ describe("verifyEnv", () => {
 
     Object.values(VALID_RELEASE_ENV).forEach((value) => expect(output).not.toContain(value));
     expect(output).not.toContain("http://x.pe");
+  });
+});
+
+describe("verifyEnv según CAP_MODE", () => {
+  const withoutServer = { ...VALID_RELEASE_ENV, CAP_SERVER_URL: undefined };
+
+  it("bundled no exige CAP_SERVER_URL pero sí NEXT_PUBLIC_API_BASE_URL", () => {
+    const base = { ...withoutServer, CAP_MODE: "bundled" };
+    expect(verifyEnv(base, { strict: true }).errors).toEqual(["NEXT_PUBLIC_API_BASE_URL: falta"]);
+    expect(
+      verifyEnv({ ...base, NEXT_PUBLIC_API_BASE_URL: "https://api.artikare.com" }, { strict: true }).errors
+    ).toEqual([]);
+    expect(
+      verifyEnv({ ...base, NEXT_PUBLIC_API_BASE_URL: "http://api.artikare.com" }, { strict: true }).errors
+    ).toEqual(["NEXT_PUBLIC_API_BASE_URL: formato inválido"]);
+  });
+
+  it("remote (por defecto) sigue exigiendo CAP_SERVER_URL", () => {
+    expect(verifyEnv(withoutServer, { strict: true }).errors).toEqual(["CAP_SERVER_URL: falta"]);
   });
 });

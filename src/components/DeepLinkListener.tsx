@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { readSiteUrl } from "@/lib/native/appIdentity";
-import { resolveDeepLink } from "@/lib/native/deepLinks";
+import { resolveDeepLink, toInAppRoute } from "@/lib/native/deepLinks";
 import { isNativeApp } from "@/lib/native/doseNotifications";
 
 /**
@@ -38,7 +38,10 @@ export function DeepLinkListener() {
     let removeListener: (() => Promise<void>) | null = null;
     let isUnmounted = false;
 
-    const resolve = (url: string) => resolveDeepLink(url, readSiteUrl());
+    const resolve = (url: string) => {
+      const path = resolveDeepLink(url, readSiteUrl());
+      return path === null ? null : toInAppRoute(path);
+    };
 
     void import("@capacitor/app")
       .then(async ({ App }) => {

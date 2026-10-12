@@ -44,7 +44,7 @@ describe("DeepLinkListener", () => {
     mocks.state.listener?.({ url: "https://artikare.com/app/reporte-medico" });
 
     expect(mocks.push).toHaveBeenCalledTimes(1);
-    expect(mocks.push).toHaveBeenCalledWith("/test?utm_source=whatsapp");
+    expect(mocks.push).toHaveBeenCalledWith("/?utm_source=whatsapp");
   });
 
   it("opens the app's own scheme like a public link", async () => {
@@ -63,7 +63,7 @@ describe("DeepLinkListener", () => {
 
     render(<DeepLinkListener />);
 
-    await waitFor(() => expect(mocks.push).toHaveBeenCalledWith("/test?utm_campaign=derivacion-familiar"));
+    await waitFor(() => expect(mocks.push).toHaveBeenCalledWith("/?utm_campaign=derivacion-familiar"));
   });
 
   it("does not reopen the launch link when the WebView reloads in the same session", async () => {

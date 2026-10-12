@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
+import { isNativeApp } from "@/lib/native/doseNotifications";
 
 export function ServiceWorkerRegistration() {
   useEffect(() => {
-    if (!("serviceWorker" in navigator)) return;
+    // En la app Android la interfaz ya viaja dentro del APK: un service worker solo añadiría una caché que envejece.
+    if (isNativeApp() || !("serviceWorker" in navigator)) return;
 
     // Si el registro falla, la app sigue funcionando en modo online; se reporta para diagnóstico.
     // updateViaCache "none": el navegador siempre revalida sw.js contra la red,

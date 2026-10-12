@@ -3,6 +3,7 @@
 import { useEffect, useSyncExternalStore } from "react";
 import { useClinicalStatus } from "@/components/dashboard/useActiveRedFlags";
 import { ACTIVITY_CATALOG } from "@/lib/activities/catalog";
+import { pickNextMission } from "@/lib/activities/nextMission";
 import { selectDailyMissions } from "@/lib/activities/rotation";
 import type { Activity } from "@/lib/activities/schemas";
 import { painLogStore } from "@/lib/dashboard/painLog";
@@ -26,6 +27,8 @@ import { toLimaIsoDate } from "@/lib/utils/date";
 export interface GameState {
   today: string;
   missions: readonly Activity[];
+  /** "Tu siguiente paso": pendiente y ya realizable (sin tomas cuya hora no llegó). */
+  nextMission: Activity | null;
   completed: ReadonlySet<string>;
   goal: GoalStatus;
   stats: GameStats;
@@ -76,7 +79,7 @@ export function useGame(now: Date, pendingDoseIds: readonly string[] = []): Game
     if (next !== current) gameProgressStore.write(next);
   });
 
-  const nextMission = missions.find((mission) => !completed.has(mission.id)) ?? null;
+  const nextMission = pickNextMission(missions, completed, now);
   const mood = pickArtikoMood({ now, today, hasRedFlag, goalMet: goal.met, streakDays: stats.streak.days, lastOpenedOn, nextMission });
   const pendingUnlocks = progress.unlocked
     .filter((item) => !progress.celebratedKeys.includes(item.key))
@@ -88,6 +91,7 @@ export function useGame(now: Date, pendingDoseIds: readonly string[] = []): Game
   return {
     today,
     missions,
+    nextMission,
     completed,
     goal,
     stats,

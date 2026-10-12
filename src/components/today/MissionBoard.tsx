@@ -59,7 +59,7 @@ export function MissionBoard({ game, onTakeDose, onOpenCheckIn }: MissionBoardPr
     }
   }
 
-  const nextMission = game.missions.find((mission) => !game.completed.has(mission.id));
+  const { nextMission } = game;
   const hasPhysical = game.missions.some((mission) => mission.safety === "physical");
   return (
     <section aria-labelledby="misiones-hoy" className="flex flex-col gap-3">

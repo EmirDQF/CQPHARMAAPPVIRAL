@@ -6,6 +6,8 @@ import { expect, test, type Page } from "@playwright/test";
  * Reloj fijo para que la rotación de misiones sea siempre la misma.
  */
 const FIXED_NOW = new Date("2026-10-12T14:00:00.000Z"); // 09:00 en Lima
+const NIGHT_DOSE_TIME = new Date("2026-10-13T02:35:00.000Z"); // 21:35 en Lima, mismo día
+const NIGHT_DOSE_STEP = "Siguiente paso: Toma de la noche";
 const MAX_STEPS = 8;
 
 function collectErrors(page: Page): string[] {
@@ -28,14 +30,17 @@ async function finishGuidedSheet(page: Page): Promise<void> {
   await expect(sheet).toHaveCount(0);
 }
 
-async function completeDayWithNextStep(page: Page): Promise<void> {
+/** Sigue "Tu siguiente paso" hasta que no quede nada realizable; devuelve los pasos ofrecidos. */
+async function followNextSteps(page: Page): Promise<string[]> {
   const checkIn = page.locator("section").filter({
     has: page.getByRole("heading", { name: "¿Cómo amanecieron tus articulaciones hoy?" }),
   });
+  const offered: string[] = [];
   for (let step = 0; step < MAX_STEPS; step += 1) {
     const next = page.getByRole("button", { name: /^Siguiente paso:/ });
-    if ((await next.count()) === 0) return;
+    if ((await next.count()) === 0) return offered;
     const label = (await next.getAttribute("aria-label")) ?? "";
+    offered.push(label);
     await next.click();
     if (/Chequeo/.test(label)) {
       await checkIn.getByRole("button", { name: "4", exact: true }).click();
@@ -47,6 +52,16 @@ async function completeDayWithNextStep(page: Page): Promise<void> {
     }
     await expect(page.getByRole("button", { name: label })).toHaveCount(0);
   }
+  return offered;
+}
+
+/** Mañana: todo lo realizable, sin la toma nocturna. Noche: la toma de las 21:30 y la meta. */
+async function completeDayWithNextStep(page: Page): Promise<void> {
+  expect(await followNextSteps(page)).not.toContain(NIGHT_DOSE_STEP);
+
+  await page.clock.setFixedTime(NIGHT_DOSE_TIME);
+  await page.reload();
+  expect(await followNextSteps(page)).toContain(NIGHT_DOSE_STEP);
 }
 
 test.beforeEach(async ({ page }) => {

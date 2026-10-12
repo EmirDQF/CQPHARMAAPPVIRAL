@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ProgressBar } from "./ProgressBar";
 import { QuestionStep } from "./QuestionStep";
+import { gameButtonClasses } from "@/components/ui/gameButtonClasses";
 import { ResultCard } from "./ResultCard";
 import { calculateRisk } from "@/lib/calculateRisk";
 import { savePendingAssessment } from "@/lib/api/pendingAssessment";
@@ -65,18 +66,14 @@ export function ArticularTest() {
   if (phase === "intro") {
     return (
       <div className="w-full max-w-md mx-auto text-center flex flex-col gap-4 items-center">
-        <h2 className="text-2xl font-bold">
+        <h2 className="text-3xl font-black text-clinic">
           Test de Edad Articular y Salud Ósea
         </h2>
-        <p className="text-neutral-600 dark:text-neutral-300">
+        <p className="text-lg text-muted">
           7 preguntas clínicas rápidas. Descubre en 2 minutos si tu edad
-          articular coincide con tu edad real.
+          articular coincide con tu edad real. Es orientativo, no un diagnóstico.
         </p>
-        <button
-          type="button"
-          onClick={() => setPhase("test")}
-          className="rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] text-white font-semibold px-6 py-3 transition-colors"
-        >
+        <button type="button" onClick={() => setPhase("test")} className={gameButtonClasses({ tone: "vital", size: "xl", block: true })}>
           Evaluar mi Salud Ósea Gratis
         </button>
       </div>
@@ -117,7 +114,7 @@ export function ArticularTest() {
               value={ageInput}
               onChange={(e) => setAgeInput(e.target.value)}
               placeholder="Ej. 52"
-              className="w-full rounded-xl border-2 border-neutral-200 dark:border-neutral-700 px-4 py-3 focus:border-brand outline-none bg-transparent"
+              className="w-full min-h-12 rounded-2xl border-2 border-line px-4 py-3 text-lg focus:border-clinic bg-surface"
             />
           </div>
 
@@ -131,10 +128,10 @@ export function ArticularTest() {
                   role="radio"
                   aria-checked={sex === option}
                   onClick={() => setSex(option)}
-                  className={`flex-1 rounded-xl border-2 px-4 py-3 capitalize transition-colors ${
+                  className={`flex-1 min-h-12 rounded-2xl border-2 px-4 py-3 text-lg font-bold capitalize transition-colors ${
                     sex === option
-                      ? "border-brand bg-pastel-mint text-pastel-mint-ink"
-                      : "border-neutral-200 dark:border-neutral-700 hover:border-brand/50"
+                      ? "border-vital-deep bg-pastel-mint text-pastel-mint-ink"
+                      : "border-line bg-surface hover:border-clinic"
                   }`}
                 >
                   {option}
@@ -147,10 +144,16 @@ export function ArticularTest() {
             type="button"
             onClick={handleAgeSexNext}
             disabled={!ageInput || !sex}
-            className="w-full rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold px-4 py-3 transition-colors"
+            aria-describedby={!ageInput || !sex ? "test-siguiente-motivo" : undefined}
+            className={gameButtonClasses({ tone: "vital", size: "lg", block: true })}
           >
             Siguiente
           </button>
+          {(!ageInput || !sex) && (
+            <p id="test-siguiente-motivo" className="-mt-2 text-base text-muted">
+              Escribe tu edad y elige una opción para seguir.
+            </p>
+          )}
         </fieldset>
       ) : (
         currentQuestion && (
@@ -166,7 +169,7 @@ export function ArticularTest() {
         <button
           type="button"
           onClick={handleBack}
-          className="text-sm text-muted hover:text-neutral-700 dark:hover:text-neutral-300 self-start"
+          className="min-h-12 text-base font-bold text-clinic self-start"
         >
           ← Atrás
         </button>

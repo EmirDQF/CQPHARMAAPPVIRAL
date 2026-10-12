@@ -1,13 +1,20 @@
 "use client";
 
-import { useEffect, useSyncExternalStore } from "react";
+import { useEffect } from "react";
 import { textSizeStore } from "@/lib/display/textSize";
 
-/** Refleja el tamaño de letra elegido en `<html data-text-size>`; globals.css hace el resto. */
+/**
+ * Mantiene `<html data-text-size>` al día cuando cambia la preferencia; globals.css hace el resto.
+ * Lee el store directamente (no el snapshot de servidor de la hidratación) para no pisar
+ * el valor que ya puso TEXT_SIZE_BOOT_SCRIPT antes de la primera pintura.
+ */
 export function TextSizeApplier() {
-  const { size } = useSyncExternalStore(textSizeStore.subscribe, textSizeStore.getSnapshot, textSizeStore.getServerSnapshot);
   useEffect(() => {
-    document.documentElement.dataset.textSize = size;
-  }, [size]);
+    const apply = () => {
+      document.documentElement.dataset.textSize = textSizeStore.getSnapshot().size;
+    };
+    apply();
+    return textSizeStore.subscribe(apply);
+  }, []);
   return null;
 }

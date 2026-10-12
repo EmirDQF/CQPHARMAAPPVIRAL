@@ -31,8 +31,10 @@ export function parseTextSize(raw: unknown): TextSizePreference | null {
   return parsed.success ? parsed.data : null;
 }
 
+export const TEXT_SIZE_STORAGE_KEY = "artikare_text_size_v1";
+
 export const textSizeStore = createPersistentStore<TextSizePreference>(
-  "artikare_text_size_v1",
+  TEXT_SIZE_STORAGE_KEY,
   DEFAULT_TEXT_SIZE,
   parseTextSize
 );

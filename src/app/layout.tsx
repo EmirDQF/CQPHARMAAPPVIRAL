@@ -9,6 +9,7 @@ import { PendingAssessmentUploader } from "@/components/PendingAssessmentUploade
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
 import { SyncCoordinator } from "@/components/SyncCoordinator";
 import { TextSizeApplier } from "@/components/TextSizeApplier";
+import { TEXT_SIZE_BOOT_SCRIPT } from "@/lib/display/textSizeBootScript";
 
 // Redondeada, gruesa y alegre. next/font la descarga en el build y la sirve desde el propio
 // dominio: cero peticiones a Google en tiempo de ejecución (funciona offline en Capacitor).
@@ -83,6 +84,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${nunito.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
+      <head>
+        {/* Cadena fija sin datos del usuario: evita el salto del tamaño de letra al abrir. */}
+        <script dangerouslySetInnerHTML={{ __html: TEXT_SIZE_BOOT_SCRIPT }} />
+      </head>
       <body className="min-h-full flex flex-col">
         {children}
         <WhatsAppFloatingButton />

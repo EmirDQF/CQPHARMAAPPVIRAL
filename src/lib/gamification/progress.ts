@@ -25,6 +25,8 @@ const gameProgressSchema = z.object({
   equipped: z.array(z.enum(ARTIKO_ACCESSORIES)).catch([]),
   /** Último día de Lima en que se abrió /app (bienvenida de retorno, pausa de avisos). */
   lastOpenedOn: z.string().regex(ISO_DATE).nullable().catch(null),
+  /** Apertura anterior a `lastOpenedOn`: decide la bienvenida de retorno de hoy. */
+  previousOpenedOn: z.string().regex(ISO_DATE).nullable().catch(null),
 });
 export type GameProgress = z.infer<typeof gameProgressSchema>;
 
@@ -35,6 +37,7 @@ export const EMPTY_GAME_PROGRESS: GameProgress = {
   celebratedKeys: [],
   equipped: [],
   lastOpenedOn: null,
+  previousOpenedOn: null,
 };
 
 /** null = versión desconocida: el store la conserva sin sobrescribirla. */
@@ -74,7 +77,14 @@ export function undoActivity(activityId: string, date: string = toLimaIsoDate())
 }
 
 export function markOpened(date: string = toLimaIsoDate()): void {
-  writeIfReadable((current) => (current.lastOpenedOn === date ? current : { ...current, lastOpenedOn: date }));
+  writeIfReadable((current) =>
+    current.lastOpenedOn === date ? current : { ...current, lastOpenedOn: date, previousOpenedOn: current.lastOpenedOn }
+  );
+}
+
+/** Última apertura antes de `today` (null = primera vez). */
+export function previousOpeningBefore(progress: GameProgress, today: string): string | null {
+  return progress.lastOpenedOn === today ? progress.previousOpenedOn : progress.lastOpenedOn;
 }
 
 /** Solo se puede poner lo desbloqueado; quitar siempre se puede. */
@@ -84,5 +94,14 @@ export function toggleAccessory(accessory: ArtikoAccessory, unlockedAccessories:
       return { ...current, equipped: current.equipped.filter((item) => item !== accessory) };
     }
     return unlockedAccessories.includes(accessory) ? { ...current, equipped: [...current.equipped, accessory] } : current;
+  });
+}
+
+/** Marca celebraciones ya mostradas (desbloqueos, meta del día) para no repetirlas al recargar. */
+export function markGameCelebrated(keys: readonly string[]): void {
+  if (keys.length === 0) return;
+  writeIfReadable((current) => {
+    const missing = keys.filter((key) => !current.celebratedKeys.includes(key));
+    return missing.length === 0 ? current : { ...current, celebratedKeys: [...current.celebratedKeys, ...missing] };
   });
 }

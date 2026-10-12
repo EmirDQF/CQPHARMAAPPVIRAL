@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { readSiteUrl } from "@/lib/native/appIdentity";
-import { isNativeApp } from "@/lib/native/doseNotifications";
-import { shareInvite, type InviteAudience, type ShareDependencies, type ShareOutcome } from "@/lib/share/inviteShare";
+import { browserShareDependencies } from "@/lib/share/browserShare";
+import { shareInvite, type InviteAudience, type ShareOutcome } from "@/lib/share/inviteShare";
 
 const FOCUS_RING =
   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand";
@@ -13,21 +13,6 @@ const OUTCOME_MESSAGES: Readonly<Partial<Record<ShareOutcome, string>>> = {
   whatsapp: "Intentamos abrir WhatsApp con la invitación. Si no se abrió, toca de nuevo.",
   failed: "No pudimos abrir las opciones para compartir. Inténtalo de nuevo.",
 };
-
-async function shareWithCapacitor(payload: { title: string; text: string; url: string }): Promise<void> {
-  const { Share } = await import("@capacitor/share");
-  await Share.share({ ...payload, dialogTitle: payload.title });
-}
-
-function browserShareDependencies(): ShareDependencies {
-  const canWebShare = typeof navigator !== "undefined" && typeof navigator.share === "function";
-  return {
-    isNativeApp,
-    nativeShare: shareWithCapacitor,
-    webShare: canWebShare ? (payload) => navigator.share(payload) : undefined,
-    openUrl: (url) => window.open(url, "_blank", "noopener,noreferrer"),
-  };
-}
 
 /** Invita a otra persona a hacer el test; nunca comparte el resultado de quien lo hizo. */
 export function ShareInviteActions() {

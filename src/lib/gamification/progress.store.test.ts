@@ -6,6 +6,7 @@ import {
   completeActivity,
   gameProgressStore,
   markOpened,
+  previousOpeningBefore,
   toggleAccessory,
   undoActivity,
 } from "./progress";
@@ -30,6 +31,13 @@ describe("game progress store", () => {
     markOpened(TODAY);
     expect(gameProgressStore.getSnapshot()).toBe(snapshot);
     expect(snapshot.lastOpenedOn).toBe(TODAY);
+  });
+
+  it("keeps the previous opening so today's welcome-back survives a reload", () => {
+    markOpened("2026-10-01");
+    markOpened(TODAY);
+    expect(previousOpeningBefore(gameProgressStore.getSnapshot(), TODAY)).toBe("2026-10-01");
+    expect(previousOpeningBefore(gameProgressStore.getSnapshot(), "2026-10-12")).toBe(TODAY);
   });
 
   it("only equips unlocked accessories and can always take them off", () => {

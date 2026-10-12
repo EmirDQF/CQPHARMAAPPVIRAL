@@ -94,8 +94,8 @@ test("el pastillero anota la toma, permite deshacer sin límite de tiempo y la g
   for (let index = 0; index < doseCount; index += 1) await pillbox.getByRole("button", { name: "Listo" }).first().click();
   await expect(pillbox.getByText("Tomada", { exact: true })).toHaveCount(doseCount);
   await expect(pillbox.getByRole("status")).toContainText("Toma guardada");
-  await expect(page.getByText("1 día seguido")).toBeVisible();
-  await expect(page.getByRole("img", { name: /Progreso de hoy: 2 de 3/ })).toBeVisible();
+  await expect(page.getByText("día activo", { exact: true })).toBeVisible();
+  await expect(page.getByRole("img", { name: /Meta de hoy: 2 de 5 misiones/ })).toBeVisible();
 
   await page.reload();
   await expect(pillbox.getByText("Tomada", { exact: true })).toHaveCount(doseCount);

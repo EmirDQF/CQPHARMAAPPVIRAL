@@ -130,7 +130,7 @@ describe("unlocks", () => {
 
 describe("game progress storage", () => {
   it("repairs broken fields and refuses unknown versions", () => {
-    expect(parseGameProgress({ version: 1, completions: "x", equipped: ["cap", "crown"] })).toEqual({ ...EMPTY_GAME_PROGRESS });
+    expect(parseGameProgress({ version: 1, completions: "x", equipped: ["cap", "crown"] })).toEqual(EMPTY_GAME_PROGRESS);
     expect(parseGameProgress({ version: 2 })).toBeNull();
   });
 

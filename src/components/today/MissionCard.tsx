@@ -31,14 +31,19 @@ export function MissionCard({ activity, isDone, justEarned, onAction, onUndo }: 
         isDone ? "border-vital-deep bg-pastel-mint text-pastel-mint-ink" : "border-line bg-surface"
       }`}
     >
-      <span aria-hidden="true" className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-canvas text-4xl">
+      <span
+        aria-hidden="true"
+        className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-canvas text-4xl easy-read:size-20 easy-read:text-5xl"
+      >
         {isDone ? "✅" : activity.emoji}
       </span>
       <div className="flex min-w-0 flex-1 flex-col gap-1">
-        <h3 id={titleId} className="text-xl font-black leading-tight">
+        <h3 id={titleId} className="text-xl font-black leading-tight easy-read:text-2xl">
           {activity.title}
         </h3>
-        <p className="text-base">{activity.description}</p>
+        <p data-testid="mission-description" className="text-base easy-read:hidden">
+          {activity.description}
+        </p>
         <p className="text-sm font-bold">
           <span aria-hidden="true">⏱️ </span>
           {activity.durationMinutes} min · <span className="text-xp-text">+{activity.xp} XP</span>

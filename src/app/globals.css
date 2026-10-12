@@ -2,6 +2,9 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* Lectura fácil: activa con letra "Muy grande" (Ajustes). Menos texto, iconos más grandes. */
+@custom-variant easy-read (html[data-text-size="xlarge"] &);
+
 /*
  * Sistema de diseño "Clínico amable" (docs/DESIGN.md). Los valores --color-*
  * de la capa nueva deben coincidir con src/lib/design/tokens.ts: lo verifica

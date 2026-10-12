@@ -426,4 +426,11 @@ body {
   html {
     @apply font-sans;
   }
+  /* Tamaño de letra elegido en Ajustes: escala el rem raíz (texto, botones y espacios a la vez). */
+  html[data-text-size="large"] {
+    font-size: 112.5%;
+  }
+  html[data-text-size="xlarge"] {
+    font-size: 125%;
+  }
 }

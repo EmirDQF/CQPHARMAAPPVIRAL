@@ -7,6 +7,7 @@ import { consumeLocalDeletionDone } from "@/lib/privacy/arco";
 import { CONSENT_VERSION, PRIVACY_POLICY_PATH } from "@/lib/privacy/consent";
 import { AccountDeletionSection } from "./AccountDeletionSection";
 import { DataExportSection } from "./DataExportSection";
+import { TextSizeSection } from "./TextSizeSection";
 import { FeedbackPreferencesSection } from "./FeedbackPreferencesSection";
 import { SmartRemindersSection } from "./SmartRemindersSection";
 import { OppositionSection } from "./OppositionSection";
@@ -45,6 +46,7 @@ export function SettingsScreen() {
       )}
 
       <SmartRemindersSection />
+      <TextSizeSection />
       <FeedbackPreferencesSection />
       <DataExportSection authStatus={authStatus} />
       <RectificationSection />

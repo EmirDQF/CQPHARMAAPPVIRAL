@@ -8,6 +8,7 @@ import { OutboxSync } from "@/components/OutboxSync";
 import { PendingAssessmentUploader } from "@/components/PendingAssessmentUploader";
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
 import { SyncCoordinator } from "@/components/SyncCoordinator";
+import { TextSizeApplier } from "@/components/TextSizeApplier";
 
 // Redondeada, gruesa y alegre. next/font la descarga en el build y la sirve desde el propio
 // dominio: cero peticiones a Google en tiempo de ejecución (funciona offline en Capacitor).
@@ -91,6 +92,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <LocalTrashPurge />
         <PendingAssessmentUploader />
         <DeepLinkListener />
+        <TextSizeApplier />
       </body>
     </html>
   );

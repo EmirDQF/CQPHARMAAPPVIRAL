@@ -281,6 +281,70 @@
   }
 }
 
+/*
+ * Micro-animaciones de Artiko (src/components/mascot). Solo con
+ * prefers-reduced-motion: no-preference; con movimiento reducido, Artiko queda quieto.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .artiko-float {
+    animation: artiko-float 3.2s ease-in-out infinite;
+  }
+  .artiko-blink {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: artiko-blink 4.6s ease-in-out infinite;
+  }
+  .artiko-wave {
+    transform-box: fill-box;
+    transform-origin: 0% 100%;
+    animation: artiko-wave 0.9s ease-in-out infinite alternate;
+  }
+  .artiko-flicker {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    animation: artiko-flicker 0.5s ease-in-out infinite alternate;
+  }
+  .artiko-glow {
+    animation: artiko-glow 1.8s ease-in-out infinite alternate;
+  }
+  .artiko-zzz {
+    animation: artiko-zzz 2.4s ease-in-out infinite;
+  }
+  .artiko-confetti {
+    animation: artiko-confetti 1.6s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes artiko-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+@keyframes artiko-blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+@keyframes artiko-wave {
+  from { transform: rotate(-12deg); }
+  to { transform: rotate(14deg); }
+}
+@keyframes artiko-flicker {
+  from { transform: scaleY(0.92); }
+  to { transform: scaleY(1.12); }
+}
+@keyframes artiko-glow {
+  from { opacity: 0.35; }
+  to { opacity: 0.9; }
+}
+@keyframes artiko-zzz {
+  0% { transform: translateY(2px); opacity: 0.3; }
+  50% { opacity: 1; }
+  100% { transform: translateY(-4px); opacity: 0.3; }
+}
+@keyframes artiko-confetti {
+  from { transform: translateY(-2px); }
+  to { transform: translateY(3px); }
+}
+
 @keyframes sheen-sweep {
   to {
     transform: translateX(120%);

@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { SECURITY_HEADERS } from "./src/lib/securityHeaders";
 
 const nextConfig: NextConfig = {
   experimental: {
@@ -8,6 +9,7 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
+      { source: "/:path*", headers: [...SECURITY_HEADERS] },
       {
         // El service worker nunca se sirve desde caché HTTP: cada despliegue
         // con una política nueva (CACHE_NAME) debe llegar a los clientes.

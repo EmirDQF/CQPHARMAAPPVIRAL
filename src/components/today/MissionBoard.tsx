@@ -6,6 +6,7 @@ import { PHYSICAL_ACTIVITY_DISCLAIMER } from "@/lib/activities/catalog";
 import type { Activity } from "@/lib/activities/schemas";
 import { celebrateGoal } from "@/lib/feedback/celebrate";
 import { completeActivity, markGameCelebrated, undoActivity } from "@/lib/gamification/progress";
+import { GameButton } from "@/components/ui/GameButton";
 import { GuidedActivitySheet } from "./GuidedActivitySheet";
 import { MissionCard } from "./MissionCard";
 import { QuizSheet } from "./QuizSheet";
@@ -58,12 +59,21 @@ export function MissionBoard({ game, onTakeDose, onOpenCheckIn }: MissionBoardPr
     }
   }
 
+  const nextMission = game.missions.find((mission) => !game.completed.has(mission.id));
   const hasPhysical = game.missions.some((mission) => mission.safety === "physical");
   return (
     <section aria-labelledby="misiones-hoy" className="flex flex-col gap-3">
       <h2 id="misiones-hoy" className="text-3xl font-black text-clinic">
         Misiones de hoy <span aria-hidden="true">🎯</span>
       </h2>
+      {nextMission && !game.goal.met && (
+        <div className="flex flex-col gap-2 rounded-2xl bg-pastel-mint p-4 text-pastel-mint-ink">
+          <p className="text-base font-black uppercase tracking-wide">Tu siguiente paso</p>
+          <GameButton tone="vital" size="xl" block onClick={() => act(nextMission)} aria-label={`Siguiente paso: ${nextMission.title}`}>
+            {nextMission.title}
+          </GameButton>
+        </div>
+      )}
       {game.goal.met && (
         <p className="rounded-2xl bg-vital px-4 py-3 text-xl font-black text-vital-ink">¡Meta cumplida! 🎉 Todo lo extra es un regalo para ti.</p>
       )}

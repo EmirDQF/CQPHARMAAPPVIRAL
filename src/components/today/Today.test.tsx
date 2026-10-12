@@ -67,6 +67,15 @@ describe("Hoy con Artiko", () => {
     expect(screen.getByText("Sin densitometría registrada")).toBeInTheDocument();
   });
 
+  it("offers one big next-step button for the first pending mission", async () => {
+    const date = dateWithKinds(["self-report"]);
+    renderToday(date);
+    const missions = selectDailyMissions({ catalog: ACTIVITY_CATALOG, date, goal: PRO_GOAL, hasRedFlag: false });
+    const next = screen.getByRole("button", { name: /^Siguiente paso: / });
+    expect(next).toHaveTextContent(missions[0].title);
+    expect(screen.getByText("Tu siguiente paso")).toBeInTheDocument();
+  });
+
   it("completes a self-report mission once, with XP and undo", () => {
     const date = dateWithKinds(["self-report"]);
     renderToday(date);

@@ -19,7 +19,6 @@ Bloqueos que requieren al usuario: `docs/BLOCKERS.md` · Informe con los candado
 
 ## Deuda técnica conocida (no bloquea)
 
-- `text-neutral-500` en modo oscuro roza el contraste AA en textos secundarios (Lighthouse A11y 95–96).
 - Lighthouse "lantern" (simulado) estima LCP ~3.9 s por la evaluación de JS; con throttling real es 1.6–1.7 s.
 - 8 vulnerabilidades solo de desarrollo (cadena de lint `braces` sin versión parcheada; `uuid` vía `@capacitor/cli`/xcode). Producción: 0.
 - Monitoreo de fallos del job `daily-soft-delete-purge` (`cron.job_run_details`) por definir en producción.
@@ -27,5 +26,6 @@ Bloqueos que requieren al usuario: `docs/BLOCKERS.md` · Informe con los candado
 
 SIGUIENTE: desplegar la web con dominio HTTPS y variables de producción → `npm run build:android` → primera subida a Google Play (pista interna) → huella de Play App Signing en `ANDROID_SHA256_FINGERPRINT`.
 
+- [x] Super prompt terminal (2026-10-12): letra sin parpadeo al abrir (`3d2277a`), lectura fácil con "Muy grande" (`237bb8b`), E2E del flujo diario (`67633e4`), "Tu siguiente paso" no ofrece la toma de 21:30 antes de su hora (`f6837a6`). Contraste oscuro AA verificado (textos secundarios ≥ 6.7:1). Lighthouse móvil `/`, `/app`, `/test`: A11y 100, BP 100, SEO 100, CLS ≤ 0.021. vitest 1166/1166, E2E 30/30, `npm audit --omit=dev` 0. Pendiente: prueba en teléfono (Fase 2).
 - [x] V1–V7 rediseño clínico-amable (2026-10-11): primitivas shadcn base-nova, profundidad ambiental, una sola familia de iconos, Z-score sin cifra protagonista; vitest 943/943, E2E 17/17, Lighthouse A11y 100 (`9c6f930` `0c52296` `47cae74`).
 - [x] Despliegue documentado en `docs/DEPLOY.md`; keystore y artefactos de release en `docs/MOBILE.md` (`cfaeef9` `48b0a62`).

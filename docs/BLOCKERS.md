@@ -36,7 +36,7 @@ Lo que sigue solo puede hacerlo el usuario.
 - Entornos `CAP_ENV` dev/release sin fallback inventado (`3b10fbd`) · cleartext solo en el APK debug vía `network_security_config` (`60def24`) · scripts `mobile:dev`/`mobile:install`/`mobile:verify` y guardia anti-contaminación en `build:android` y Gradle (`fd6ea4d`).
 - Probado en el teléfono (2026-10-11) y corregido: los recordatorios nativos nunca se programaban en Android (`0bc9b2d`); el shell offline no ejecutaba su script con `server.url` (`e8f662a`); aviso de hidratación por safe-area (`d593444`); release sin firma vía `gradlew` directo (`8e9656c`); revisión de seguridad y código (`b6c21a6`).
 
-Verificación 2026-10-12: `tsc` OK, `eslint` 0 avisos, `vitest` 129 archivos · 1151/1151, `next build` OK sin red (la imagen social ya no usa emoji, que descargaba un recurso de un CDN), `npm audit --omit=dev` 0.
+Verificación 2026-10-12 (tras el super prompt, `f6837a6`): `tsc` OK, `eslint` 0 errores, `vitest` 133 archivos · 1166/1166, E2E 30/30 + flujo diario 2/2, Lighthouse móvil A11y 100, `next build` OK sin red (la imagen social ya no usa emoji, que descargaba un recurso de un CDN), `npm audit --omit=dev` 0.
 
 Última verificación en teléfono (2026-10-11, `b6c21a6`): `tsc` OK, `eslint` 0 avisos, `vitest` 94 archivos · 836/836, E2E shell offline 1/1, `next build` OK (25/25 páginas), `mobile:install` en Samsung `RFCTB0PFLWB` OK. `mobile:verify` se detiene en `verify-env --strict` (faltan las 8 variables de producción, ver B3–B4): esperado.
 No hacen falta variables de entorno nuevas: todas están en `.env.example`.

@@ -11,8 +11,9 @@ import { deflateSync } from "node:zlib";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ICONS_DIR = path.resolve(__dirname, "../public/icons");
 
-const BRAND_TEAL = [15, 118, 110, 255];
-const WHITE = [255, 255, 255, 255];
+// Paleta pastel (docs/DESIGN.md): menta de fondo y hueso azul clínico, igual que el icono de Android.
+const BACKGROUND_MINT = [201, 232, 228, 255];
+const BONE_CLINIC_BLUE = [31, 78, 121, 255];
 
 class RgbaCanvas {
   constructor(size) {
@@ -63,7 +64,7 @@ class RgbaCanvas {
  * exige Android/Play Store para íconos adaptativos.
  */
 function drawBoneIcon(canvas, { maskable }) {
-  canvas.fill(BRAND_TEAL);
+  canvas.fill(BACKGROUND_MINT);
 
   const size = canvas.size;
   const cx = size / 2;
@@ -74,14 +75,14 @@ function drawBoneIcon(canvas, { maskable }) {
   const xStart = cx - boneWidth / 2 + barThickness / 2;
   const xEnd = cx + boneWidth / 2 - barThickness / 2;
 
-  canvas.fillHorizontalCapsule(xStart, xEnd, cy, barThickness, WHITE);
+  canvas.fillHorizontalCapsule(xStart, xEnd, cy, barThickness, BONE_CLINIC_BLUE);
 
   const knobRadius = boneWidth * 0.19;
   const knobOffsetY = knobRadius * 0.95;
-  canvas.fillCircle(xStart, cy - knobOffsetY, knobRadius, WHITE);
-  canvas.fillCircle(xStart, cy + knobOffsetY, knobRadius, WHITE);
-  canvas.fillCircle(xEnd, cy - knobOffsetY, knobRadius, WHITE);
-  canvas.fillCircle(xEnd, cy + knobOffsetY, knobRadius, WHITE);
+  canvas.fillCircle(xStart, cy - knobOffsetY, knobRadius, BONE_CLINIC_BLUE);
+  canvas.fillCircle(xStart, cy + knobOffsetY, knobRadius, BONE_CLINIC_BLUE);
+  canvas.fillCircle(xEnd, cy - knobOffsetY, knobRadius, BONE_CLINIC_BLUE);
+  canvas.fillCircle(xEnd, cy + knobOffsetY, knobRadius, BONE_CLINIC_BLUE);
 }
 
 function crc32(buffer) {

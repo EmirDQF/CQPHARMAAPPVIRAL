@@ -22,7 +22,8 @@
     "mobile:install": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/mobile-install.mjs",
     "mobile:verify": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/mobile-verify.mjs",
     "build:mobile-web": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/build-mobile-web.mjs",
-    "mobile:bundle": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/mobile-bundle.mjs"
+    "mobile:bundle": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/mobile-bundle.mjs",
+    "generate:android-assets": "node scripts/generate-android-assets.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",

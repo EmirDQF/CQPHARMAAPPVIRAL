@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paleta pastel (docs/DESIGN.md). Reemplaza el índigo por defecto de Capacitor. -->
+<resources>
+    <color name="colorPrimary">#1F4E79</color>
+    <color name="colorPrimaryDark">#1F4E79</color>
+    <color name="colorAccent">#3F8A7E</color>
+    <color name="splash_background">#FBF8F3</color>
+</resources>

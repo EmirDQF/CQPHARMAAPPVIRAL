@@ -5,20 +5,36 @@ def capacitorConfigFile = file("src/main/assets/capacitor.config.json")
 def readCapacitorServer = {
     capacitorConfigFile.exists() ? (new groovy.json.JsonSlurper().parse(capacitorConfigFile).server ?: [:]) : [:]
 }
+// Modo empaquetado (CAP_MODE=bundled): sin server.url, la interfaz va dentro del APK y el
+// dominio público de los App Links sale de NEXT_PUBLIC_SITE_URL.
+def isBundledCapacitor = { !readCapacitorServer().url }
+def siteUrlHost = {
+    def site = System.getenv("NEXT_PUBLIC_SITE_URL")
+    site ? new URI(site.trim()).host : null
+}
 ext.capacitorServerHost = {
     def url = readCapacitorServer().url
-    url ? (new URI(url).host ?: "localhost") : "localhost"
+    url ? (new URI(url).host ?: "localhost") : (siteUrlHost() ?: "localhost")
 }
 
 // Guardia anti-contaminación (como verify-android-release --generated): ninguna tarea
 // release empaqueta un sync de desarrollo, aunque se llame a gradlew directamente.
+def isLocalHostName = { String host ->
+    host == "localhost" || host ==~ /^[0-9.]+$/ || host.startsWith("[") || host ==~ /.*\.(localhost|local|internal|lan)$/
+}
 def assertReleaseCapacitorServer = {
     def server = readCapacitorServer()
+    if (isBundledCapacitor()) {
+        def host = (siteUrlHost() ?: "").replaceAll(/\.$/, "")
+        if (server.cleartext == true || (server.androidScheme ?: "https") != "https" || !host || isLocalHostName(host)) {
+            throw new GradleException("Release bloqueado: app empaquetada sin androidScheme https o sin " +
+                "NEXT_PUBLIC_SITE_URL pública (host de los App Links). Usa npm run build:android.")
+        }
+        return
+    }
     def url = server.url ? new URI(server.url) : null
     def host = (url?.host ?: "").replaceAll(/\.$/, "")  // "localhost." = "localhost"
-    def isLocalHost = host == "localhost" || host ==~ /^[0-9.]+$/ || host.startsWith("[") ||
-        host ==~ /.*\.(localhost|local|internal|lan)$/
-    if (url?.scheme != "https" || server.cleartext == true || isLocalHost) {
+    if (url?.scheme != "https" || server.cleartext == true || isLocalHostName(host)) {
         throw new GradleException("Release bloqueado: capacitor.config.json no apunta a un servidor https público " +
             "(¿quedó un sync de CAP_ENV=dev?). Usa npm run build:android.")
     }

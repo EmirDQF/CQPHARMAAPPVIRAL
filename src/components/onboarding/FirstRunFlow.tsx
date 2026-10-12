@@ -11,6 +11,7 @@ import { GoalsStep } from "./GoalsStep";
 import { SplashStep, WELCOME_SCREEN_COUNT, WelcomeStep } from "./IntroSteps";
 import { ProfileStep } from "./ProfileStep";
 import { StepHeading } from "./StepHeading";
+import { StepProgress } from "./StepProgress";
 
 type Step =
   | { kind: "splash" }
@@ -19,6 +20,24 @@ type Step =
   | { kind: "profile" }
   | { kind: "goals" }
   | { kind: "arrival"; intensity: Intensity; firstName: string | null };
+
+/** Bienvenida (N pantallas) + consentimiento + perfil + metas. Splash y llegada no cuentan. */
+const PROGRESS_TOTAL = WELCOME_SCREEN_COUNT + 3;
+
+function progressStep(step: Step): number | null {
+  switch (step.kind) {
+    case "welcome":
+      return step.index + 1;
+    case "consent":
+      return WELCOME_SCREEN_COUNT + 1;
+    case "profile":
+      return WELCOME_SCREEN_COUNT + 2;
+    case "goals":
+      return WELCOME_SCREEN_COUNT + 3;
+    default:
+      return null;
+  }
+}
 
 function saveFirstRunProfile(value: ProfileStepValue): void {
   savePatientProfile({ ...patientProfileStore.getSnapshot(), ...value, consent: createConsentRecord() });
@@ -66,6 +85,7 @@ export function FirstRunFlow() {
   return (
     <div className="ambient-canvas fixed inset-0 z-[60] overflow-y-auto">
       <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center px-4 py-8 text-lg">
+        {progressStep(step) !== null && <StepProgress current={progressStep(step)!} total={PROGRESS_TOTAL} />}
         {step.kind === "welcome" && <WelcomeStep key={step.index} index={step.index} onNext={() => nextWelcome(step.index)} />}
         {step.kind === "consent" && (
           <ConsentStep onAccept={() => setStep({ kind: "profile" })} onDecline={() => setStep({ kind: "goals" })} />

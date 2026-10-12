@@ -34,7 +34,7 @@ describe("PatientProfileLauncher", () => {
   it("closes with Escape", () => {
     render(<PatientProfileLauncher />);
     fireEvent.click(screen.getByRole("button", { name: "Editar mi perfil médico" }));
-    const dialog = screen.getByRole("dialog", { name: "Mi Perfil Médico" });
+    const dialog = screen.getByRole("dialog", { name: "Mi perfil" });
 
     fireEvent(dialog, new Event("cancel", { cancelable: true }));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();

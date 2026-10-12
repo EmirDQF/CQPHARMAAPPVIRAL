@@ -14,6 +14,12 @@ Lo que sigue solo puede hacerlo el usuario.
 
 | B7 | MCP Headroom | NO INSTALADO: `npm view @headroomlabs/mcp-server` → 404 (2026-10-11), no se puede verificar. El proyecto real (github.com/headroomlabs-ai/headroom) se distribuye por PyPI como `headroom-ai` y su MCP es `headroom mcp serve`; la instalación con `uv` fue bloqueada por el clasificador de permisos. | Si se quiere: `uv tool install --python 3.13 "headroom-ai[all]"` y `claude mcp add headroom --env HEADROOM_BEACON=off -- headroom mcp serve`. |
 
+## Gamificación con Artiko (2026-10-11) — requieren al usuario
+
+| # | Ítem | Estado | Acción del usuario |
+|---|---|---|---|
+| G-C1 | Perfil incompleto y semáforo | DECISIÓN CLÍNICA: si falta edad o sexo, la app mantiene el comportamiento ya revisado (clasificación OMS preliminar + "Completa tu perfil para una evaluación exacta"). El encargo pedía caer a "consulte a su médico"; no se cambió sin el médico porque afecta el reporte y la bóveda. | El médico del proyecto decide; si elige "consulte a su médico", es un cambio de una línea en `getBoneDensityInterpretation` + tests. |
+
 ## Resueltos (técnicos)
 
 - Rate limit ARCO en base de datos (`d25c6ef`) · `server-only` en la service role (`d25c6ef`).

@@ -19,7 +19,11 @@ import { AccountBackupOffer } from "@/components/auth/AccountBackupOffer";
 import { AccountInvite } from "@/components/auth/AccountInvite";
 import { usePillboxReminders } from "@/hooks/usePillboxReminders";
 import { useDeferredDose } from "@/hooks/useDeferredDose";
+import { useHydrated } from "@/hooks/useHydrated";
 import { useRewards } from "@/hooks/useRewards";
+import { FirstRunFlow } from "@/components/onboarding/FirstRunFlow";
+import { patientProfileStore } from "@/lib/dashboard/patientProfile";
+import { needsOnboarding, onboardingStore } from "@/lib/onboarding/onboarding";
 import { AchievementsShowcase } from "@/components/rewards/AchievementsShowcase";
 import { RewardCelebration } from "@/components/rewards/RewardCelebration";
 import { appointmentsStore, getNextUpcomingAppointment } from "@/lib/appointments/store";
@@ -75,7 +79,18 @@ export function AppShell() {
     appointmentsStore.getServerSnapshot
   );
   const nextAppointment = getNextUpcomingAppointment(appointments);
-  const patientFirstName = nextAppointment?.patient.name.split(" ")[0] ?? null;
+  const profile = useSyncExternalStore(
+    patientProfileStore.subscribe,
+    patientProfileStore.getSnapshot,
+    patientProfileStore.getServerSnapshot
+  );
+  const onboarding = useSyncExternalStore(onboardingStore.subscribe, onboardingStore.getSnapshot, onboardingStore.getServerSnapshot);
+  const isHydrated = useHydrated();
+  const patientFirstName =
+    profile.name.trim().split(/\s+/)[0] || nextAppointment?.patient.name.split(" ")[0] || null;
+
+  // Primer arranque: solo después de leer el celular (quien ya tiene perfil nunca lo ve).
+  if (isHydrated && needsOnboarding(onboarding, profile)) return <FirstRunFlow />;
 
   return (
     <div className="ambient-canvas flex flex-col min-h-dvh">

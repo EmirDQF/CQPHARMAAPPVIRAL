@@ -148,7 +148,7 @@ test("los modales nativos abren, no desbordan y cierran con Escape", async ({ pa
   await expect(dexaDialog).toHaveCount(0);
 
   await page.getByRole("button", { name: "Editar mi perfil médico" }).click();
-  const profileDialog = page.getByRole("dialog", { name: "Mi Perfil Médico" });
+  const profileDialog = page.getByRole("dialog", { name: "Mi perfil" });
   await expect(profileDialog).toBeVisible();
   // showModal() lleva el foco dentro del diálogo (primer elemento enfocable).
   await expect(profileDialog.locator(":focus")).toHaveCount(1);

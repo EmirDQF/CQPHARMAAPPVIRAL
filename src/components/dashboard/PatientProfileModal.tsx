@@ -2,6 +2,8 @@
 
 import { useState, useSyncExternalStore, type FormEvent } from "react";
 import { ConsentCheckbox } from "@/components/privacy/ConsentCheckbox";
+import { ChoiceGroup, type ChoiceOption } from "@/components/ui/ChoiceGroup";
+import { GameButton } from "@/components/ui/GameButton";
 import { ModalDialog } from "@/components/ui/ModalDialog";
 import {
   parseProfileAgeInput,
@@ -13,11 +15,6 @@ import type { MenopausalStatus } from "@/lib/clinical/tScoreEligibility";
 import type { Sex } from "@/lib/types";
 
 type FractureAnswer = "si" | "no";
-
-interface ChoiceOption<T extends string> {
-  value: T;
-  label: string;
-}
 
 const SEX_OPTIONS: ChoiceOption<Sex>[] = [
   { value: "femenino", label: "Femenino" },
@@ -34,61 +31,6 @@ const MENOPAUSAL_OPTIONS: ChoiceOption<MenopausalStatus>[] = [
   { value: "posmenopausica", label: "Posmenopáusica" },
   { value: "no-aplica", label: "No aplica / No sé" },
 ];
-
-interface ChoiceGroupProps<T extends string> {
-  legend: string;
-  name: string;
-  options: ChoiceOption<T>[];
-  value: T | null;
-  onChange: (value: T) => void;
-  stacked?: boolean;
-  hint?: string;
-}
-
-/** Radios nativos: nombre accesible (legend) y navegación con flechas sin código extra. */
-function ChoiceGroup<T extends string>({
-  legend,
-  name,
-  options,
-  value,
-  onChange,
-  stacked = false,
-  hint,
-}: ChoiceGroupProps<T>) {
-  const hintId = hint ? `${name}-hint` : undefined;
-  return (
-    <fieldset aria-describedby={hintId}>
-      <legend className="text-sm font-medium">{legend}</legend>
-      {hint && (
-        <p id={hintId} className="text-sm text-neutral-600 dark:text-neutral-300">
-          {hint}
-        </p>
-      )}
-      <div className={`mt-1 flex gap-3 ${stacked ? "flex-col" : ""}`}>
-        {options.map((option) => (
-          <label
-            key={option.value}
-            className={`flex-1 min-h-12 flex items-center justify-center rounded-xl border-2 px-4 font-semibold cursor-pointer transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand ${
-              value === option.value
-                ? "border-brand bg-pastel-mint text-pastel-mint-ink"
-                : "border-neutral-200 dark:border-neutral-700"
-            }`}
-          >
-            <input
-              type="radio"
-              name={name}
-              value={option.value}
-              checked={value === option.value}
-              onChange={() => onChange(option.value)}
-              className="sr-only"
-            />
-            {option.label}
-          </label>
-        ))}
-      </div>
-    </fieldset>
-  );
-}
 
 function toFractureAnswer(hasFractureHistory: boolean | null): FractureAnswer | null {
   if (hasFractureHistory === null) return null;
@@ -148,8 +90,8 @@ export function PatientProfileModal({ onClose }: PatientProfileModalProps) {
   return (
     <ModalDialog labelledBy="patient-profile-heading" onClose={onClose}>
         <div className="flex items-center justify-between">
-          <h2 id="patient-profile-heading" className="text-xl font-bold">
-            Mi Perfil Médico
+          <h2 id="patient-profile-heading" className="text-3xl font-black text-clinic">
+            Mi perfil
           </h2>
           <button
             type="button"
@@ -163,18 +105,18 @@ export function PatientProfileModal({ onClose }: PatientProfileModalProps) {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <label className="flex flex-col gap-1">
-            <span className="text-sm font-medium">Nombre completo</span>
+            <span className="text-lg font-bold">Nombre o apodo</span>
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="min-h-12 rounded-xl border-2 border-neutral-200 dark:border-neutral-700 px-3 bg-transparent"
+              className="min-h-12 rounded-2xl border-2 border-line px-4 text-lg bg-surface"
               placeholder="Ej. Rosa Fernández"
             />
           </label>
 
           <div className="grid grid-cols-2 gap-3">
             <label className="flex flex-col gap-1">
-              <span className="text-sm font-medium">Edad</span>
+              <span className="text-lg font-bold">Edad</span>
               <input
                 value={age}
                 onChange={(e) => setAge(e.target.value)}
@@ -182,17 +124,17 @@ export function PatientProfileModal({ onClose }: PatientProfileModalProps) {
                 inputMode="numeric"
                 aria-invalid={ageError !== null}
                 aria-describedby={ageError ? "profile-age-error" : undefined}
-                className="min-h-12 rounded-xl border-2 border-neutral-200 dark:border-neutral-700 px-3 bg-transparent"
+                className="min-h-12 rounded-2xl border-2 border-line px-4 text-lg bg-surface"
                 placeholder="Ej. 58"
               />
             </label>
             <label className="flex flex-col gap-1">
-              <span className="text-sm font-medium">Peso aproximado (kg)</span>
+              <span className="text-lg font-bold">Peso aproximado (kg)</span>
               <input
                 value={weightKg}
                 onChange={(e) => setWeightKg(e.target.value)}
                 inputMode="decimal"
-                className="min-h-12 rounded-xl border-2 border-neutral-200 dark:border-neutral-700 px-3 bg-transparent"
+                className="min-h-12 rounded-2xl border-2 border-line px-4 text-lg bg-surface"
                 placeholder="Ej. 68"
               />
             </label>
@@ -234,22 +176,22 @@ export function PatientProfileModal({ onClose }: PatientProfileModalProps) {
           />
 
           <label className="flex flex-col gap-1">
-            <span className="text-sm font-medium">Alergias conocidas</span>
+            <span className="text-lg font-bold">Alergias conocidas</span>
             <input
               value={allergies}
               onChange={(e) => setAllergies(e.target.value)}
-              className="min-h-12 rounded-xl border-2 border-neutral-200 dark:border-neutral-700 px-3 bg-transparent"
+              className="min-h-12 rounded-2xl border-2 border-line px-4 text-lg bg-surface"
               placeholder="Ej. Ninguna"
             />
           </label>
 
           <label className="flex flex-col gap-1">
-            <span className="text-sm font-medium">Teléfono de contacto</span>
+            <span className="text-lg font-bold">Teléfono de contacto</span>
             <input
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               inputMode="tel"
-              className="min-h-12 rounded-xl border-2 border-neutral-200 dark:border-neutral-700 px-3 bg-transparent"
+              className="min-h-12 rounded-2xl border-2 border-line px-4 text-lg bg-surface"
               placeholder="Ej. 987654321"
             />
           </label>
@@ -258,13 +200,12 @@ export function PatientProfileModal({ onClose }: PatientProfileModalProps) {
             <ConsentCheckbox checked={hasConsented} onChange={setHasConsented} />
           )}
 
-          <button
-            type="submit"
-            disabled={needsConsent && !hasConsented}
-            className="min-h-12 rounded-xl bg-action-strong hover:bg-brand-dark active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold text-lg transition-colors"
-          >
-            Guardar Perfil
-          </button>
+          <GameButton type="submit" tone="vital" block disabled={needsConsent && !hasConsented}>
+            Guardar perfil
+          </GameButton>
+          {needsConsent && !hasConsented && (
+            <p className="text-base text-muted">Para guardar, marca primero la autorización.</p>
+          )}
         </form>
     </ModalDialog>
   );

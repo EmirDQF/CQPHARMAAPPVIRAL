@@ -34,7 +34,7 @@ Detalle con evidencia en `docs/PLAY-CHECKLIST.md`; textos listos para copiar en 
 | P2 | targetSdk exigido | ⚠️: el proyecto usa `targetSdkVersion = 36` (`android/variables.gradle`). | Confirmar en la consola que 36 cumple el mínimo vigente. |
 | P3 | Icono 512 px y gráfico de funciones 1024 × 500 | PENDIENTE: el icono sigue en el teal anterior; no hay gráfico de funciones. | Decidir el icono (¿pastel?) y encargar el gráfico. |
 | P4 | Formularios de la consola (Data safety, clasificación, app de salud, borrado de cuenta) | BORRADOR LISTO en `docs/PLAY-LISTING.md` ⚠️ (confirmar con el abogado que Supabase y Resend cuentan como proveedores, no como terceros). | Llenarlos en la consola. |
-| P5 | Datos de salud en `localStorage` | DECISIÓN DE PRODUCTO: local-first con consentimiento, exportar y borrar; MASVS recomienda cifrado en reposo. | Decidir si se cifra en reposo (cambio aparte: WebCrypto + Keystore). |
+| P5 | Datos de salud en el teléfono | DECISIÓN DE PRODUCTO, no bloquea Play: almacenamiento privado de la app, solo tras el consentimiento, sin copia en la nube ni traspaso (`data_extraction_rules.xml`), con exportar y borrar. MASVS L2 recomienda cifrado en reposo. | Decidir si se cifra (WebCrypto + clave en Keystore; obliga a volver asíncronos todos los stores). |
 
 ## Resueltos (técnicos)
 

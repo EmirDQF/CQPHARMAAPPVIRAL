@@ -73,7 +73,7 @@ Datos que **nunca** salen del celular: progreso del juego de Artiko (`artikare_g
 ## Otras declaraciones de "Contenido de la app"
 
 - **Apps de salud** ⚠️: declarar que gestiona datos de salud personal y recordatorios de medicación; no es un dispositivo médico ni diagnostica.
-- **Eliminación de cuenta**: ruta en la app (Ajustes) + URL pública con instrucciones.
+- **Eliminación de cuenta**: ruta en la app (Ajustes → Borrar mi cuenta y mis datos) + URL pública: `https://TU-DOMINIO/app/ajustes` (la misma pantalla en la web; también enlaza la política en `/privacidad`).
 - **Anuncios**: no contiene. **Acceso a la app**: sin restricción (modo invitado; la cuenta es opcional).
 - **Permisos**: notificaciones (`POST_NOTIFICATIONS`) y alarmas exactas (`SCHEDULE_EXACT_ALARM`) para recordar las tomas a hora fija; reinicio (`RECEIVE_BOOT_COMPLETED`) para reprogramarlas.
 
@@ -81,7 +81,7 @@ Datos que **nunca** salen del celular: progreso del juego de Artiko (`artikare_g
 
 | Recurso | Tamaño | Estado |
 |---|---|---|
-| Icono de la app | 512 × 512 PNG (32 bits, sin transparencia) | Pendiente: exportar desde `public/icons/icon.svg` (aún en el teal anterior; decidir si se pasa a la paleta pastel) |
-| Gráfico de funciones | 1024 × 500 PNG/JPG | Pendiente (sugerido: Artiko en menta sobre lienzo crema + "Tu libertad de movimiento empieza en tus huesos") |
+| Icono de la app | 512 × 512 PNG (32 bits, sin transparencia) | ✅ `docs/play-assets/icono-512.png` (hueso azul clínico sobre menta, sin transparencia; lo genera `npm run generate:android-assets`) |
+| Gráfico de funciones | 1024 × 500 PNG/JPG | ✅ `docs/play-assets/grafico-funciones-1024x500.png` (lienzo crema, círculo menta con el hueso y acentos pastel; sin texto, así no hay copy clínico que revisar) |
 | Capturas de teléfono | 2 a 8, 16:9 o 9:16, lado mínimo 320 px | Generar con `CAPTURAS=1 npx playwright test e2e/capturas.spec.ts` (paleta final) y elegir: bienvenida de Artiko, Hoy, Pastillero, Semáforo Óseo (con una densitometría registrada por ti, nunca inventada), Logros, Ajustes de privacidad |
 | Capturas de tableta 7" y 10" | Opcional | No aplica por ahora |

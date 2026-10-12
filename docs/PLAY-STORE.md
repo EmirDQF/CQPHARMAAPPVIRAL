@@ -1,13 +1,19 @@
 # Publicar Artikare en Google Play — paso a paso
 
-Datos del proyecto: `appId` `com.artikare.app` (no se puede cambiar después de publicar), `targetSdk` 36, `minSdk` 24, `versionCode` 1. La app es un WebView (Capacitor) que carga tu web: **sin web desplegada en https no hay app**.
+Datos del proyecto: `appId` `com.artikare.app` (no se puede cambiar después de publicar), `targetSdk` 36, `minSdk` 24, `versionCode` 1. La interfaz va **dentro del APK** (`CAP_MODE=bundled`) y abre sin internet; el servidor https solo atiende el respaldo opcional, las cuentas, ARCO y las citas.
 Las reglas de Google Play cambian: confirma cada requisito marcado con ⚠️ en la Play Console antes de depender de él.
 
-## 1. Despliega la web (obligatorio primero)
-1. Sigue `docs/DEPLOY.md` (Vercel + Supabase + Resend + Turnstile). Anota tu dominio, por ejemplo `https://artikare.com`.
-2. Variables de producción en el hosting: `NEXT_PUBLIC_SITE_URL`, `CAP_SERVER_URL` (ambas = tu dominio https), y las de Supabase/Resend/Turnstile del `.env.example`.
-3. Activa `pg_cron` en Supabase y comprueba que exista `daily-soft-delete-purge` en `cron.job`.
-4. Abre el dominio en el navegador del teléfono y prueba el flujo completo.
+## 0. Prueba la app en tu teléfono (sin servidor, hoy mismo)
+1. `git pull origin main-1hxlqb` → `npm ci`.
+2. Teléfono por USB con depuración activada → `npm run mobile:bundle -- --guest-only --install`.
+3. Recorre: Artiko y el primer arranque, Hoy, Pastillero, recordatorios, tamaño de letra, Ajustes. Sin internet debe funcionar igual (modo invitado).
+
+## 1. Despliega el servidor de la API
+1. Sigue `docs/DEPLOY.md` (Vercel + Supabase + Resend + Turnstile). El mismo proyecto Next es la API de la app. Anota tu dominio, por ejemplo `https://artikare.com`.
+2. Variables de producción en el hosting: las de Supabase/Resend/Turnstile del `.env.example` y `NEXT_PUBLIC_SITE_URL` (tu dominio https).
+3. En tu PC, para compilar la app: `CAP_MODE=bundled`, `NEXT_PUBLIC_API_BASE_URL` (el dominio de la API, https) y `NEXT_PUBLIC_SITE_URL` (host de los App Links), más las públicas de Supabase.
+4. Si usas Turnstile en la app, agrega `localhost` a los dominios permitidos del widget (el WebView se sirve desde `https://localhost`).
+5. Activa `pg_cron` en Supabase y comprueba que exista `daily-soft-delete-purge` en `cron.job`.
 
 ## 2. Cuenta de desarrollador
 1. Crea la cuenta en https://play.google.com/console (pago único de 25 USD).
@@ -17,7 +23,7 @@ Las reglas de Google Play cambian: confirma cada requisito marcado con ⚠️ en
 ## 3. Prepara el paquete firmado
 1. Keystore de subida: ya existe en tu equipo (`android/keystore.properties`). **Respáldalo fuera del PC** (nube privada + USB). Si lo pierdes, solo se recupera con el reseteo de clave de Play.
 2. Sube la versión: en `android/app/build.gradle` `versionCode` debe aumentar en cada subida (1, 2, 3…).
-3. Con `CAP_SERVER_URL` y `NEXT_PUBLIC_SITE_URL` definidos: `npm run build:android` (corre todos los candados y genera el `.aab` firmado). Detalle en `docs/MOBILE.md` y `docs/RELEASE.md`.
+3. Con las variables del paso 1.3: `npm run build:android` (empaquetado por defecto: corre todos los candados, genera la interfaz, sincroniza y saca el `.aab` firmado). Detalle en `docs/MOBILE.md` y `docs/RELEASE.md`.
 4. Play exige **AAB** (no APK) para publicar.
 
 ## 4. Crea la app en la consola
@@ -37,7 +43,7 @@ Es una app de salud con datos sensibles; completa todo con exactitud:
 
 ## 6. Ficha de la tienda
 1. Descripción corta (≤ 80) y larga. Sin "cura", "revierte", "regenera", "repara", "garantiza"; sin decir que reemplaza al médico. Verbos: "apoya", "acompaña", "complementa tu tratamiento".
-2. Icono 512×512, gráfico de funciones 1024×500, 2 a 8 capturas de teléfono (usa pantallas con la paleta final: splash de Artiko, Hoy, Pastillero, Semáforo óseo).
+2. Icono 512×512 (`docs/play-assets/icono-512.png`), gráfico de funciones 1024×500 (`docs/play-assets/grafico-funciones-1024x500.png`), 2 a 8 capturas de teléfono (usa pantallas con la paleta final: splash de Artiko, Hoy, Pastillero, Semáforo óseo).
 3. Correo de contacto y, si lo tienes, sitio web.
 
 ## 7. App Links (que los enlaces abran la app)
@@ -52,4 +58,4 @@ Es una app de salud con datos sensibles; completa todo con exactitud:
 4. Tras publicar: monitorea Android vitals (fallos/ANR) y reseñas; para cada actualización sube `versionCode` y repite el paso 3.
 
 ## Lo que no puede hacer Claude
-Crear la cuenta, pagar, la verificación de identidad, los formularios de Play Console, la revisión legal/clínica, el respaldo del keystore y el desplegar en tu hosting.
+Crear la cuenta, pagar, la verificación de identidad, los formularios de Play Console, la revisión legal/clínica, el respaldo del keystore, desplegar en tu hosting, compilar con Android Studio (este entorno no tiene SDK) y probar en tu teléfono.

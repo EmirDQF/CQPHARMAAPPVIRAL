@@ -24,6 +24,18 @@ Lo que sigue solo puede hacerlo el usuario.
 | G-D1 | Prueba en teléfono de los avisos por Wi-Fi | PENDIENTE: el APK debug con el plugin compila (`assembleDebug` OK, 2026-10-11), pero no había teléfono conectado (`adb devices` vacío). | Conectar el teléfono y seguir "Probar en el teléfono" en `docs/MOBILE.md`. |
 | G-C1 | Perfil incompleto y semáforo | DECISIÓN CLÍNICA: si falta edad o sexo, la app mantiene el comportamiento ya revisado (clasificación OMS preliminar + "Completa tu perfil para una evaluación exacta"). El encargo pedía caer a "consulte a su médico"; no se cambió sin el médico porque afecta el reporte y la bóveda. | El médico del proyecto decide; si elige "consulte a su médico", es un cambio de una línea en `getBoneDensityInterpretation` + tests. |
 
+## Google Play (2026-10-12) — requieren al usuario
+
+Detalle con evidencia en `docs/PLAY-CHECKLIST.md`; textos listos para copiar en `docs/PLAY-LISTING.md`.
+
+| # | Ítem | Estado | Acción del usuario |
+|---|---|---|---|
+| P1 | Cuenta de Play Console | ABIERTO ⚠️: tipo de cuenta (personal u organización con D-U-N-S); las personales nuevas suelen exigir prueba cerrada con un mínimo de testers y días. | Crear la cuenta y confirmar en la consola cuántos testers y días pide hoy. |
+| P2 | targetSdk exigido | ⚠️: el proyecto usa `targetSdkVersion = 36` (`android/variables.gradle`). | Confirmar en la consola que 36 cumple el mínimo vigente. |
+| P3 | Icono 512 px y gráfico de funciones 1024 × 500 | PENDIENTE: el icono sigue en el teal anterior; no hay gráfico de funciones. | Decidir el icono (¿pastel?) y encargar el gráfico. |
+| P4 | Formularios de la consola (Data safety, clasificación, app de salud, borrado de cuenta) | BORRADOR LISTO en `docs/PLAY-LISTING.md` ⚠️ (confirmar con el abogado que Supabase y Resend cuentan como proveedores, no como terceros). | Llenarlos en la consola. |
+| P5 | Datos de salud en `localStorage` | DECISIÓN DE PRODUCTO: local-first con consentimiento, exportar y borrar; MASVS recomienda cifrado en reposo. | Decidir si se cifra en reposo (cambio aparte: WebCrypto + Keystore). |
+
 ## Resueltos (técnicos)
 
 - Rate limit ARCO en base de datos (`d25c6ef`) · `server-only` en la service role (`d25c6ef`).
@@ -35,6 +47,8 @@ Lo que sigue solo puede hacerlo el usuario.
 - Lint sin avisos: se ignora la salida generada de Gradle y `cap sync` (`80109a4`).
 - Entornos `CAP_ENV` dev/release sin fallback inventado (`3b10fbd`) · cleartext solo en el APK debug vía `network_security_config` (`60def24`) · scripts `mobile:dev`/`mobile:install`/`mobile:verify` y guardia anti-contaminación en `build:android` y Gradle (`fd6ea4d`).
 - Probado en el teléfono (2026-10-11) y corregido: los recordatorios nativos nunca se programaban en Android (`0bc9b2d`); el shell offline no ejecutaba su script con `server.url` (`e8f662a`); aviso de hidratación por safe-area (`d593444`); release sin firma vía `gradlew` directo (`8e9656c`); revisión de seguridad y código (`b6c21a6`).
+
+Verificación 2026-10-12 (super prompt final, `3a53b1f`): `tsc` OK, `eslint` 0 errores y 0 avisos, `vitest` 137 archivos · 1505/1505, E2E 31/31, `next build` OK, `npm audit --omit=dev` 0, Lighthouse móvil A11y 100 en `/`, `/app`, `/test`, `verify:android-release` OK. `mobile:verify` se detiene en `verify-env --strict` (faltan las 8 variables de producción): esperado.
 
 Verificación 2026-10-12 (tras el super prompt, `f6837a6`): `tsc` OK, `eslint` 0 errores, `vitest` 133 archivos · 1166/1166, E2E 30/30 + flujo diario 2/2, Lighthouse móvil A11y 100, `next build` OK sin red (la imagen social ya no usa emoji, que descargaba un recurso de un CDN), `npm audit --omit=dev` 0.
 

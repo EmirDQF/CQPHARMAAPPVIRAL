@@ -38,7 +38,7 @@ export function PainTrendChart() {
               type="button"
               onClick={() => setRangeDays(days)}
               aria-pressed={rangeDays === days}
-              className={`min-h-11 min-w-16 rounded-full px-3 font-semibold transition-colors duration-150 ${
+              className={`min-h-12 min-w-16 rounded-full px-3 font-semibold transition-colors duration-150 ${
                 rangeDays === days ? "bg-surface text-clinic shadow-soft" : "text-pastel-sky-ink"
               }`}
             >

@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { WHATSAPP_UNAVAILABLE_MESSAGE, buildGeneralInquiryWhatsAppLink } from "@/lib/whatsapp";
+import { buildGeneralInquiryWhatsAppLink } from "@/lib/whatsapp";
 
 const BUBBLE_CLASSES =
   "group fixed bottom-5 right-5 z-50 flex items-center justify-center w-14 h-14 rounded-full text-white shadow-lg";
@@ -25,20 +25,8 @@ export function WhatsAppFloatingButton() {
 
   if (pathname?.startsWith("/app")) return null;
 
-  // Sin número configurado: botón deshabilitado con aviso, nunca un número de reserva.
-  if (!whatsAppLink) {
-    return (
-      <button
-        type="button"
-        disabled
-        aria-label={WHATSAPP_UNAVAILABLE_MESSAGE}
-        title={WHATSAPP_UNAVAILABLE_MESSAGE}
-        className={`${BUBBLE_CLASSES} bg-neutral-400 cursor-not-allowed`}
-      >
-        <WhatsAppIcon />
-      </button>
-    );
-  }
+  // Sin número configurado no se muestra nada: ni un número de reserva ni un botón que no hace nada.
+  if (!whatsAppLink) return null;
 
   return (
     <a

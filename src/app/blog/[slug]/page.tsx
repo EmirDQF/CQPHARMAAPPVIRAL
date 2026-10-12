@@ -44,7 +44,7 @@ export default async function BlogArticlePage({ params }: BlogArticlePageProps) 
         <span className="rounded-full bg-pastel-mint text-pastel-mint-ink px-3 py-1">
           {article.tag}
         </span>
-        <span className="text-neutral-400">Lectura {article.readTimeMinutes} min</span>
+        <span className="text-muted">Lectura {article.readTimeMinutes} min</span>
       </div>
 
       <h1 className="text-2xl sm:text-3xl font-bold text-balance">{article.title}</h1>

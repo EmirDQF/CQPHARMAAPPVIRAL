@@ -149,10 +149,16 @@ export function PainCheckIn({ anchorId = "chequeo", onSaved }: PainCheckInProps)
         type="button"
         onClick={handleSave}
         disabled={painLevel === null || stiffness === null}
+        aria-describedby={painLevel === null || stiffness === null ? "chequeo-guardar-motivo" : undefined}
         className="min-h-14 rounded-control bg-action-strong hover:bg-brand-dark active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed text-on-action-strong font-bold text-lg transition-[background-color,transform] duration-150"
       >
         {todayEntry ? "✓ Registrado hoy — actualizar" : "Guardar registro de hoy"}
       </button>
+      {(painLevel === null || stiffness === null) && (
+        <p id="chequeo-guardar-motivo" className="-mt-3 text-sm text-muted">
+          Elige tu nivel de dolor y la rigidez para guardar.
+        </p>
+      )}
 
       {isConfirmingStreakBreak && todayEntry && painLevel !== null && (
         <div role="alert" className="rounded-xl border-2 border-risk-high/40 bg-risk-high-bg text-neutral-900 px-4 py-3 flex flex-col gap-3">

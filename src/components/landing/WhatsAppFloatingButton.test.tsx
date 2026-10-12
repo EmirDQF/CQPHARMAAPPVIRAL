@@ -23,13 +23,10 @@ describe("WhatsAppFloatingButton", () => {
     ).toHaveAttribute("href", expect.stringMatching(/^https:\/\/wa\.me\/51987654321\?text=/));
   });
 
-  it("is disabled with an accessible notice when no number is configured", () => {
+  it("renders nothing (no dead button) when no number is configured", () => {
     vi.stubEnv("NEXT_PUBLIC_WHATSAPP_NUMBER", "");
-    render(<WhatsAppFloatingButton />);
-    expect(screen.queryByRole("link")).not.toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: "WhatsApp no disponible por el momento" })
-    ).toBeDisabled();
+    const { container } = render(<WhatsAppFloatingButton />);
+    expect(container).toBeEmptyDOMElement();
   });
 
   it("stays hidden inside the app", () => {

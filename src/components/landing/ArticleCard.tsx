@@ -15,7 +15,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
         <span className="rounded-full bg-pastel-mint text-pastel-mint-ink px-3 py-1">
           {article.tag}
         </span>
-        <span className="text-neutral-400">Lectura {article.readTimeMinutes} min</span>
+        <span className="text-muted">Lectura {article.readTimeMinutes} min</span>
       </div>
 
       <h3 className="text-lg font-bold text-balance">{article.title}</h3>

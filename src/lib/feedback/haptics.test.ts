@@ -65,3 +65,13 @@ describe("parseFeedbackPreferences", () => {
     expect(parseFeedbackPreferences({ version: 9, haptics: false })).toBeNull();
   });
 });
+
+describe("triggerHaptic with the real environment", () => {
+  it("reads the saved preferences and vibrates in the browser", async () => {
+    const vibrate = vi.fn(() => true);
+    vi.stubGlobal("navigator", { vibrate });
+    await triggerHaptic("medium");
+    expect(vibrate).toHaveBeenCalledWith(HAPTIC_VIBRATION_MS.medium);
+    vi.unstubAllGlobals();
+  });
+});

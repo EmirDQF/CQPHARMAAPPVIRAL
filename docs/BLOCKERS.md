@@ -18,6 +18,8 @@ Lo que sigue solo puede hacerlo el usuario.
 
 | # | Ítem | Estado | Acción del usuario |
 |---|---|---|---|
+| G-C2 | Catálogo de actividades, quiz y descargos | PENDIENTE DE VALIDACIÓN CLÍNICA (médico del proyecto): `src/lib/activities/catalog.ts` (16 actividades; las físicas sin impacto, sin flexión ni torsión forzada de columna, con apoyo y con el descargo "Si sientes dolor, mareo o algo inusual, detente y consulta a tu médico"). Con bandera roja se ocultan todas las físicas (probado). | Revisar textos, pasos y tiempos; marcar `requiresClearance: true` en las que deban esperar visto bueno. |
+| G-T1 | Progreso del juego en la cuenta | LOCAL A PROPÓSITO: `artikare_game_v1` (actividades no clínicas, desbloqueos, accesorios) no se sincroniza: requeriría tabla nueva + migración + RLS + pgTAP y no es imprescindible (tomas y chequeos, que sí son clínicos, ya se sincronizan). Entra en exportar/borrar (ARCO). | Decidir si se quiere respaldar en la cuenta; entonces se agrega la tabla con RLS y pruebas pgTAP. |
 | G-C1 | Perfil incompleto y semáforo | DECISIÓN CLÍNICA: si falta edad o sexo, la app mantiene el comportamiento ya revisado (clasificación OMS preliminar + "Completa tu perfil para una evaluación exacta"). El encargo pedía caer a "consulte a su médico"; no se cambió sin el médico porque afecta el reporte y la bóveda. | El médico del proyecto decide; si elige "consulte a su médico", es un cambio de una línea en `getBoneDensityInterpretation` + tests. |
 
 ## Resueltos (técnicos)

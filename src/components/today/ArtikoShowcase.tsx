@@ -6,6 +6,9 @@ import type { GameState } from "@/hooks/useGame";
 import { markGameCelebrated, toggleAccessory } from "@/lib/gamification/progress";
 import { GAME_UNLOCKS } from "@/lib/gamification/unlocks";
 import { ACCESSORY_NAMES, ARTIKO_ACCESSORIES } from "@/lib/mascot/mascot";
+import type { ShareMoment } from "@/lib/share/momentShare";
+import { useState } from "react";
+import { ShareMomentSheet } from "./ShareMomentSheet";
 
 /** Aviso de desbloqueo nuevo (una vez): insignia o accesorio para Artiko. */
 export function GameUnlockToast({ game }: { game: GameState }) {
@@ -45,6 +48,7 @@ export function GameUnlockToast({ game }: { game: GameState }) {
 /** Vitrina: insignias de constancia y armario cosmético de Artiko (solo estético, sin compras). */
 export function ArtikoShowcase({ game }: { game: GameState }) {
   const unlockedIds = new Set(game.progress.unlocked.map((item) => item.unlockId));
+  const [moment, setMoment] = useState<ShareMoment | null>(null);
   return (
     <section aria-labelledby="vitrina-artiko" className="flex flex-col gap-4 rounded-card bg-surface px-4 py-5 shadow-soft">
       <h2 id="vitrina-artiko" className="text-2xl font-black text-clinic">
@@ -83,10 +87,21 @@ export function ArtikoShowcase({ game }: { game: GameState }) {
               <span aria-hidden="true" className={`text-4xl ${isUnlocked ? "" : "grayscale opacity-50"}`}>{unlock.emoji}</span>
               <span className="text-base font-black">{unlock.title}</span>
               <span className="text-sm">{isUnlocked ? "¡Conseguida!" : "Por conseguir"}</span>
+              {isUnlocked && unlock.shareable && (
+                <button
+                  type="button"
+                  onClick={() => setMoment({ kind: "badge", unlockId: unlock.id })}
+                  aria-label={`Compartir la insignia ${unlock.title}`}
+                  className="min-h-12 rounded-xl px-3 font-bold underline"
+                >
+                  Compartir
+                </button>
+              )}
             </li>
           );
         })}
       </ul>
+      {moment && <ShareMomentSheet moment={moment} onClose={() => setMoment(null)} />}
     </section>
   );
 }

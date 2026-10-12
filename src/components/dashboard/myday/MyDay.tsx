@@ -10,6 +10,7 @@ import { pillboxStore } from "@/lib/dashboard/pillbox";
 import { toLimaIsoDate } from "@/lib/utils/date";
 import { ArtikoShowcase, GameUnlockToast } from "@/components/today/ArtikoShowcase";
 import { MissionBoard } from "@/components/today/MissionBoard";
+import { ShareCorner } from "@/components/today/ShareCorner";
 import { TodayHero } from "@/components/today/TodayHero";
 import { PainCheckIn } from "../PainCheckIn";
 import { PainTrendChart } from "../PainTrendChart";
@@ -71,6 +72,7 @@ function TodayBoard({ now, firstName, onOpenBoneTab, deferredDose, celebration, 
       />
       <PainCheckIn />
       <PainTrendChart />
+      <ShareCorner game={game} />
       <ArtikoShowcase game={game} />
       {footer}
     </>

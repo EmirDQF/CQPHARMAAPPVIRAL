@@ -57,23 +57,31 @@ async function tryShare(share: () => Promise<void>): Promise<ShareOutcome> {
   }
 }
 
+export interface SharePayload {
+  title: string;
+  text: string;
+  /** URL según el canal (los UTM dicen por dónde llegó la persona). */
+  urlFor: (channel: ShareChannel) => string;
+}
+
 /** Nativo → navigator.share → WhatsApp. Cancelar no abre otra vía. */
-export async function shareInvite(
-  audience: InviteAudience,
-  siteUrl: string,
-  deps: ShareDependencies
-): Promise<ShareOutcome> {
-  const text = INVITE_COPY[audience];
+export async function shareContent(payload: SharePayload, deps: ShareDependencies): Promise<ShareOutcome> {
+  const { title, text, urlFor } = payload;
   if (deps.isNativeApp()) {
-    const url = buildInviteUrl(siteUrl, audience, "app");
-    return tryShare(() => deps.nativeShare({ title: SHARE_TITLE, text, url }));
+    return tryShare(() => deps.nativeShare({ title, text, url: urlFor("app") }));
   }
   if (deps.webShare) {
     const webShare = deps.webShare;
-    const url = buildInviteUrl(siteUrl, audience, "web");
-    const outcome = await tryShare(() => webShare({ title: SHARE_TITLE, text, url }));
+    const outcome = await tryShare(() => webShare({ title, text, url: urlFor("web") }));
     if (outcome !== "failed") return outcome;
   }
-  deps.openUrl(buildWhatsAppShareLink(text, buildInviteUrl(siteUrl, audience, "whatsapp")));
+  deps.openUrl(buildWhatsAppShareLink(text, urlFor("whatsapp")));
   return "whatsapp";
+}
+
+export function shareInvite(audience: InviteAudience, siteUrl: string, deps: ShareDependencies): Promise<ShareOutcome> {
+  return shareContent(
+    { title: SHARE_TITLE, text: INVITE_COPY[audience], urlFor: (channel) => buildInviteUrl(siteUrl, audience, channel) },
+    deps
+  );
 }

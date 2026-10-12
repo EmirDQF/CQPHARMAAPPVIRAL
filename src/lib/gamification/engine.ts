@@ -94,12 +94,15 @@ export interface WeeklyChallenge {
   activeDays: number;
   target: number;
   done: boolean;
+  /** Lunes a domingo: true si ese día hubo al menos una misión. */
+  activeByWeekday: readonly boolean[];
 }
 
 export function weeklyChallenge(days: readonly DayRecord[], today: string): WeeklyChallenge {
   const weekStart = weekStartOf(today);
-  const count = days.filter((day) => day.date >= weekStart && day.date <= today).length;
-  return { weekStart, activeDays: count, target: WEEK_DAYS, done: count >= WEEK_DAYS };
+  const activeDates = new Set(days.filter((day) => day.date >= weekStart && day.date <= today).map((day) => day.date));
+  const activeByWeekday = Array.from({ length: WEEK_DAYS }, (_, index) => activeDates.has(addDaysToIsoDate(weekStart, index)));
+  return { weekStart, activeDays: activeDates.size, target: WEEK_DAYS, done: activeDates.size >= WEEK_DAYS, activeByWeekday };
 }
 
 export interface GameStats {

@@ -6,12 +6,10 @@ import { PHYSICAL_ACTIVITY_DISCLAIMER } from "@/lib/activities/catalog";
 import type { Activity } from "@/lib/activities/schemas";
 import { celebrateGoal } from "@/lib/feedback/celebrate";
 import { completeActivity, markGameCelebrated, undoActivity } from "@/lib/gamification/progress";
-import { readSiteUrl } from "@/lib/native/appIdentity";
-import { browserShareDependencies } from "@/lib/share/browserShare";
-import { shareInvite } from "@/lib/share/inviteShare";
 import { GuidedActivitySheet } from "./GuidedActivitySheet";
 import { MissionCard } from "./MissionCard";
 import { QuizSheet } from "./QuizSheet";
+import { ShareMomentSheet } from "./ShareMomentSheet";
 
 interface MissionBoardProps {
   game: GameState;
@@ -44,11 +42,6 @@ export function MissionBoard({ game, onTakeDose, onOpenCheckIn }: MissionBoardPr
     setOpenSheet(null);
   }
 
-  async function share(activity: Activity) {
-    const outcome = await shareInvite("familiar", readSiteUrl(), browserShareDependencies());
-    if (outcome === "shared" || outcome === "whatsapp") earn(activity);
-  }
-
   function act(activity: Activity) {
     switch (activity.kind) {
       case "check-in":
@@ -59,7 +52,6 @@ export function MissionBoard({ game, onTakeDose, onOpenCheckIn }: MissionBoardPr
       case "self-report":
         return earn(activity);
       case "share":
-        return void share(activity);
       case "guided":
       case "quiz":
         return setOpenSheet(activity);
@@ -93,6 +85,9 @@ export function MissionBoard({ game, onTakeDose, onOpenCheckIn }: MissionBoardPr
       </p>
       {openSheet?.kind === "guided" && (
         <GuidedActivitySheet activity={openSheet} onComplete={() => earn(openSheet)} onClose={() => setOpenSheet(null)} />
+      )}
+      {openSheet?.kind === "share" && (
+        <ShareMomentSheet moment={{ kind: "invite-parent" }} onShared={() => earn(openSheet)} onClose={() => setOpenSheet(null)} />
       )}
       {openSheet?.kind === "quiz" && <QuizSheet activity={openSheet} onComplete={() => earn(openSheet)} onClose={() => setOpenSheet(null)} />}
     </section>

@@ -103,7 +103,13 @@ describe("weekly challenge", () => {
   it("is done with 7 active days in the same week", () => {
     const week = Object.fromEntries(Array.from({ length: 7 }, (_, index) => [`2026-10-${String(5 + index).padStart(2, "0")}`, ["agua"]]));
     const stats = computeGameStats(ACTIVITY_CATALOG, sources({ progress: progressWith(week) }), TODAY, 5);
-    expect(stats.week).toEqual({ weekStart: "2026-10-05", activeDays: 7, target: 7, done: true });
+    expect(stats.week).toEqual({ weekStart: "2026-10-05", activeDays: 7, target: 7, done: true, activeByWeekday: Array(7).fill(true) });
+  });
+
+  it("marks the actual weekdays that were active", () => {
+    const progress = progressWith({ "2026-10-06": ["agua"], "2026-10-09": ["agua"] });
+    const stats = computeGameStats(ACTIVITY_CATALOG, sources({ progress }), TODAY, 5);
+    expect(stats.week.activeByWeekday).toEqual([false, true, false, false, true, false, false]);
   });
 });
 

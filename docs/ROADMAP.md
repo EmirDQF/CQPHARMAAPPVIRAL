@@ -23,7 +23,7 @@ Bloqueos que requieren al usuario: `docs/BLOCKERS.md` · Informe con los candado
 - Lighthouse "lantern" (simulado) estima LCP ~3.9 s por la evaluación de JS; con throttling real es 1.6–1.7 s.
 - 8 vulnerabilidades solo de desarrollo (cadena de lint `braces` sin versión parcheada; `uuid` vía `@capacitor/cli`/xcode). Producción: 0.
 - Monitoreo de fallos del job `daily-soft-delete-purge` (`cron.job_run_details`) por definir en producción.
-- Constantes de política aún sin uso en `constants.ts` (`STREAK_MILESTONES`, `UNDO_WINDOW_MS`, `MAX_DAILY_NOTIFICATIONS`, `STREAK_BENEFIT_ENABLED`): decisión de producto.
+- `STREAK_BENEFIT_ENABLED` en `constants.ts` queda apagado a propósito (decisión de producto). Se eliminaron `STREAK_MILESTONES` (los hitos viven en `rewards/catalog.ts`) y `UNDO_WINDOW_MS` (deshacer no tiene límite de tiempo, WCAG 2.2.1).
 
 SIGUIENTE: desplegar la web con dominio HTTPS y variables de producción → `npm run build:android` → primera subida a Google Play (pista interna) → huella de Play App Signing en `ANDROID_SHA256_FINGERPRINT`.
 

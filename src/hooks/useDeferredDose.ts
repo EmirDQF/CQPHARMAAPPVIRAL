@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { markDoseTaken } from "@/lib/dashboard/pillbox";
 import { toLimaIsoDate } from "@/lib/utils/date";
+import { playSound } from "@/lib/feedback/sounds";
 
 export interface DeferredDose {
   /** Tomas anotadas que aún se pueden deshacer. */
@@ -46,6 +47,7 @@ export function useDeferredDose(): DeferredDose {
   const take = useCallback((doseId: string) => {
     if (tappedOnRef.current.has(doseId)) return;
     tappedOnRef.current.set(doseId, toLimaIsoDate());
+    playSound("success");
     setLastConfirmedDoseId(null);
     setPendingDoseIds((current) => [...current, doseId]);
   }, []);
@@ -67,5 +69,13 @@ export function useDeferredDose(): DeferredDose {
     };
   }, [confirm]);
 
-  return { pendingDoseIds, lastConfirmedDoseId, take, undo: forget, confirm };
+  const undo = useCallback(
+    (doseId: string) => {
+      playSound("gentle");
+      forget(doseId);
+    },
+    [forget]
+  );
+
+  return { pendingDoseIds, lastConfirmedDoseId, take, undo, confirm };
 }

@@ -8,10 +8,11 @@ import {
 } from "@/lib/feedback/preferences";
 import { SettingsCard } from "./SettingsCard";
 
-type ToggleKey = "haptics" | "celebrations";
+type ToggleKey = "haptics" | "sound" | "celebrations";
 
 const TOGGLES: readonly { key: ToggleKey; label: string; hint: string }[] = [
   { key: "haptics", label: "Vibración al tocar", hint: "Un pulso corto confirma cada toque." },
+  { key: "sound", label: "Sonidos", hint: "Tonos cortos al tomar tu suplemento, completar misiones y lograr tu meta." },
   { key: "celebrations", label: "Confeti y celebraciones", hint: "Animaciones al completar tus misiones." },
 ];
 
@@ -26,8 +27,8 @@ export function FeedbackPreferencesSection() {
   return (
     <SettingsCard
       id="feedback-preferences-heading"
-      title="Vibración y celebraciones"
-      description="La app no reproduce sonidos. Si prefieres menos movimiento, tu celular también puede pedirlo y lo respetamos."
+      title="Vibración, sonidos y celebraciones"
+      description="Los sonidos son tonos propios de Artikare y siguen el volumen de tu celular. Si prefieres menos movimiento, tu celular también puede pedirlo y lo respetamos."
     >
       {TOGGLES.map(({ key, label, hint }) => (
         <label key={key} className="flex min-h-12 items-center justify-between gap-4 cursor-pointer">

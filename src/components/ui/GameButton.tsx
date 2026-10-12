@@ -5,6 +5,7 @@ import { cn } from "cn";
 import type { ButtonHTMLAttributes, MouseEvent } from "react";
 import { triggerHaptic, type HapticStrength } from "@/lib/feedback/haptics";
 import { gameButtonClasses } from "./gameButtonClasses";
+import { playSound } from "@/lib/feedback/sounds";
 
 export type GameButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
   VariantProps<typeof gameButtonClasses> & {
@@ -29,6 +30,7 @@ export function GameButton({
       return;
     }
     if (haptic) void triggerHaptic(haptic);
+    if (haptic) playSound("tap");
     onClick?.(event);
   }
 

@@ -76,8 +76,6 @@ describe("without a usable WhatsApp number (any environment)", () => {
   });
 
   it.each([
-    ["missing", undefined],
-    ["empty", ""],
     ["old placeholder", "51999999999x"],
     ["landline", "5114567890"],
     ["mobile without country code", "987654321"],
@@ -92,9 +90,19 @@ describe("without a usable WhatsApp number (any environment)", () => {
     expect(isWhatsAppAvailable()).toBe(false);
   });
 
-  it.each(["production", "development"])("never falls back to a fake number in %s", (nodeEnv) => {
-    vi.stubEnv("NODE_ENV", nodeEnv);
-    vi.stubEnv("NEXT_PUBLIC_WHATSAPP_NUMBER", undefined);
-    expect(buildGeneralInquiryWhatsAppLink()).toBeNull();
+  it.each([
+    ["missing", undefined],
+    ["empty", ""],
+  ])("uses the clinic number (+51 945 553 676) when the variable is %s", (_label, configured) => {
+    vi.stubEnv("NEXT_PUBLIC_WHATSAPP_NUMBER", configured);
+    expect(buildGeneralInquiryWhatsAppLink()).toMatch(/^https:\/\/wa\.me\/51945553676\?text=/);
+    expect(isWhatsAppAvailable()).toBe(true);
+  });
+
+  it("sends the clinic's contact message for general, densitometry and supplement links", () => {
+    const expected = "Hola, vengo de Artikare, estoy interesado en sus servicios de densitometría, productos y agendar citas.";
+    expect(prefilledText(buildGeneralInquiryWhatsAppLink())).toBe(expected);
+    expect(prefilledText(buildDensitometriaWhatsAppLink())).toBe(expected);
+    expect(prefilledText(buildSupplementWhatsAppLink())).toBe(expected);
   });
 });

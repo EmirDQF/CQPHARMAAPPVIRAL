@@ -1,5 +1,9 @@
 # DESIGN — sistema "Clínico sereno" (pastel claro, tinta oscura)
 
+**Tema:** claro por defecto para todos (no sigue al modo oscuro del sistema). El botón sol/luna del encabezado (`ThemeToggle`) cambia a oscuro y lo recuerda (`artikare_theme_v1`); `globals.css` pinta el oscuro con `html[data-theme="dark"]` y la variante `dark:` de Tailwind sigue ese atributo.
+
+**Sonidos (`src/lib/feedback/sounds.ts`):** tonos propios sintetizados con Web Audio (sin archivos ni melodías de terceros): `tap` al tocar un botón, `success` al anotar una toma o guardar el chequeo, `complete` al cumplir una misión, `celebrate` en la meta del día, un desbloqueo y el final del primer arranque, `gentle` al deshacer o fallar el quiz. Cortos (≤ 0,8 s) y a volumen bajo; se apagan en Ajustes.
+
 Fuente de verdad: `src/lib/design/tokens.ts`. `src/app/globals.css` declara exactamente esos valores (claro y oscuro) y `src/lib/design/contrast.test.ts` falla si un valor no coincide, si un par texto/fondo baja de AA (4.5:1 texto, 3:1 gráficos y bordes de controles) o si un color decorativo se parece a uno del semáforo (ΔE CIE76 < 10). Los componentes usan solo utilidades de Tailwind (`bg-pastel-mint`, `text-clinic`, …), nunca hex sueltos.
 
 Meta visual: clínico, cálido, humano y sereno. Sin neón, sin rellenos saturados, sin degradados ni brillos, sin relieve 3D.
@@ -39,7 +43,7 @@ Artiko se dibuja con la paleta clara fija (también en modo oscuro, para que se 
 
 **Tipografía:** Nunito (redondeada) servida por `next/font` desde el propio dominio. Títulos de pantalla 28–40 px (`text-[1.75rem]` a `text-[2.5rem]`); cuerpo ≥ 18 px (`text-lg`) con interlineado 1.5; etiquetas en mayúsculas pueden ir a 16 px.
 
-**Botón pastel (`GameButton` / `gameButtonClasses`):** relleno pastel, borde de 2 px en el tono `-deep` y tinta oscura; `rounded-control`, ≥ 48 px (`md`) y ≥ 56 px en los principales (`lg`, `xl`). Al pulsar, `press-scale` (escala 0.97) sin mover el resto de la pantalla (CLS 0). Fuera de la capa viva, el botón principal usa la utilidad `btn-primary` (menta + borde + tinta). Vibra con `@capacitor/haptics` en la app o `navigator.vibrate` en la web, salvo que se apague en Ajustes → "Vibración y celebraciones". Sin sonidos. Deshabilitado = `aria-disabled` + motivo visible.
+**Botón pastel (`GameButton` / `gameButtonClasses`):** relleno pastel, borde de 2 px en el tono `-deep` y tinta oscura; `rounded-control`, ≥ 48 px (`md`) y ≥ 56 px en los principales (`lg`, `xl`). Al pulsar, `press-scale` (escala 0.97) sin mover el resto de la pantalla (CLS 0). Fuera de la capa viva, el botón principal usa la utilidad `btn-primary` (menta + borde + tinta). Vibra con `@capacitor/haptics` en la app o `navigator.vibrate` en la web, salvo que se apague en Ajustes → "Vibración, sonidos y celebraciones". Cada toque suena con un "pop" suave. Deshabilitado = `aria-disabled` + motivo visible.
 
 Emojis: solo acento visual junto a un texto, con `aria-hidden="true"`; nunca como único elemento gráfico (los indicadores usan iconos de lucide).
 

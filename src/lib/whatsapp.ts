@@ -20,17 +20,17 @@ export function isWhatsAppAvailable(): boolean {
   return readWhatsAppNumber() !== null;
 }
 
+/** Mensaje de contacto general que pidió el consultorio (densitometría, productos y citas). */
+export const ARTIKARE_CONTACT_MESSAGE =
+  "Hola, vengo de Artikare, estoy interesado en sus servicios de densitometría, productos y agendar citas.";
+
 // Los mensajes prellenados nunca llevan datos de salud: viajan en la URL (?text=).
 export function buildDensitometriaWhatsAppLink(): string | null {
-  return buildWhatsAppLink(
-    "Hola, hice el Test de Edad Articular de Artikare y quisiera agendar una densitometría ósea."
-  );
+  return buildWhatsAppLink(ARTIKARE_CONTACT_MESSAGE);
 }
 
 export function buildSupplementWhatsAppLink(): string | null {
-  return buildWhatsAppLink(
-    "Hola, hice el Test de Edad Articular de Artikare y quisiera información sobre los packs CQ Pharma."
-  );
+  return buildWhatsAppLink(ARTIKARE_CONTACT_MESSAGE);
 }
 
 /** Reposición: el descuento ofrecido en la app viaja en el mensaje, para que el consultorio lo aplique. */
@@ -46,9 +46,7 @@ export function buildProductPackWhatsAppLink(pack: ProductPack): string | null {
 }
 
 export function buildGeneralInquiryWhatsAppLink(): string | null {
-  const message =
-    "Hola, quisiera hablar con un asesor médico de Artikare sobre mis articulaciones y huesos.";
-  return buildWhatsAppLink(message);
+  return buildWhatsAppLink(ARTIKARE_CONTACT_MESSAGE);
 }
 
 /** Solo el código: el servicio (dato de salud) y la fecha los consulta el consultorio por código. */

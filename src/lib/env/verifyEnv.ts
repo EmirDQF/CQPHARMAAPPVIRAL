@@ -25,7 +25,6 @@ const REQUIRED_FOR_RELEASE: Readonly<Record<string, (value: string) => boolean>>
   SUPABASE_SERVICE_ROLE_KEY: (value) => nonEmptyKey.safeParse(value).success,
   NEXT_PUBLIC_SITE_URL: (value) => httpsUrl.safeParse(value).success,
   ANDROID_SHA256_FINGERPRINT: (value) => parseAndroidFingerprints(value) !== null,
-  NEXT_PUBLIC_WHATSAPP_NUMBER: (value) => /^519\d{8}$/.test(value),
   NEXT_PUBLIC_TURNSTILE_SITE_KEY: (value) => value.trim().length > 0,
 };
 

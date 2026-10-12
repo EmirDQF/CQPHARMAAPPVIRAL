@@ -47,14 +47,17 @@ const WhatsAppNumberSchema = z
 
 let hasWarnedInvalidWhatsApp = false;
 
+/** WhatsApp oficial del consultorio Artikare (+51 945 553 676), indicado por el negocio. Es público. */
+export const CLINIC_WHATSAPP_NUMBER = "51945553676";
+
 /**
- * Número de WhatsApp del consultorio (solo dígitos, p. ej. "51987654321") o null
- * si falta o no es un celular peruano válido. Nunca hay número de reserva: sin
- * número, los botones de WhatsApp se muestran deshabilitados.
+ * Número de WhatsApp (solo dígitos). NEXT_PUBLIC_WHATSAPP_NUMBER lo reemplaza;
+ * sin definir, se usa el del consultorio. Si está definido pero no es un celular
+ * peruano válido devuelve null y los botones se muestran deshabilitados (un
+ * error de configuración no debe mandar mensajes a un número equivocado).
  */
 export function readWhatsAppNumber(): string | null {
-  const rawNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
-  if (!rawNumber) return null;
+  const rawNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.trim() || CLINIC_WHATSAPP_NUMBER;
 
   const parsed = WhatsAppNumberSchema.safeParse(rawNumber);
   if (parsed.success) return parsed.data;

@@ -6,6 +6,7 @@ import { isPartOfSeverePainStreak } from "@/lib/clinical/redFlags";
 import { painLogStore, saveTodayPainLogEntry } from "@/lib/dashboard/painLog";
 import type { StiffnessBucket } from "@/lib/dashboard/types";
 import { toLimaIsoDate } from "@/lib/utils/date";
+import { playSound } from "@/lib/feedback/sounds";
 
 const PAIN_LEVELS_ABOVE_MIN = Array.from(
   { length: PAIN_LEVEL_MAX - PAIN_LEVEL_MIN },
@@ -74,6 +75,7 @@ export function PainCheckIn({ anchorId = "chequeo", onSaved }: PainCheckInProps)
     setSelectedStiffness(null);
     setIsConfirmingStreakBreak(false);
     setHasJustSaved(true);
+    playSound("success");
     onSaved?.();
   }
 

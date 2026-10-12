@@ -17,12 +17,12 @@ import {
 } from "./tokens";
 
 const css = readFileSync(join(process.cwd(), "src", "app", "globals.css"), "utf8");
-const DARK_MEDIA = "@media (prefers-color-scheme: dark)";
+const DARK_THEME = ':root[data-theme="dark"] {';
 
-/** Bloque CSS de cada tema: `:root` claro (antes del media query) y el `:root` oscuro dentro de él. */
+/** Bloque CSS de cada tema: `:root` claro (antes del bloque oscuro) y `:root[data-theme="dark"]`. */
 function themeBlock(themeName: ThemeName): string {
-  if (themeName === "light") return css.split(DARK_MEDIA)[0];
-  return css.split(DARK_MEDIA)[1].split("}")[0];
+  if (themeName === "light") return css.split(DARK_THEME)[0];
+  return css.split(DARK_THEME)[1].split("}")[0];
 }
 
 describe("contrastRatio", () => {

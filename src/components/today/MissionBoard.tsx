@@ -11,6 +11,7 @@ import { GuidedActivitySheet } from "./GuidedActivitySheet";
 import { MissionCard } from "./MissionCard";
 import { QuizSheet } from "./QuizSheet";
 import { ShareMomentSheet } from "./ShareMomentSheet";
+import { playSound } from "@/lib/feedback/sounds";
 
 interface MissionBoardProps {
   game: GameState;
@@ -39,6 +40,7 @@ export function MissionBoard({ game, onTakeDose, onOpenCheckIn }: MissionBoardPr
   function earn(activity: Activity) {
     if (activity.kind !== "dose" && activity.kind !== "check-in") completeActivity(activity.id, game.today);
     setJustEarned(activity.id);
+    playSound("complete");
     setAnnouncement(`${activity.title}: sumaste ${activity.xp} XP.`);
     setOpenSheet(null);
   }

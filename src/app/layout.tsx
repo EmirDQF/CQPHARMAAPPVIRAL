@@ -9,6 +9,9 @@ import { PendingAssessmentUploader } from "@/components/PendingAssessmentUploade
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
 import { SyncCoordinator } from "@/components/SyncCoordinator";
 import { TextSizeApplier } from "@/components/TextSizeApplier";
+import { ThemeApplier } from "@/components/ThemeApplier";
+import { NativeLaunchRedirect } from "@/components/NativeLaunchRedirect";
+import { THEME_BOOT_SCRIPT } from "@/lib/display/theme";
 import { TEXT_SIZE_BOOT_SCRIPT } from "@/lib/display/textSizeBootScript";
 
 // Redondeada, gruesa y alegre. next/font la descarga en el build y la sirve desde el propio
@@ -72,10 +75,8 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#FBF8F3" },
-    { media: "(prefers-color-scheme: dark)", color: "#141A22" },
-  ],
+  // Claro por defecto; ThemeApplier lo cambia si la persona elige el oscuro.
+  themeColor: "#FBF8F3",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -90,6 +91,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <head>
         {/* Cadena fija sin datos del usuario: evita el salto del tamaño de letra al abrir. */}
         <script dangerouslySetInnerHTML={{ __html: TEXT_SIZE_BOOT_SCRIPT }} />
+        {/* Igual para el tema: claro por defecto, oscuro solo si la persona lo eligió. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
       </head>
       <body className="min-h-full flex flex-col">
         {children}
@@ -99,8 +102,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SyncCoordinator />
         <LocalTrashPurge />
         <PendingAssessmentUploader />
+        <NativeLaunchRedirect />
         <DeepLinkListener />
         <TextSizeApplier />
+        <ThemeApplier />
       </body>
     </html>
   );

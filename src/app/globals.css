@@ -5,6 +5,9 @@
 /* Lectura fácil: activa con letra "Muy grande" (Ajustes). Menos texto, iconos más grandes. */
 @custom-variant easy-read (html[data-text-size="xlarge"] &);
 
+/* Tema: claro por defecto, oscuro solo si la persona lo elige (botón sol/luna). No sigue al sistema. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 /*
  * Sistema de diseño "Clínico sereno" (docs/DESIGN.md): pasteles claros con
  * tinta oscura. Los valores --color-* deben coincidir con src/lib/design/tokens.ts:
@@ -12,6 +15,7 @@
  * El semáforo OMS y la bandera roja (--color-risk-*) no se pastelizan.
  */
 :root {
+  color-scheme: light;
   --color-canvas: #FBF8F3;
   --color-surface: #FFFFFF;
   --color-ink: #1F2A37;
@@ -321,38 +325,37 @@
   to { transform: translateY(3px); }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-canvas: #141A22;
-    --color-surface: #1C2430;
-    --color-ink: #E8EDF2;
-    --color-muted: #A7B2BE;
-    --color-line: #2E3946;
-    --color-clinic: #9CC3E8;
-    --color-action: #234640;
-    --color-action-hover: #2B544D;
-    --color-action-ink: #C9E8E4;
-    --color-action-edge: #6DB8AA;
-    --color-progress: #6DB8AA;
-    --color-pastel-mint: #234640;
-    --color-pastel-mint-ink: #C9E8E4;
-    --color-pastel-mint-edge: #6DB8AA;
-    --color-pastel-sky: #213A52;
-    --color-pastel-sky-ink: #CFE3F5;
-    --color-pastel-sky-edge: #78A9D6;
-    --color-pastel-lavender: #312C4A;
-    --color-pastel-lavender-ink: #E0DAF2;
-    --color-pastel-lavender-edge: #A193D6;
-    --color-pastel-peach: #4A3022;
-    --color-pastel-peach-ink: #FBDCC8;
-    --color-pastel-peach-edge: #D99467;
-    --color-pastel-rose: #46293A;
-    --color-pastel-rose-ink: #EED3E6;
-    --color-pastel-rose-edge: #CF8CB3;
-    --color-pastel-lemon: #3D3826;
-    --color-pastel-lemon-ink: #F1EBD6;
-    --color-pastel-lemon-edge: #C2B27A;
-  }
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-canvas: #141A22;
+  --color-surface: #1C2430;
+  --color-ink: #E8EDF2;
+  --color-muted: #A7B2BE;
+  --color-line: #2E3946;
+  --color-clinic: #9CC3E8;
+  --color-action: #234640;
+  --color-action-hover: #2B544D;
+  --color-action-ink: #C9E8E4;
+  --color-action-edge: #6DB8AA;
+  --color-progress: #6DB8AA;
+  --color-pastel-mint: #234640;
+  --color-pastel-mint-ink: #C9E8E4;
+  --color-pastel-mint-edge: #6DB8AA;
+  --color-pastel-sky: #213A52;
+  --color-pastel-sky-ink: #CFE3F5;
+  --color-pastel-sky-edge: #78A9D6;
+  --color-pastel-lavender: #312C4A;
+  --color-pastel-lavender-ink: #E0DAF2;
+  --color-pastel-lavender-edge: #A193D6;
+  --color-pastel-peach: #4A3022;
+  --color-pastel-peach-ink: #FBDCC8;
+  --color-pastel-peach-edge: #D99467;
+  --color-pastel-rose: #46293A;
+  --color-pastel-rose-ink: #EED3E6;
+  --color-pastel-rose-edge: #CF8CB3;
+  --color-pastel-lemon: #3D3826;
+  --color-pastel-lemon-ink: #F1EBD6;
+  --color-pastel-lemon-edge: #C2B27A;
 }
 
 body {

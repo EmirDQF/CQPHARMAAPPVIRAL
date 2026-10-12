@@ -6,6 +6,7 @@ import { ArtikoMascot } from "@/components/mascot/ArtikoMascot";
 import { BottomSheet } from "@/components/ui/BottomSheet";
 import { GameButton } from "@/components/ui/GameButton";
 import type { Activity } from "@/lib/activities/schemas";
+import { playSound } from "@/lib/feedback/sounds";
 
 interface QuizSheetProps {
   activity: Activity;
@@ -34,7 +35,10 @@ export function QuizSheet({ activity, onComplete, onClose }: QuizSheetProps) {
             block
             aria-pressed={chosen === index}
             aria-disabled={chosen !== null}
-            onClick={() => setChosen(index)}
+            onClick={() => {
+              setChosen(index);
+              playSound(index === quiz.answerIndex ? "success" : "gentle");
+            }}
           >
             {option}
             {chosen !== null && index === quiz.answerIndex && <span aria-hidden="true"> ✅</span>}

@@ -23,8 +23,8 @@ describe("WhatsAppFloatingButton", () => {
     ).toHaveAttribute("href", expect.stringMatching(/^https:\/\/wa\.me\/51987654321\?text=/));
   });
 
-  it("renders nothing (no dead button) when no number is configured", () => {
-    vi.stubEnv("NEXT_PUBLIC_WHATSAPP_NUMBER", "");
+  it("renders nothing (no dead button) when the configured number is invalid", () => {
+    vi.stubEnv("NEXT_PUBLIC_WHATSAPP_NUMBER", "5114567890");
     const { container } = render(<WhatsAppFloatingButton />);
     expect(container).toBeEmptyDOMElement();
   });

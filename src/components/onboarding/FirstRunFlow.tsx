@@ -11,6 +11,7 @@ import {
   type ProfileDraft,
 } from "@/lib/onboarding/onboarding";
 import { createConsentRecord } from "@/lib/privacy/consent";
+import { playSound } from "@/lib/feedback/sounds";
 import { ArtikoSays } from "./ArtikoSays";
 import { ConsentStep } from "./ConsentStep";
 import { GoalsStep } from "./GoalsStep";
@@ -49,6 +50,9 @@ function saveFirstRunProfile(draft: ProfileDraft): void {
 }
 
 function ArrivalStep({ firstName, onEnter }: { firstName: string | null; onEnter: () => void }) {
+  useEffect(() => {
+    playSound("celebrate");
+  }, []);
   return (
     <div className="flex flex-col gap-6">
       <ArtikoSays emotion="celebrating">{firstName ? `¡Todo listo, ${firstName}!` : "¡Todo listo!"}</ArtikoSays>

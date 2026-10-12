@@ -1,5 +1,6 @@
 "use client";
 
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { BrandMark } from "@/components/brand/BrandMark";
 import Link from "next/link";
 import {
@@ -102,6 +103,7 @@ export function AppShell() {
             <BrandMark />
           </p>
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             <PatientProfileLauncher />
             <Link
               href="/app/ajustes"

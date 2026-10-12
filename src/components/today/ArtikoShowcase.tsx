@@ -5,14 +5,19 @@ import { GameButton } from "@/components/ui/GameButton";
 import type { GameState } from "@/hooks/useGame";
 import { markGameCelebrated, toggleAccessory } from "@/lib/gamification/progress";
 import { GAME_UNLOCKS } from "@/lib/gamification/unlocks";
+import { playSound } from "@/lib/feedback/sounds";
 import { ACCESSORY_NAMES, ARTIKO_ACCESSORIES } from "@/lib/mascot/mascot";
 import type { ShareMoment } from "@/lib/share/momentShare";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ShareMomentSheet } from "./ShareMomentSheet";
 
 /** Aviso de desbloqueo nuevo (una vez): insignia o accesorio para Artiko. */
 export function GameUnlockToast({ game }: { game: GameState }) {
   const [first] = game.pendingUnlocks;
+  const unlockKey = first?.key;
+  useEffect(() => {
+    if (unlockKey) playSound("celebrate");
+  }, [unlockKey]);
   if (!first) return null;
   const { unlock } = first;
   const dismiss = () => markGameCelebrated(game.pendingUnlocks.map((item) => item.key));

@@ -1,5 +1,6 @@
 import { PASTELS, THEMES } from "../design/tokens";
 import { feedbackPreferencesStore, type FeedbackPreferences } from "./preferences";
+import { playSound } from "./sounds";
 
 /**
  * Confeti al completar la meta del día. canvas-confetti se descarga solo en
@@ -34,6 +35,7 @@ function defaultDependencies(): CelebrateDependencies {
 
 /** true si se lanzó el confeti. */
 export async function celebrateGoal(deps: CelebrateDependencies = defaultDependencies()): Promise<boolean> {
+  playSound("celebrate");
   if (!deps.readPreferences().celebrations || deps.prefersReducedMotion()) return false;
   try {
     await deps.fire({

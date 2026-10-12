@@ -48,15 +48,15 @@ describe("triggerHaptic", () => {
 });
 
 describe("parseFeedbackPreferences", () => {
-  it("defaults to haptics on, sound off and celebrations on", () => {
-    expect(DEFAULT_FEEDBACK_PREFERENCES).toEqual({ version: 1, haptics: true, sound: false, celebrations: true });
+  it("defaults to haptics, sound and celebrations on", () => {
+    expect(DEFAULT_FEEDBACK_PREFERENCES).toEqual({ version: 2, haptics: true, sound: true, celebrations: true });
   });
 
   it("keeps valid fields and repairs the rest", () => {
-    expect(parseFeedbackPreferences({ version: 1, haptics: false, sound: "x", celebrations: false })).toEqual({
-      version: 1,
+    expect(parseFeedbackPreferences({ version: 2, haptics: false, sound: "x", celebrations: false })).toEqual({
+      version: 2,
       haptics: false,
-      sound: false,
+      sound: true,
       celebrations: false,
     });
   });

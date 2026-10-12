@@ -1,15 +1,20 @@
 import { describe, expect, it } from "vitest";
 import { emptyPatientProfile } from "../dashboard/patientProfile";
+import { CONSENT_VERSION } from "../privacy/consent";
 import {
   DAILY_GOAL_BY_INTENSITY,
   EMPTY_ONBOARDING_STATE,
-  ageFromBirthDate,
+  PROFILE_OFFER_SNOOZE_DAYS,
   completeOnboarding,
   needsOnboarding,
   onboardingStore,
+  profileQuestions,
+  shouldOfferProfileCompletion,
+  snoozeProfileOffer,
   startOnboarding,
   parseOnboardingState,
-  validateProfileStep,
+  validateFirstRunAge,
+  validateFirstRunName,
 } from "./onboarding";
 
 const NOW = new Date("2026-10-11T15:00:00Z");
@@ -52,6 +57,7 @@ describe("parseOnboardingState", () => {
       startedAt: null,
       completedAt: NOW.toISOString(),
       intensity: "normal",
+      profileOfferSnoozedAt: null,
     });
   });
 
@@ -66,51 +72,59 @@ describe("daily goals", () => {
   });
 });
 
-describe("ageFromBirthDate (Lima)", () => {
-  it("counts the birthday only once it arrives in Lima", () => {
-    expect(ageFromBirthDate("1966-10-11", NOW)).toBe(60);
-    expect(ageFromBirthDate("1966-10-12", NOW)).toBe(59);
+describe("profileQuestions", () => {
+  it("asks one thing per screen: name, age, sex and fracture history", () => {
+    expect(profileQuestions({ sex: null })).toEqual(["name", "age", "sex", "fracture"]);
+    expect(profileQuestions({ sex: "masculino" })).toEqual(["name", "age", "sex", "fracture"]);
   });
 
-  it("returns null for future or impossible dates", () => {
-    expect(ageFromBirthDate("2030-01-01", NOW)).toBeNull();
-    expect(ageFromBirthDate("1800-01-01", NOW)).toBeNull();
-    expect(ageFromBirthDate("1990-02-31", NOW)).toBeNull();
+  it("adds the menopause question right after sex only for women", () => {
+    expect(profileQuestions({ sex: "femenino" })).toEqual(["name", "age", "sex", "menopause", "fracture"]);
   });
 });
 
-describe("validateProfileStep", () => {
-  it("asks kindly for a name or nickname", () => {
-    const result = validateProfileStep({ name: "  ", birthDate: "", sex: null, menopausalStatus: null }, NOW);
-    expect(result).toEqual({ ok: false, errors: { name: "Escribe tu nombre o cómo te gusta que te llamen." } });
+describe("first-run field validation", () => {
+  it("requires a name and trims it", () => {
+    expect(validateFirstRunName("  ")).toEqual({ ok: false, error: "Escribe tu nombre o cómo te gusta que te llamen." });
+    expect(validateFirstRunName("  Rosa ")).toEqual({ ok: true, value: "Rosa" });
+    expect(validateFirstRunName("x".repeat(41)).ok).toBe(false);
   });
 
-  it("accepts 'prefer not to say' for birth date and sex", () => {
-    const result = validateProfileStep({ name: "Rosa", birthDate: "", sex: null, menopausalStatus: null }, NOW);
-    expect(result).toEqual({ ok: true, value: { name: "Rosa", age: null, sex: null, menopausalStatus: null } });
+  it("accepts an empty age (prefers not to say) and rejects implausible ones kindly", () => {
+    expect(validateFirstRunAge("")).toEqual({ ok: true, value: null });
+    expect(validateFirstRunAge("63")).toEqual({ ok: true, value: 63 });
+    const result = validateFirstRunAge("150");
+    expect(result.ok).toBe(false);
+    expect(!result.ok && result.error).toMatch(/déjalo vacío/);
+    expect(validateFirstRunAge("6.5").ok).toBe(false);
+  });
+});
+
+describe("shouldOfferProfileCompletion (guest)", () => {
+  const completed = { ...EMPTY_ONBOARDING_STATE, completedAt: NOW.toISOString() };
+  const consented = {
+    ...emptyPatientProfile,
+    name: "Rosa",
+    consent: { consentAt: NOW.toISOString(), consentVersion: CONSENT_VERSION },
+  };
+
+  it("offers it on Hoy to someone who declined consent", () => {
+    expect(shouldOfferProfileCompletion(completed, emptyPatientProfile, NOW)).toBe(true);
   });
 
-  it("stores only the age, never the birth date (data minimization)", () => {
-    const result = validateProfileStep(
-      { name: "Rosa", birthDate: "1962-03-04", sex: "femenino", menopausalStatus: "posmenopausica" },
-      NOW
-    );
-    expect(result).toEqual({
-      ok: true,
-      value: { name: "Rosa", age: 64, sex: "femenino", menopausalStatus: "posmenopausica" },
-    });
+  it("never offers it during the first run or to someone with current consent", () => {
+    expect(shouldOfferProfileCompletion(EMPTY_ONBOARDING_STATE, emptyPatientProfile, NOW)).toBe(false);
+    expect(shouldOfferProfileCompletion(completed, consented, NOW)).toBe(false);
   });
 
-  it("drops menopausal status for men", () => {
-    const result = validateProfileStep(
-      { name: "Luis", birthDate: "1960-01-01", sex: "masculino", menopausalStatus: "posmenopausica" },
-      NOW
-    );
-    expect(result.ok && result.value.menopausalStatus).toBeNull();
-  });
-
-  it("explains an impossible birth date", () => {
-    const result = validateProfileStep({ name: "Rosa", birthDate: "2031-01-01", sex: null, menopausalStatus: null }, NOW);
-    expect(result).toEqual({ ok: false, errors: { birthDate: "Revisa la fecha: debe ser un día que ya pasó." } });
+  it("waits the snooze period after 'Ahora no' and then offers it again", () => {
+    onboardingStore.write(completed);
+    snoozeProfileOffer(NOW);
+    const snoozed = onboardingStore.getSnapshot();
+    const almost = new Date(NOW.getTime() + (PROFILE_OFFER_SNOOZE_DAYS * 24 - 1) * 3600_000);
+    const after = new Date(NOW.getTime() + PROFILE_OFFER_SNOOZE_DAYS * 24 * 3600_000);
+    expect(shouldOfferProfileCompletion(snoozed, emptyPatientProfile, almost)).toBe(false);
+    expect(shouldOfferProfileCompletion(snoozed, emptyPatientProfile, after)).toBe(true);
+    onboardingStore.write(EMPTY_ONBOARDING_STATE);
   });
 });

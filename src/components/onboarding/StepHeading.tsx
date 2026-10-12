@@ -9,7 +9,7 @@ export function StepHeading({ children }: { children: ReactNode }) {
     headingRef.current?.focus();
   }, []);
   return (
-    <h1 ref={headingRef} tabIndex={-1} className="text-4xl font-black leading-tight text-clinic outline-none">
+    <h1 ref={headingRef} tabIndex={-1} className="text-[1.75rem] font-black leading-tight text-clinic outline-none">
       {children}
     </h1>
   );

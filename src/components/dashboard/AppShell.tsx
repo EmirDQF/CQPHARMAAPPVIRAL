@@ -22,6 +22,7 @@ import { useDeferredDose } from "@/hooks/useDeferredDose";
 import { useHydrated } from "@/hooks/useHydrated";
 import { useRewards } from "@/hooks/useRewards";
 import { FirstRunFlow } from "@/components/onboarding/FirstRunFlow";
+import { ProfileCompletionOffer } from "@/components/onboarding/ProfileCompletionOffer";
 import { ActiveBreak } from "@/components/today/ActiveBreak";
 import { patientProfileStore } from "@/lib/dashboard/patientProfile";
 import { needsOnboarding, onboardingStore } from "@/lib/onboarding/onboarding";
@@ -137,6 +138,7 @@ export function AppShell() {
               }
               footer={
                 <>
+                  <ProfileCompletionOffer />
                   {reminders.shouldOffer && reminders.support && (
                     <ReminderOffer
                       support={reminders.support}

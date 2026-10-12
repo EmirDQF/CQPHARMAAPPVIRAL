@@ -1,15 +1,14 @@
 import { z } from "zod";
-import { PATIENT_AGE_MAX, PATIENT_AGE_MIN } from "../clinical/constants";
-import { MENOPAUSAL_STATUSES, type MenopausalStatus } from "../clinical/tScoreEligibility";
-import type { PatientProfile } from "../dashboard/patientProfile";
+import { parseProfileAgeInput, type PatientProfile } from "../dashboard/patientProfile";
+import type { MenopausalStatus } from "../clinical/tScoreEligibility";
+import { isConsentCurrent } from "../privacy/consent";
 import { createPersistentStore } from "../storage/persistentStore";
 import type { Sex } from "../types";
-import { toLimaIsoDate } from "../utils/date";
 
 /**
- * Primer arranque de /app (splash → bienvenida → consentimiento → perfil →
- * metas). Se guarda local (`artikare_onboarding_v1`, sin datos de salud) y
- * se ejecuta una sola vez. Quien ya tenía perfil no lo repite.
+ * Primer arranque de /app (splash → bienvenida de Artiko → consentimiento →
+ * perfil → metas → Hoy). Se guarda local (`artikare_onboarding_v1`, sin datos
+ * de salud) y se ejecuta una sola vez. Quien ya tenía perfil no lo repite.
  */
 export const ONBOARDING_VERSION = 1;
 export const INTENSITIES = ["light", "normal", "pro"] as const;
@@ -18,12 +17,18 @@ export type Intensity = (typeof INTENSITIES)[number];
 /** Actividades por día según la intensidad elegida. */
 export const DAILY_GOAL_BY_INTENSITY: Readonly<Record<Intensity, number>> = { light: 3, normal: 5, pro: 7 };
 
+/** Días antes de volver a ofrecer completar el perfil a quien entró como invitado y tocó "Ahora no". */
+export const PROFILE_OFFER_SNOOZE_DAYS = 14;
+const DAY_MS = 24 * 60 * 60 * 1000;
+
 const onboardingStateSchema = z.object({
   version: z.literal(ONBOARDING_VERSION),
   /** Marca de flujo en curso: guardar el nombre a mitad de camino no debe cerrarlo. */
   startedAt: z.iso.datetime().nullable().catch(null),
   completedAt: z.iso.datetime().nullable().catch(null),
   intensity: z.enum(INTENSITIES).catch("normal"),
+  /** Último "Ahora no" a la invitación de completar el perfil desde Hoy. */
+  profileOfferSnoozedAt: z.iso.datetime().nullable().catch(null),
 });
 export type OnboardingState = z.infer<typeof onboardingStateSchema>;
 
@@ -32,6 +37,7 @@ export const EMPTY_ONBOARDING_STATE: OnboardingState = {
   startedAt: null,
   completedAt: null,
   intensity: "normal",
+  profileOfferSnoozedAt: null,
 };
 
 export function parseOnboardingState(raw: unknown): OnboardingState | null {
@@ -66,41 +72,45 @@ export function setIntensity(intensity: Intensity): void {
   onboardingStore.write({ ...onboardingStore.getSnapshot(), intensity });
 }
 
-const ISO_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
-
-/** Edad cumplida en hora de Lima; null si la fecha no existe, es futura o no es plausible. */
-export function ageFromBirthDate(birthDate: string, now: Date = new Date()): number | null {
-  const match = ISO_DATE.exec(birthDate);
-  if (!match) return null;
-  const [year, month, day] = match.slice(1).map(Number);
-  const asDate = new Date(Date.UTC(year, month - 1, day));
-  if (asDate.getUTCMonth() !== month - 1 || asDate.getUTCDate() !== day) return null;
-  const today = toLimaIsoDate(now);
-  if (birthDate > today) return null;
-  const [todayYear, todayMonthDay] = [Number(today.slice(0, 4)), today.slice(5)];
-  const age = todayYear - year - (todayMonthDay < birthDate.slice(5) ? 1 : 0);
-  return age >= PATIENT_AGE_MIN && age <= PATIENT_AGE_MAX ? age : null;
+/**
+ * Invitado (negó el consentimiento en el primer arranque): Hoy le vuelve a
+ * ofrecer completar su perfil, salvo que haya dicho "Ahora no" hace poco.
+ */
+export function shouldOfferProfileCompletion(state: OnboardingState, profile: PatientProfile, now: Date = new Date()): boolean {
+  if (state.completedAt === null || isConsentCurrent(profile.consent)) return false;
+  if (state.profileOfferSnoozedAt === null) return true;
+  return now.getTime() - Date.parse(state.profileOfferSnoozedAt) >= PROFILE_OFFER_SNOOZE_DAYS * DAY_MS;
 }
 
-export interface ProfileStepInput {
-  name: string;
-  /** "" = prefiere no decirlo. */
-  birthDate: string;
-  /** null = prefiere no decirlo. */
-  sex: Sex | null;
-  menopausalStatus: MenopausalStatus | null;
+export function snoozeProfileOffer(now: Date = new Date()): void {
+  onboardingStore.write({ ...onboardingStore.getSnapshot(), profileOfferSnoozedAt: now.toISOString() });
 }
 
-export interface ProfileStepValue {
+/** Preguntas del perfil, una por pantalla. La de menopausia solo aparece si el sexo es femenino. */
+export type ProfileQuestion = "name" | "age" | "sex" | "menopause" | "fracture";
+
+export interface ProfileDraft {
   name: string;
   age: number | null;
   sex: Sex | null;
   menopausalStatus: MenopausalStatus | null;
+  /** null = prefiere no decirlo (nunca se asume "No"). */
+  hasFractureHistory: boolean | null;
 }
 
-export type ProfileStepResult =
-  | { ok: true; value: ProfileStepValue }
-  | { ok: false; errors: Partial<Record<"name" | "birthDate", string>> };
+export const EMPTY_PROFILE_DRAFT: ProfileDraft = {
+  name: "",
+  age: null,
+  sex: null,
+  menopausalStatus: null,
+  hasFractureHistory: null,
+};
+
+export function profileQuestions(draft: Pick<ProfileDraft, "sex">): readonly ProfileQuestion[] {
+  return draft.sex === "femenino"
+    ? ["name", "age", "sex", "menopause", "fracture"]
+    : ["name", "age", "sex", "fracture"];
+}
 
 const NAME_MAX = 40;
 const nameSchema = z
@@ -109,18 +119,15 @@ const nameSchema = z
   .min(1, "Escribe tu nombre o cómo te gusta que te llamen.")
   .max(NAME_MAX, `Usa ${NAME_MAX} letras como máximo.`);
 
-/** Valida el paso de perfil (Zod) y deriva la edad: la fecha de nacimiento no se guarda. */
-export function validateProfileStep(input: ProfileStepInput, now: Date = new Date()): ProfileStepResult {
-  const errors: Partial<Record<"name" | "birthDate", string>> = {};
-  const name = nameSchema.safeParse(input.name);
-  if (!name.success) errors.name = name.error.issues[0]?.message;
-  const age = input.birthDate === "" ? null : ageFromBirthDate(input.birthDate, now);
-  if (input.birthDate !== "" && age === null) errors.birthDate = "Revisa la fecha: debe ser un día que ya pasó.";
-  if (!name.success || errors.birthDate) return { ok: false, errors };
+export type FieldResult<T> = { ok: true; value: T } | { ok: false; error: string };
 
-  const menopausalStatus =
-    input.sex === "femenino" && input.menopausalStatus && MENOPAUSAL_STATUSES.includes(input.menopausalStatus)
-      ? input.menopausalStatus
-      : null;
-  return { ok: true, value: { name: name.data, age, sex: input.sex, menopausalStatus } };
+export function validateFirstRunName(raw: string): FieldResult<string> {
+  const parsed = nameSchema.safeParse(raw);
+  return parsed.success ? { ok: true, value: parsed.data } : { ok: false, error: parsed.error.issues[0]?.message ?? "" };
+}
+
+/** Edad en años con teclado numérico; vacío = prefiere no decirlo. Misma regla que el perfil. */
+export function validateFirstRunAge(raw: string): FieldResult<number | null> {
+  const parsed = parseProfileAgeInput(raw);
+  return parsed.ok ? parsed : { ok: false, error: `${parsed.error}, o déjalo vacío si prefieres no decirlo.` };
 }

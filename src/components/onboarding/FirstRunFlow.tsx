@@ -1,73 +1,74 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { ArtikoMascot } from "@/components/mascot/ArtikoMascot";
 import { GameButton } from "@/components/ui/GameButton";
 import { patientProfileStore, savePatientProfile } from "@/lib/dashboard/patientProfile";
-import { completeOnboarding, startOnboarding, type Intensity, type ProfileStepValue } from "@/lib/onboarding/onboarding";
+import {
+  completeOnboarding,
+  profileQuestions,
+  startOnboarding,
+  type Intensity,
+  type ProfileDraft,
+} from "@/lib/onboarding/onboarding";
 import { createConsentRecord } from "@/lib/privacy/consent";
+import { ArtikoSays } from "./ArtikoSays";
 import { ConsentStep } from "./ConsentStep";
 import { GoalsStep } from "./GoalsStep";
-import { SplashStep, WELCOME_SCREEN_COUNT, WelcomeStep } from "./IntroSteps";
+import { SplashStep, WelcomeStep } from "./IntroSteps";
 import { ProfileStep } from "./ProfileStep";
-import { StepHeading } from "./StepHeading";
 import { StepProgress } from "./StepProgress";
 
 type Step =
   | { kind: "splash" }
-  | { kind: "welcome"; index: number }
+  | { kind: "welcome" }
   | { kind: "consent" }
-  | { kind: "profile" }
-  | { kind: "goals" }
+  | { kind: "profile"; question: number; questionCount: number }
+  | { kind: "goals"; questionCount: number }
   | { kind: "arrival"; intensity: Intensity; firstName: string | null };
 
-/** Bienvenida (N pantallas) + consentimiento + perfil + metas. Splash y llegada no cuentan. */
-const PROGRESS_TOTAL = WELCOME_SCREEN_COUNT + 3;
-
-function progressStep(step: Step): number | null {
+/** Avance visible: bienvenida (1) + consentimiento (2) + una por pregunta del perfil + metas. Splash y llegada no cuentan. */
+function progressOf(step: Step): { current: number; total: number } | null {
+  const defaultQuestions = profileQuestions({ sex: null }).length;
   switch (step.kind) {
     case "welcome":
-      return step.index + 1;
+      return { current: 1, total: defaultQuestions + 3 };
     case "consent":
-      return WELCOME_SCREEN_COUNT + 1;
+      return { current: 2, total: defaultQuestions + 3 };
     case "profile":
-      return WELCOME_SCREEN_COUNT + 2;
+      return { current: 3 + step.question, total: step.questionCount + 3 };
     case "goals":
-      return WELCOME_SCREEN_COUNT + 3;
+      return { current: step.questionCount + 3, total: step.questionCount + 3 };
     default:
       return null;
   }
 }
 
-function saveFirstRunProfile(value: ProfileStepValue): void {
-  savePatientProfile({ ...patientProfileStore.getSnapshot(), ...value, consent: createConsentRecord() });
+/** Solo se llama tras aceptar el consentimiento: sin él, nada de salud llega al celular. */
+function saveFirstRunProfile(draft: ProfileDraft): void {
+  savePatientProfile({ ...patientProfileStore.getSnapshot(), ...draft, consent: createConsentRecord() });
 }
 
 function ArrivalStep({ firstName, onEnter }: { firstName: string | null; onEnter: () => void }) {
   return (
-    <div className="flex flex-col items-center gap-6 text-center">
-      <ArtikoMascot emotion="celebrating" size={200} decorative />
-      <StepHeading>{firstName ? `¡Todo listo, ${firstName}! 🎉` : "¡Todo listo! 🎉"}</StepHeading>
+    <div className="flex flex-col gap-6">
+      <ArtikoSays emotion="celebrating">{firstName ? `¡Todo listo, ${firstName}!` : "¡Todo listo!"}</ArtikoSays>
       <p className="text-xl">Tus misiones de hoy te esperan. Empieza por la que quieras.</p>
       <GameButton tone="vital" size="xl" block haptic="success" onClick={onEnter}>
-        Ir a Hoy ☀️
+        Ir a Hoy
       </GameButton>
     </div>
   );
 }
 
 /**
- * Primer arranque de /app, una sola vez y sin cuenta: splash → bienvenida →
- * consentimiento → perfil → metas → llegada. Negarse a dar datos salta el perfil.
+ * Primer arranque de /app, una sola vez y sin cuenta: splash → bienvenida de
+ * Artiko → consentimiento → perfil (una pregunta por pantalla) → metas →
+ * llegada. Negarse a dar datos salta el perfil y deja usar la app como invitado.
  */
 export function FirstRunFlow() {
   const [step, setStep] = useState<Step>({ kind: "splash" });
   useEffect(() => startOnboarding(), []);
-  const endSplash = useCallback(() => setStep((current) => (current.kind === "splash" ? { kind: "welcome", index: 0 } : current)), []);
-
-  function nextWelcome(index: number) {
-    setStep(index + 1 < WELCOME_SCREEN_COUNT ? { kind: "welcome", index: index + 1 } : { kind: "consent" });
-  }
+  const endSplash = useCallback(() => setStep((current) => (current.kind === "splash" ? { kind: "welcome" } : current)), []);
 
   function finishGoals(intensity: Intensity) {
     const name = patientProfileStore.getSnapshot().name.trim();
@@ -82,19 +83,26 @@ export function FirstRunFlow() {
     );
   }
 
+  const progress = progressOf(step);
+  const defaultQuestionCount = profileQuestions({ sex: null }).length;
+
   return (
     <div className="ambient-canvas fixed inset-0 z-[60] overflow-y-auto">
       <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center px-4 py-8 text-lg">
-        {progressStep(step) !== null && <StepProgress current={progressStep(step)!} total={PROGRESS_TOTAL} />}
-        {step.kind === "welcome" && <WelcomeStep key={step.index} index={step.index} onNext={() => nextWelcome(step.index)} />}
+        {progress && <StepProgress current={progress.current} total={progress.total} />}
+        {step.kind === "welcome" && <WelcomeStep onNext={() => setStep({ kind: "consent" })} />}
         {step.kind === "consent" && (
-          <ConsentStep onAccept={() => setStep({ kind: "profile" })} onDecline={() => setStep({ kind: "goals" })} />
+          <ConsentStep
+            onAccept={() => setStep({ kind: "profile", question: 0, questionCount: defaultQuestionCount })}
+            onDecline={() => setStep({ kind: "goals", questionCount: defaultQuestionCount })}
+          />
         )}
         {step.kind === "profile" && (
           <ProfileStep
-            onSave={(value) => {
-              saveFirstRunProfile(value);
-              setStep({ kind: "goals" });
+            onQuestionChange={(question, questionCount) => setStep({ kind: "profile", question, questionCount })}
+            onSave={(draft) => {
+              saveFirstRunProfile(draft);
+              setStep({ kind: "goals", questionCount: profileQuestions(draft).length });
             }}
           />
         )}

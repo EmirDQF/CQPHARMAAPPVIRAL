@@ -36,7 +36,7 @@ function deferredDose(): DeferredDose {
 
 function renderToday(date: string) {
   vi.setSystemTime(new Date(`${date}T10:00:00-05:00`));
-  onboardingStore.write({ version: 1, startedAt: null, completedAt: `${date}T13:00:00.000Z`, intensity: "pro" });
+  onboardingStore.write({ ...EMPTY_ONBOARDING_STATE, completedAt: `${date}T13:00:00.000Z`, intensity: "pro" });
   return render(<MyDay firstName="Rosa" onOpenBoneTab={vi.fn()} deferredDose={deferredDose()} />);
 }
 

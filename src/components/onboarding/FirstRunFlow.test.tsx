@@ -2,7 +2,7 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { patientProfileStore, emptyPatientProfile } from "@/lib/dashboard/patientProfile";
-import { EMPTY_ONBOARDING_STATE, onboardingStore } from "@/lib/onboarding/onboarding";
+import { EMPTY_ONBOARDING_STATE, needsOnboarding, onboardingStore } from "@/lib/onboarding/onboarding";
 import { CONSENT_VERSION } from "@/lib/privacy/consent";
 import { FirstRunFlow } from "./FirstRunFlow";
 import { SPLASH_DURATION_MS } from "./IntroSteps";
@@ -13,68 +13,149 @@ afterEach(() => {
   vi.useRealTimers();
   onboardingStore.write(EMPTY_ONBOARDING_STATE);
   patientProfileStore.write(emptyPatientProfile);
+  window.localStorage.clear();
 });
 
 function click(name: RegExp | string) {
   fireEvent.click(screen.getByRole("button", { name }));
 }
 
-function passIntro() {
-  click(/Toca para continuar/);
-  click("¡Vamos! 🎉");
-  click("¡Me gusta! 💪");
+function heading(): string {
+  return screen.getByRole("heading", { level: 1 }).textContent ?? "";
+}
+
+function acceptConsent() {
+  fireEvent.click(screen.getByRole("checkbox"));
+  click("Acepto y sigo");
 }
 
 describe("FirstRunFlow", () => {
-  it("leaves the splash by itself in at most 1.5 s", () => {
+  it("leaves the splash by itself in at most 1.5 s and greets with a single Artiko welcome", () => {
     vi.useFakeTimers();
     render(<FirstRunFlow />);
     act(() => vi.advanceTimersByTime(SPLASH_DURATION_MS));
-    expect(screen.getByRole("heading", { name: /Soy Artiko/ })).toBeInTheDocument();
+    expect(heading()).toBe("Hola, soy Artiko, cuéntame de ti");
+    expect(screen.getByText("Paso 1 de 7")).toBeInTheDocument();
   });
 
-  it("asks consent before any personal data and saves only the age", () => {
+  it("reaches the consent form in two taps: splash → welcome → consent", () => {
     render(<FirstRunFlow />);
-    passIntro();
+    click(/Toca para continuar/);
+    click("Empezar");
+    expect(heading()).toBe("Tus datos, tus reglas");
+    expect(screen.getByRole("checkbox")).toBeInTheDocument();
+  });
+
+  it("asks consent first, then one question per screen in order, and saves the profile", () => {
+    render(<FirstRunFlow />);
+    click(/Toca para continuar/);
+    click("Empezar");
     expect(screen.queryByLabelText("¿Cómo te llamo?")).toBeNull();
 
-    click(/Acepto y sigo/);
-    expect(screen.getByRole("heading", { name: /Tus datos, tus reglas/ })).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("checkbox"));
-    click(/Acepto y sigo/);
+    click("Acepto y sigo");
+    expect(heading()).toBe("Tus datos, tus reglas");
+    acceptConsent();
 
-    click("Guardar y seguir");
+    const seen: string[] = [];
+    seen.push(heading());
+    click("Siguiente");
     expect(screen.getByText("Escribe tu nombre o cómo te gusta que te llamen.")).toBeInTheDocument();
-
     fireEvent.change(screen.getByLabelText("¿Cómo te llamo?"), { target: { value: "Rosa María" } });
-    fireEvent.change(screen.getByLabelText(/Fecha de nacimiento/), { target: { value: "1960-05-20" } });
+    click("Siguiente");
+
+    seen.push(heading());
+    const ageInput = screen.getByLabelText("¿Cuántos años tienes?");
+    expect(ageInput).toHaveAttribute("inputmode", "numeric");
+    fireEvent.change(ageInput, { target: { value: "150" } });
+    click("Siguiente");
+    expect(screen.getByText(/déjalo vacío si prefieres no decirlo/)).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText("¿Cuántos años tienes?"), { target: { value: "66" } });
+    click("Siguiente");
+
+    seen.push(heading());
     fireEvent.click(screen.getByRole("radio", { name: "Femenino" }));
-    fireEvent.click(screen.getByRole("radio", { name: "Ya pasé la menopausia" }));
+    click("Siguiente");
+
+    seen.push(heading());
+    fireEvent.click(screen.getByRole("radio", { name: "Sí, ya la pasé" }));
+    click("Siguiente");
+
+    seen.push(heading());
+    fireEvent.click(screen.getByRole("radio", { name: "Sí" }));
+    expect(patientProfileStore.getSnapshot()).toEqual(emptyPatientProfile);
     click("Guardar y seguir");
 
-    const saved = patientProfileStore.getSnapshot();
-    expect(saved).toMatchObject({ name: "Rosa María", sex: "femenino", menopausalStatus: "posmenopausica" });
-    expect(saved.age).toBeGreaterThanOrEqual(65);
-    expect(saved.consent?.consentVersion).toBe(CONSENT_VERSION);
-    expect(window.localStorage.getItem("artikare_patient_profile_v1")).not.toContain("1960-05-20");
+    expect(seen).toEqual([
+      "¿Cómo te llamo?",
+      "¿Cuántos años tienes?",
+      "¿Cuál es tu sexo?",
+      "¿Ya pasaste la menopausia?",
+      "¿Alguna vez te fracturaste un hueso?",
+    ]);
+    expect(patientProfileStore.getSnapshot()).toMatchObject({
+      name: "Rosa María",
+      age: 66,
+      sex: "femenino",
+      menopausalStatus: "posmenopausica",
+      hasFractureHistory: true,
+    });
+    expect(patientProfileStore.getSnapshot().consent?.consentVersion).toBe(CONSENT_VERSION);
 
+    expect(heading()).toBe("¿Cuántas misiones al día?");
     fireEvent.click(screen.getByRole("radio", { name: /Pro · 7 al día/ }));
-    click(/¡Listo!/);
-    expect(screen.getByRole("heading", { name: "¡Todo listo, Rosa! 🎉" })).toBeInTheDocument();
-    click(/Ir a Hoy/);
+    click("¡Listo!");
+    expect(heading()).toBe("¡Todo listo, Rosa!");
+    click("Ir a Hoy");
     expect(onboardingStore.getSnapshot()).toMatchObject({ intensity: "pro" });
-    expect(onboardingStore.getSnapshot().completedAt).not.toBeNull();
+    expect(needsOnboarding(onboardingStore.getSnapshot(), patientProfileStore.getSnapshot())).toBe(false);
   });
 
-  it("lets the person skip all personal data and still use the app", () => {
+  it("skips the menopause question for men and lets 'prefer not to say' through", () => {
     render(<FirstRunFlow />);
-    passIntro();
+    click(/Toca para continuar/);
+    click("Empezar");
+    acceptConsent();
+    fireEvent.change(screen.getByLabelText("¿Cómo te llamo?"), { target: { value: "Luis" } });
+    click("Siguiente");
+    click("Siguiente");
+    fireEvent.click(screen.getByRole("radio", { name: "Masculino" }));
+    click("Siguiente");
+    expect(heading()).toBe("¿Alguna vez te fracturaste un hueso?");
+    click("Guardar y seguir");
+    expect(patientProfileStore.getSnapshot()).toMatchObject({
+      name: "Luis",
+      age: null,
+      sex: "masculino",
+      menopausalStatus: null,
+      hasFractureHistory: null,
+    });
+  });
+
+  it("goes back one question without losing what was typed", () => {
+    render(<FirstRunFlow />);
+    click(/Toca para continuar/);
+    click("Empezar");
+    acceptConsent();
+    fireEvent.change(screen.getByLabelText("¿Cómo te llamo?"), { target: { value: "Rosa" } });
+    click("Siguiente");
+    click("Atrás");
+    expect(screen.getByLabelText("¿Cómo te llamo?")).toHaveValue("Rosa");
+  });
+
+  it("without consent saves no health data and lets the person continue as a guest", () => {
+    render(<FirstRunFlow />);
+    click(/Toca para continuar/);
+    click("Empezar");
     click("Prefiero no dar mis datos");
-    expect(screen.getByRole("heading", { name: /Tu meta diaria/ })).toBeInTheDocument();
-    click(/¡Listo!/);
-    expect(screen.getByRole("heading", { name: "¡Todo listo! 🎉" })).toBeInTheDocument();
-    click(/Ir a Hoy/);
+    expect(heading()).toBe("¿Cuántas misiones al día?");
+    click("¡Listo!");
+    expect(heading()).toBe("¡Todo listo!");
+    click("Ir a Hoy");
+
     expect(patientProfileStore.getSnapshot()).toEqual(emptyPatientProfile);
+    expect(window.localStorage.getItem("artikare_patient_profile_v1")).toBeNull();
+    const stored = window.localStorage.getItem("artikare_onboarding_v1") ?? "";
+    expect(stored).not.toMatch(/age|sex|fractur|menopaus/i);
     expect(onboardingStore.getSnapshot().completedAt).not.toBeNull();
   });
 });

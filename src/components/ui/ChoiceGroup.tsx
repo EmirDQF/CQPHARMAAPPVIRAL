@@ -13,6 +13,8 @@ interface ChoiceGroupProps<T extends string> {
   onChange: (value: T) => void;
   stacked?: boolean;
   hint?: string;
+  /** La pregunta ya está visible como título (p. ej. en el globo de Artiko): la leyenda queda solo para lectores de pantalla. */
+  isLegendVisuallyHidden?: boolean;
 }
 
 /**
@@ -27,11 +29,12 @@ export function ChoiceGroup<T extends string>({
   onChange,
   stacked = false,
   hint,
+  isLegendVisuallyHidden = false,
 }: ChoiceGroupProps<T>) {
   const hintId = hint ? `${name}-hint` : undefined;
   return (
     <fieldset aria-describedby={hintId} className="flex flex-col gap-1">
-      <legend className="text-lg font-bold">{legend}</legend>
+      <legend className={isLegendVisuallyHidden ? "sr-only" : "text-lg font-bold"}>{legend}</legend>
       {hint && (
         <p id={hintId} className="text-base text-muted">
           {hint}

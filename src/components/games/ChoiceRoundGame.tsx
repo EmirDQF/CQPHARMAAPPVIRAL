@@ -50,9 +50,9 @@ export function ChoiceRoundGame({ title, cards, onExit, onRoundEnd }: ChoiceRoun
         {card.prompt}
       </p>
       <div role="group" aria-label="Opciones" className="flex flex-col gap-3">
-        {card.options.map((option) => (
+        {card.options.map((option, optionIndex) => (
           <GameButton
-            key={option}
+            key={`${card.id}-${optionIndex}`}
             tone={chosen !== null && option === card.correct ? "vital" : "surface"}
             size="xl"
             block

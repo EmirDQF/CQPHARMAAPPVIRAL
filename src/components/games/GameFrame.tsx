@@ -16,7 +16,7 @@ interface GameFrameProps {
 
 /** Marco común: volver, título, avance (sin reloj) y Artiko reaccionando. */
 export function GameFrame({ title, step, total, emotion, onExit, children }: GameFrameProps) {
-  const percent = Math.round((Math.min(step, total) / total) * 100);
+  const percent = total <= 0 ? 0 : Math.round((Math.min(step, total) / total) * 100);
   return (
     <section aria-labelledby="juego-titulo" className="flex flex-col gap-4">
       <div className="flex items-center gap-3">

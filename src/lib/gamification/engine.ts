@@ -3,6 +3,7 @@ import type { PainLogEntry, PillboxState } from "../dashboard/types";
 import type { ArtikoAccessory } from "../mascot/mascot";
 import { addDaysToIsoDate } from "../utils/date";
 import { computeGraceStreak, type StreakSummary } from "./graceStreak";
+import { learningDates, learningXpTotal } from "./learning";
 import type { GameProgress, UnlockedItem } from "./progress";
 import type { GameRule, GameUnlock } from "./unlocks";
 
@@ -10,6 +11,7 @@ import type { GameRule, GameUnlock } from "./unlocks";
  * Reglas puras del juego (fechas de Lima). Todo se deriva del historial:
  * XP = suma del XP de cada actividad, una sola vez por actividad y día. El
  * valor de dolor no suma ni resta; comprar no da puntos. Nada se pierde.
+ * Aprender (lecciones y juegos) suma XP con tope diario y cuenta como día activo.
  */
 export const XP_PER_LEVEL = 100;
 export const WEEK_DAYS = 7;
@@ -126,12 +128,14 @@ function countCategoryDays(catalog: readonly Activity[], days: readonly DayRecor
 
 export function computeGameStats(catalog: readonly Activity[], sources: GameSources, today: string, dailyGoal: number): GameStats {
   const days = activeDays(catalog, sources, today);
-  const xp = totalXp(catalog, days);
+  const learning = sources.progress.learning ?? {};
+  const xp = totalXp(catalog, days) + learningXpTotal(learning, today);
+  const activeDates = new Set([...days.map((day) => day.date), ...learningDates(learning, today)]);
   return {
     xp,
     level: levelFromXp(xp),
-    streak: computeGraceStreak(new Set(days.map((day) => day.date)), today),
-    activeDayCount: days.length,
+    streak: computeGraceStreak(activeDates, today),
+    activeDayCount: activeDates.size,
     goalDayCount: days.filter((day) => day.ids.size >= dailyGoal).length,
     categoryDays: countCategoryDays(catalog, days),
     week: weeklyChallenge(days, today),

@@ -13,6 +13,8 @@ import { toLimaIsoDate } from "../utils/date";
 export const GAME_PROGRESS_VERSION = 1;
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const ACTIVITY_ID = /^[a-z0-9-]{3,40}$/;
+/** "lesson:<id>" o "game:<id>": lecciones de Aprender y juegos completados. */
+export const LEARNING_KEY = /^(lesson|game):[a-z0-9-]{3,40}$/;
 
 const unlockedSchema = z.object({ key: z.string().min(1), unlockId: z.string().min(1), on: z.string().regex(ISO_DATE) });
 export type UnlockedItem = z.infer<typeof unlockedSchema>;
@@ -23,6 +25,8 @@ const gameProgressSchema = z.object({
   unlocked: z.array(unlockedSchema).catch([]),
   celebratedKeys: z.array(z.string()).catch([]),
   equipped: z.array(z.enum(ARTIKO_ACCESSORIES)).catch([]),
+  /** Lecciones y juegos completados por día de Lima (cada uno cuenta una vez al día). */
+  learning: z.record(z.string().regex(ISO_DATE), z.array(z.string().regex(LEARNING_KEY))).catch({}),
   /** Último día de Lima en que se abrió /app (bienvenida de retorno, pausa de avisos). */
   lastOpenedOn: z.string().regex(ISO_DATE).nullable().catch(null),
   /** Apertura anterior a `lastOpenedOn`: decide la bienvenida de retorno de hoy. */
@@ -36,6 +40,7 @@ export const EMPTY_GAME_PROGRESS: GameProgress = {
   unlocked: [],
   celebratedKeys: [],
   equipped: [],
+  learning: {},
   lastOpenedOn: null,
   previousOpenedOn: null,
 };

@@ -5,10 +5,10 @@ import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { BrandMark } from "@/components/brand/BrandMark";
 import Link from "next/link";
 import {
-  Award,
+  BookOpen,
   CalendarPlus,
-  ChartLine,
-  Pill,
+  Gamepad2,
+  HeartPulse,
   Printer,
   Settings,
   Stethoscope,
@@ -26,6 +26,7 @@ import { useRewards } from "@/hooks/useRewards";
 import { FirstRunFlow } from "@/components/onboarding/FirstRunFlow";
 import { ProfileCompletionOffer } from "@/components/onboarding/ProfileCompletionOffer";
 import { ActiveBreak } from "@/components/today/ActiveBreak";
+import { LearnHub } from "@/components/learn/LearnHub";
 import { patientProfileStore } from "@/lib/dashboard/patientProfile";
 import { needsOnboarding, onboardingStore } from "@/lib/onboarding/onboarding";
 import { AchievementsShowcase } from "@/components/rewards/AchievementsShowcase";
@@ -44,7 +45,7 @@ import { ReminderOffer } from "./ReminderOffer";
 import { RestockAlert } from "./RestockAlert";
 import { TreatmentTracker } from "./TreatmentTracker";
 
-type TabId = "hoy" | "hueso" | "tratamiento" | "logros" | "reumatologo";
+type TabId = "hoy" | "salud" | "aprender" | "jugar" | "reumatologo";
 
 interface TabDefinition {
   id: TabId;
@@ -55,14 +56,14 @@ interface TabDefinition {
 // Orden y nombres de la navegación inferior (los id internos no cambian).
 const TABS: TabDefinition[] = [
   { id: "hoy", label: "Mi día", icon: Sun },
-  { id: "tratamiento", label: "Pastillero", icon: Pill },
-  { id: "hueso", label: "Progreso", icon: ChartLine },
-  { id: "logros", label: "Logros", icon: Award },
+  { id: "salud", label: "Mi salud", icon: HeartPulse },
+  { id: "aprender", label: "Aprender", icon: BookOpen },
+  { id: "jugar", label: "Jugar", icon: Gamepad2 },
   { id: "reumatologo", label: "Médico", icon: Stethoscope },
 ];
 
-/** "Mi día" y "Logros" traen su propio h1 visible; el resto anuncia la vista para lectores de pantalla. */
-const TABS_WITH_OWN_HEADING: ReadonlySet<TabId> = new Set(["hoy", "logros"]);
+/** Estas pestañas traen su propio h1 visible; el resto anuncia la vista para lectores de pantalla. */
+const TABS_WITH_OWN_HEADING: ReadonlySet<TabId> = new Set(["hoy", "aprender", "jugar"]);
 
 export function AppShell() {
   const [activeTab, setActiveTab] = useState<TabId>("hoy");
@@ -131,13 +132,13 @@ export function AppShell() {
           <>
             <MyDay
               firstName={patientFirstName}
-              onOpenBoneTab={() => setActiveTab("hueso")}
+              onOpenBoneTab={() => setActiveTab("salud")}
               deferredDose={deferredDose}
               celebration={
                 <RewardCelebration
                   celebrations={rewards.celebrations}
                   onDismiss={rewards.dismissCelebrations}
-                  onOpenAchievements={() => setActiveTab("logros")}
+                  onOpenAchievements={() => setActiveTab("jugar")}
                 />
               }
               footer={
@@ -159,16 +160,17 @@ export function AppShell() {
           </>
         )}
 
-        {activeTab === "hueso" && <DexaVaultSection />}
-
-        {activeTab === "logros" && <AchievementsShowcase rewards={rewards} />}
-
-        {activeTab === "tratamiento" && (
+        {activeTab === "salud" && (
           <>
+            <DexaVaultSection />
             <TreatmentTracker />
             <RestockAlert />
           </>
         )}
+
+        {activeTab === "aprender" && <LearnHub />}
+
+        {activeTab === "jugar" && <AchievementsShowcase rewards={rewards} />}
 
         {activeTab === "reumatologo" && (
           <>

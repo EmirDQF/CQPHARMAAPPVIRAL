@@ -76,7 +76,7 @@ for (const path of ["/app", "/app/reporte-medico"]) {
   test(`${path} sin densitometría no inventa T-scores`, async ({ page }) => {
     const errors = collectConsoleErrors(page);
     await page.goto(path);
-    if (path === "/app") await page.getByRole("button", { name: /Progreso/ }).click();
+    if (path === "/app") await page.getByRole("button", { name: /Mi salud/ }).click();
 
     await expect(page.getByText("Sin densitometría registrada").first()).toBeVisible();
     await expect(page.getByText("Sube tu densitometría").first()).toBeVisible();
@@ -126,7 +126,7 @@ test("/app con perfil premenopáusico muestra Z-score sin semáforo OMS", async 
     );
   });
   await page.goto("/app");
-  await page.getByRole("button", { name: /Progreso/ }).click();
+  await page.getByRole("button", { name: /Mi salud/ }).click();
 
   await expect(page.getByText("Consulte a su médico (Z-score)").first()).toBeVisible();
   await expect(page.getByRole("link", { name: "Agendar evaluación reumatológica" }).first()).toBeVisible();
@@ -138,7 +138,7 @@ test("/app con perfil premenopáusico muestra Z-score sin semáforo OMS", async 
 test("los modales nativos abren, no desbordan y cierran con Escape", async ({ page }) => {
   const errors = collectConsoleErrors(page);
   await page.goto("/app");
-  await page.getByRole("button", { name: /Progreso/ }).click();
+  await page.getByRole("button", { name: /Mi salud/ }).click();
 
   await page.getByRole("button", { name: "Sube tu densitometría" }).first().click();
   const dexaDialog = page.getByRole("dialog", { name: "Bóveda Densitométrica DEXA" });

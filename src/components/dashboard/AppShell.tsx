@@ -99,11 +99,12 @@ export function AppShell() {
   return (
     <div className="ambient-canvas flex flex-col min-h-dvh">
       <header className="sticky top-0 z-30 bg-surface/80 backdrop-blur-md border-b border-line/70 px-4 py-3 flex flex-col gap-3">
-        <div className="flex items-center justify-between gap-3">
+        {/* Con letra grande los botones bajan a una segunda línea en vez de desbordar a 375 px. */}
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-lg">
             <BrandMark />
           </p>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center justify-end gap-2">
             <SoundToggle />
             <ThemeToggle />
             <PatientProfileLauncher />

@@ -36,7 +36,7 @@ function GameCard({ game, best, onPlay }: { game: MiniGame; best: string | null;
         <span className="flex flex-1 flex-col">
           <span className="text-xl font-black text-clinic">{game.title}</span>
           <span className="text-lg text-muted">{game.description}</span>
-          <span className="text-base text-muted">
+          <span className="text-lg text-muted">
             {game.minutes} min · sin reloj{best ? ` · Mejor: ${best}` : ""}
           </span>
         </span>

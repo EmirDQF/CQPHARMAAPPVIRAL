@@ -63,3 +63,16 @@ Emojis: solo acento visual junto a un texto, con `aria-hidden="true"`; nunca com
 3. Corre `npx vitest run src/lib/rewards`: si pasa, la vitrina y la celebración lo muestran sin tocar componentes. Para un catálogo remoto, crea otro adaptador de `RewardCatalogRepository` (`src/lib/rewards/repository.ts`) que use `parseCatalogOrFallback`.
 
 El progreso vive en `artikare_rewards_v1` (versionado, con migración), solo en el celular y dentro de "exportar/borrar mis datos" (ARCO). No guarda datos clínicos.
+
+## Mi salud, Aprender y Jugar (2026-10-16)
+
+Mismo sistema: pastel claro, tinta oscura, sin relieve 3D ni degradados, objetivos ≥ 48 px, texto ≥ 18 px (salvo pies de fuente de 16 px). La riqueza visual sale de tarjetas, barras y anillos animados, insignias e ilustraciones SVG propias.
+
+- **Navegación inferior (5):** Mi día · Mi salud · Aprender · Jugar · Médico. "Pastillero" y "Progreso" pasan a Mi día / Mi salud; "Logros" vive al final de Jugar.
+- **Mi salud** (`dashboard/health/`): una sola "Tu siguiente paso" (`pickNextBestAction`, bandera roja primero, en rosa con borde de riesgo), Semáforo Óseo o "Sin densitometría registrada", `ProgressRing` (tomas 7/30 días, racha, nivel), dolor 7/30 días y rigidez de 30 días **solo con lo registrado**, citas y tratamiento. Esqueleto de carga mientras no hay hora real.
+- **`ProgressRing`** (`ui/`): SVG propio, tonos `vital`/`sky`/`streak`/`xp`, `role="img"` con el valor completo.
+- **Aprender** (`learn/`): tarjetas de lección con emoji en círculo lavanda, barra de lecciones leídas, hoja inferior con idea clave en menta y "Preguntar a mi médico" en cielo; descargo siempre visible.
+- **Jugar** (`games/`): `GameFrame` (volver, avance sin reloj, Artiko reaccionando), `ChoiceRoundGame` reutilizable (Mito, Escudo, Quiz), Plato, Casa segura (ilustración `HomeIllustration` con tokens `fill-*`) y Memoria. Explicación en cielo tras cada respuesta, con su fuente.
+- **Recompensas:** `LearningRewardModal` (Artiko celebrando, chip `+N XP` en `xp`, insignias nuevas en `gold`, mensaje cálido). Cofre del día en `gold`. Accesorio nuevo de Artiko: `medal` (medalla del saber).
+- **Sonidos** (`lib/feedback/sounds.ts`): `correct`, `softError` (grave, seno, volumen ≤ 0.08), `fanfare` (~1.5 s), `streak`, `chest`. Solo tras un toque; botón "Sonidos" en la cabecera = mismo interruptor de Ajustes.
+- **Movimiento:** todo pasa por transiciones cortas; con `prefers-reduced-motion` la regla global anula animaciones (verificado: el pulso de Casa segura pasa de 2 s a 0.00001 s).

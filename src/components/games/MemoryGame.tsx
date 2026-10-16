@@ -59,6 +59,7 @@ export function MemoryGame({ pairs, cards, onExit, onRoundEnd }: MemoryGameProps
                 onClick={() => flip(card)}
                 aria-label={isOpen ? card.text : "Carta tapada"}
                 aria-pressed={isOpen}
+                aria-disabled={isMatched}
                 className={`press-scale flex min-h-24 w-full items-center justify-center rounded-control border-2 p-2 text-center text-lg font-bold ${
                   isMatched ? "border-vital-deep bg-vital text-vital-ink" : isOpen ? "border-sky-deep bg-sky text-sky-ink" : "border-line bg-pastel-lavender text-pastel-lavender-ink"
                 }`}

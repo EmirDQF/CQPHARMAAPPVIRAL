@@ -49,7 +49,7 @@ export function LessonSheet({ lesson, onComplete, onClose }: LessonSheetProps) {
         </div>
       )}
 
-      <p className="text-base text-muted">
+      <p className="text-lg text-muted">
         {LEARN_DISCLAIMER} Referencia general: {lesson.source}. Contenido pendiente de revisión médica.
       </p>
       <GameButton tone="vital" block haptic="success" onClick={onComplete}>

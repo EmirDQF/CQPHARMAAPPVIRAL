@@ -37,7 +37,7 @@ export function StiffnessSummary({ now }: { now: Date }) {
           ))}
         </ul>
       )}
-      <p className="text-base text-muted">Muestra solo lo que registraste. Tu médico lo interpreta contigo.</p>
+      <p className="text-lg text-muted">Muestra solo lo que registraste. Tu médico lo interpreta contigo.</p>
     </section>
   );
 }

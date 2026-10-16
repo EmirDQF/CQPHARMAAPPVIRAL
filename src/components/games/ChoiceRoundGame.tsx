@@ -70,7 +70,7 @@ export function ChoiceRoundGame({ title, cards, onExit, onRoundEnd }: ChoiceRoun
         <div role="status" className="flex flex-col gap-2 rounded-control bg-pastel-sky px-4 py-3 text-pastel-sky-ink">
           <p className="text-xl font-black">{isRight ? "¡Correcto! 🎉" : "Casi. Mira por qué: 💡"}</p>
           <p className="text-lg">{card.explanation}</p>
-          <p className="text-base">Referencia general: {card.source}</p>
+          <p className="text-lg">Referencia general: {card.source}</p>
         </div>
       )}
       {chosen !== null && (

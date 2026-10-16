@@ -48,12 +48,12 @@ function LessonCard({ lesson, doneToday, onOpen }: { lesson: Lesson; doneToday: 
         </span>
         <span className="flex flex-1 flex-col">
           <span className="text-lg font-black text-clinic">{lesson.title}</span>
-          <span className="text-base text-muted">
+          <span className="text-lg text-muted">
             {lesson.minutes} min · {lesson.summary}
           </span>
         </span>
         {doneToday && (
-          <span className="flex items-center gap-1 rounded-full bg-pastel-mint px-2 py-1 text-base font-bold text-pastel-mint-ink">
+          <span className="flex items-center gap-1 rounded-full bg-pastel-mint px-2 py-1 text-lg font-bold text-pastel-mint-ink">
             <Check aria-hidden="true" className="size-4" /> Hoy
           </span>
         )}

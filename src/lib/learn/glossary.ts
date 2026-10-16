@@ -28,7 +28,7 @@ const RAW_GLOSSARY: readonly GlossaryTerm[] = [
   term("Gota", "Artritis causada por cristales de ácido úrico. Suele empezar de golpe, a menudo en el dedo gordo del pie.", "ACR"),
   term("Lumbalgia", "Dolor en la parte baja de la espalda. Es muy frecuente y suele mejorar en semanas.", "OMS"),
   term("Menopausia", "Fin de las menstruaciones. Después de ella baja el estrógeno y la pérdida de hueso puede acelerarse.", "IOF"),
-  term("Osteopenia", "Densidad ósea más baja de lo normal, sin llegar a osteoporosis: T-score entre -1.0 y -2.5.", "OMS"),
+  term("Osteopenia", "Densidad ósea más baja de lo normal, sin llegar a osteoporosis: T-score por debajo de -1.0 y por encima de -2.5.", "OMS"),
   term("Osteoporosis", "Enfermedad que vuelve frágiles los huesos. En la densitometría corresponde a un T-score de -2.5 o menos.", "OMS"),
   term("Reumatólogo", "Médico especialista en enfermedades de las articulaciones, los huesos, los músculos y autoinmunes.", "SER"),
   term("Rigidez matutina", "Sensación de articulaciones duras al despertar. Su duración ayuda al médico a orientar el diagnóstico.", "EULAR"),

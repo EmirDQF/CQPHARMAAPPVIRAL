@@ -52,6 +52,13 @@ describe("learning XP with a daily cap", () => {
     expect(stats.streak.days).toBe(1);
   });
 
+  it("counts learning-only days in the weekly challenge", () => {
+    const week = ["2026-10-12", "2026-10-13", "2026-10-14", "2026-10-15", "2026-10-16", "2026-10-17", "2026-10-18"];
+    const progress = week.reduce((acc, date) => withLearningCompleted(acc, "lesson", "gota", date).progress, EMPTY_GAME_PROGRESS);
+    const stats = computeGameStats(ACTIVITY_CATALOG, { pillbox: { takenDoseIdsByDate: {} }, painEntries: [], progress }, "2026-10-18", 3);
+    expect(stats.week.done).toBe(true);
+  });
+
   it("lists every distinct lesson or game ever completed", () => {
     const { progress } = complete(EMPTY_GAME_PROGRESS, [["lesson", "gota"], ["game", "casa-segura"]]);
     expect([...learnedKeys(progress.learning)]).toEqual(["lesson:gota", "game:casa-segura"]);

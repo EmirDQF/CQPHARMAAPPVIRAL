@@ -107,12 +107,12 @@ const RAW_LESSONS: readonly Lesson[] = [
     topic: "densitometria",
     minutes: 2,
     body: [
-      "Según la OMS, un T-score de -1.0 o más es normal. Entre -1.0 y -2.5 se llama osteopenia. Un T-score de -2.5 o menos corresponde a osteoporosis.",
-      "Se toma en cuenta el valor más bajo entre la columna lumbar y la cadera.",
+      "Según la OMS, un T-score de -1.0 o más es normal. Por debajo de -1.0 y por encima de -2.5 se llama osteopenia. Un T-score de -2.5 o menos corresponde a osteoporosis.",
+      "Se toma en cuenta el valor más bajo entre la columna lumbar y el cuello femoral (en la cadera).",
       "Esta regla se usa en mujeres después de la menopausia y en hombres desde los 50 años. En personas más jóvenes el médico usa el Z-score.",
       "El número es una parte de la evaluación: tu médico también considera tu edad, tus antecedentes y otros factores.",
     ],
-    keyPoint: "Verde: -1.0 o más. Amarillo: entre -1.0 y -2.5. Rojo: -2.5 o menos.",
+    keyPoint: "Verde: -1.0 o más. Amarillo: menos de -1.0 y más de -2.5. Rojo: -2.5 o menos.",
     doctorQuestions: [
       "¿Cuál fue mi T-score más bajo y en qué zona?",
       "¿Debo usar el T-score o el Z-score en mi caso?",
@@ -302,7 +302,7 @@ const RAW_LESSONS: readonly Lesson[] = [
     body: [
       "La fibromialgia causa dolor generalizado que dura meses, junto con cansancio, un sueño que no deja descansar y, a veces, dificultad para concentrarse.",
       "No daña las articulaciones ni los músculos, aunque el dolor es real.",
-      "El manejo suele combinar información, actividad física gradual y cuidado del sueño, con el acompañamiento del médico.",
+      "El manejo se define con tu médico, y suele incluir información y cuidado del sueño.",
     ],
     keyPoint: "El dolor de la fibromialgia es real. Un plan con tu médico ayuda a manejarlo.",
     doctorQuestions: [
@@ -322,7 +322,7 @@ const RAW_LESSONS: readonly Lesson[] = [
     minutes: 2,
     body: [
       "La mayoría de las personas tendrá dolor lumbar alguna vez. En muchos casos mejora en pocas semanas.",
-      "Mantenerse activo dentro de lo que el dolor permite suele ser mejor que el reposo prolongado en cama.",
+      "Tu médico te dirá qué actividades puedes seguir haciendo mientras mejora.",
       "Consulta pronto si el dolor viene con fiebre, pérdida de peso sin razón, debilidad o adormecimiento en las piernas, problemas para orinar o después de un golpe fuerte.",
     ],
     keyPoint: "Dolor lumbar con fiebre, debilidad en las piernas o problemas para orinar: consulta pronto.",

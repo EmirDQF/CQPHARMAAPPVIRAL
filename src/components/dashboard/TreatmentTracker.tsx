@@ -6,9 +6,10 @@ import { buildBottleStatuses } from "@/lib/dashboard/bottleTracking";
 import { bottlesStore } from "@/lib/dashboard/bottles";
 import { pillboxStore } from "@/lib/dashboard/pillbox";
 
+// Sin mecanismos ni beneficios atribuidos a los suplementos (CLAUDE.md): solo recordatorios.
 const ABSORPTION_TIPS = [
-  "Tomar el Citrato de Magnesio por la noche puede contribuir a la relajación muscular y apoyar tu salud ósea.",
-  "Tu Colágeno Hidrolizado se complementa con Vitamina C, que contribuye a la formación normal de colágeno.",
+  "Toma tus suplementos a la hora que indicó tu médico.",
+  "Si tienes dudas sobre cómo tomarlos, consúltalo en tu próximo control.",
 ];
 
 export function TreatmentTracker() {
@@ -54,7 +55,7 @@ export function TreatmentTracker() {
       </div>
 
       <div className="flex flex-col gap-2 pt-2 border-t border-line">
-        <p className="text-lg font-semibold">Consejos clínicos de absorción</p>
+        <p className="text-lg font-semibold">Recordatorios de tus tomas</p>
         {ABSORPTION_TIPS.map((tip) => (
           <p key={tip} className="flex items-start gap-2 text-lg text-muted">
             <Lightbulb aria-hidden="true" className="mt-0.5 size-4 text-clinic shrink-0" />

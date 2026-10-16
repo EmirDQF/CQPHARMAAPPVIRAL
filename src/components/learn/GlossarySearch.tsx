@@ -29,7 +29,7 @@ export function GlossarySearch() {
           className="min-h-14 w-full rounded-control border-2 border-line bg-surface pl-12 pr-4 text-lg"
         />
       </div>
-      <p role="status" className="text-base text-muted">
+      <p role="status" className="text-lg text-muted">
         {results.length === 1 ? "1 resultado" : `${results.length} resultados`}
       </p>
       {results.length === 0 ? (

@@ -36,7 +36,7 @@ const MYTHS: readonly MythItem[] = [
   myth("rigidez-larga", "Una rigidez de la mañana que dura más de media hora merece consulta.", true, "La rigidez prolongada al despertar puede indicar inflamación. Tu médico puede evaluarla.", "EULAR"),
   myth("calcio-por-tu-cuenta", "Tomar suplementos de calcio por tu cuenta siempre es seguro.", false, "Si necesitas suplementos y en qué cantidad lo define tu médico, según tu alimentación y tu salud.", "IOF"),
   myth("sol-vitamina-d", "El sol ayuda a la piel a producir vitamina D.", true, "La piel produce vitamina D con la luz solar. Un poco de sol, sin quemarse, es suficiente.", "IOF"),
-  myth("cama-lumbalgia", "Con dolor de espalda baja, lo mejor es pasar varios días en cama.", false, "Mantenerse activo dentro de lo que el dolor permite suele ayudar más que el reposo prolongado.", "OMS"),
+  myth("cama-lumbalgia", "Con dolor de espalda baja, lo mejor es pasar varios días en cama.", false, "El reposo prolongado no suele ser lo indicado. Tu médico te dirá qué actividades puedes seguir haciendo.", "OMS"),
   myth("caidas-fracturas", "Las caídas son una causa importante de fracturas en personas mayores.", true, "Por eso prevenir caídas en casa también es cuidar tus huesos.", "OMS"),
   myth("artrosis-solo-mayores", "La artrosis solo les da a las personas mayores.", false, "Es más frecuente con la edad, pero también puede aparecer antes, por ejemplo después de una lesión.", "ACR"),
   myth("fumar-huesos", "Fumar afecta la salud de los huesos.", true, "El tabaco se asocia a huesos más frágiles y a más fracturas.", "IOF"),
@@ -45,7 +45,7 @@ const MYTHS: readonly MythItem[] = [
   myth("fibromialgia-dana", "La fibromialgia daña las articulaciones.", false, "El dolor es real, pero la fibromialgia no daña las articulaciones ni los músculos.", "EULAR"),
   myth("natural-sin-contar", "Si un suplemento es natural, no hace falta contárselo al médico.", false, "Cuéntale siempre a tu médico todo lo que tomas, incluso lo natural: puede interactuar con tus medicamentos.", "SER"),
   myth("menopausia-hueso", "Después de la menopausia, la pérdida de hueso puede acelerarse.", true, "Al bajar los estrógenos, el hueso se pierde más rápido. Es buen momento para conversarlo con tu médico.", "IOF"),
-  myth("ejercicio-prohibido", "Si tienes artrosis, el ejercicio está prohibido.", false, "La actividad física adaptada suele recomendarse. Tu médico te dirá qué tipo y cuánto te conviene.", "ACR"),
+  myth("ejercicio-prohibido", "Si tienes artrosis, el ejercicio está prohibido.", false, "Tu médico te dirá qué actividad te conviene y cuánta, según tu caso.", "ACR"),
 ];
 
 const shield = (id: string, emoji: string, label: string, group: ShieldItem["group"], explanation: string, source: ContentSource): ShieldItem => ({
@@ -164,7 +164,7 @@ const QUIZ: readonly QuizItem[] = [
   quiz("sol-vitamina", 1, "¿Qué ayuda a la piel a producir vitamina D?", ["La luz del sol", "El agua fría", "El aire acondicionado"], "La piel produce vitamina D con la luz solar, sin necesidad de quemarse.", "IOF"),
   quiz("casa-caidas", 1, "¿Qué cambio en casa ayuda a prevenir caídas?", ["Buena iluminación", "Alfombras sueltas", "Cables en el paso"], "Ver bien dónde pisas reduce tropiezos y caídas.", "OMS"),
   quiz("especialista", 1, "¿Qué especialista atiende las enfermedades de las articulaciones?", ["Reumatólogo", "Oftalmólogo", "Dermatólogo"], "El reumatólogo atiende articulaciones, huesos y enfermedades autoinmunes.", "SER"),
-  quiz("osteopenia-rango", 2, "Según la OMS, ¿qué T-score corresponde a osteopenia?", ["Entre -1.0 y -2.5", "-1.0 o más", "-2.5 o menos"], "Osteopenia es un T-score entre -1.0 y -2.5. Con -1.0 o más es normal.", "OMS"),
+  quiz("osteopenia-rango", 2, "Según la OMS, ¿qué T-score corresponde a osteopenia?", ["Menos de -1.0 y más de -2.5", "-1.0 o más", "-2.5 o menos"], "Osteopenia es un T-score por debajo de -1.0 y por encima de -2.5. Con -1.0 o más es normal.", "OMS"),
   quiz("zonas-dmo", 2, "¿Qué zonas mide habitualmente la densitometría?", ["Columna lumbar y cadera", "Manos y pies", "Cráneo"], "Se mide la columna lumbar y la cadera, importantes para el riesgo de fractura.", "IOF"),
   quiz("gota-zona", 2, "¿Dónde suele empezar un ataque de gota?", ["En el dedo gordo del pie", "En la oreja", "En el codo"], "El dedo gordo del pie es la zona más típica del primer ataque.", "ACR"),
   quiz("ar-zonas", 2, "¿Qué suele afectar la artritis reumatoide?", ["Manos y pies, en ambos lados", "Solo una rodilla", "Solo la espalda"], "Suele afectar articulaciones pequeñas de manos y pies, en ambos lados.", "EULAR"),

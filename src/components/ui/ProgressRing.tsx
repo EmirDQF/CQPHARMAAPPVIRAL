@@ -44,7 +44,7 @@ export function ProgressRing({ percent, value, label, ariaLabel, tone }: Progres
           {value}
         </text>
       </svg>
-      <figcaption className="text-center text-base font-bold">{label}</figcaption>
+      <figcaption className="text-center text-lg font-bold">{label}</figcaption>
     </figure>
   );
 }

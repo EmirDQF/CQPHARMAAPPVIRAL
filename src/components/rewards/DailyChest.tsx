@@ -26,7 +26,7 @@ export function DailyChest({ hasRedFlag }: { hasRedFlag: boolean }) {
         <div className="animate-fade-in flex flex-col gap-2" aria-live="polite">
           <p className="text-lg font-bold">{content.factTitle}</p>
           <p className="text-lg">{content.fact}</p>
-          <p className="text-base">Referencia general: {content.source}. Consulta a tu médico.</p>
+          <p className="text-lg">Referencia general: {content.source}. Consulta a tu médico.</p>
           <p className="rounded-control bg-surface px-3 py-2 text-lg text-foreground">{content.phrase}</p>
         </div>
       ) : (

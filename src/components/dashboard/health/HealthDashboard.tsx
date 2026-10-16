@@ -79,7 +79,12 @@ function HealthDashboardContent({ now, onNavigate }: HealthDashboardProps & { no
     evaluacion: () => router.push("/citas"),
     toma: () => onNavigate("hoy"),
     chequeo: () => onNavigate("hoy"),
-    densitometria: () => document.getElementById(BONE_SECTION_ID)?.scrollIntoView({ block: "start" }),
+    densitometria: () => {
+      // El foco sigue al desplazamiento: teclado y lector de pantalla llegan a la Bóveda DEXA.
+      const target = document.getElementById(BONE_SECTION_ID);
+      target?.scrollIntoView({ block: "start" });
+      target?.focus();
+    },
     aprender: () => onNavigate("aprender"),
     descanso: () => onNavigate("jugar"),
   };
@@ -88,7 +93,7 @@ function HealthDashboardContent({ now, onNavigate }: HealthDashboardProps & { no
     <div className="flex flex-col gap-6">
       <h1 className="text-3xl font-black text-clinic">Mi salud</h1>
       <NextBestActionCard action={action} onAct={handlers[action.id]} />
-      <div id={BONE_SECTION_ID} className="scroll-mt-24">
+      <div id={BONE_SECTION_ID} tabIndex={-1} aria-label="Densitometría y Semáforo Óseo" className="scroll-mt-24">
         <DexaVaultSection />
       </div>
       <RingsRow now={now} stats={game.stats} takenDoseIdsByDate={pillbox.takenDoseIdsByDate} />

@@ -45,7 +45,7 @@ export function LearningRewardModal({ reward, onClose }: LearningRewardModalProp
                 </span>
                 <span className="flex flex-col">
                   <span className="text-lg font-black">Nueva insignia: {unlock.title}</span>
-                  <span className="text-base">{unlock.description}</span>
+                  <span className="text-lg">{unlock.description}</span>
                 </span>
               </li>
             ))}

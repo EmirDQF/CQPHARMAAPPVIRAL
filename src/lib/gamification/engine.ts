@@ -140,7 +140,8 @@ export function computeGameStats(catalog: readonly Activity[], sources: GameSour
     activeDayCount: activeDates.size,
     goalDayCount: days.filter((day) => day.ids.size >= dailyGoal).length,
     categoryDays: countCategoryDays(catalog, days),
-    week: weeklyChallenge(days, today),
+    // El reto semanal también cuenta los días en que solo se aprendió (lección o juego).
+    week: weeklyChallenge([...activeDates].map((date) => ({ date, ids: new Set<string>() })), today),
     learned: learnedKeys(learning),
   };
 }

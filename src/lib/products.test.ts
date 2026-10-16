@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { supplementProductSchema, supplementProducts } from "./products";
+import { productPacks, supplementProductSchema, supplementProducts } from "./products";
 
 const completeProduct = {
   id: "producto-ejemplo",
@@ -41,5 +41,30 @@ describe("supplementProductSchema (B5)", () => {
 
   it("does not list Kolflex until its regulatory data is provided", () => {
     expect(supplementProducts.some((product) => /kolflex/i.test(product.name))).toBe(false);
+  });
+});
+
+describe("Pack Diagnóstico Óseo", () => {
+  const diagnosticPack = productPacks.find((pack) => pack.id === "diagnostico-oseo");
+
+  it("offers vitamin D testing, DMO and nutritional counseling", () => {
+    expect(diagnosticPack?.name).toBe("Pack Diagnóstico Óseo");
+    expect(diagnosticPack?.tagline).toBe("Dosaje de vitamina D + DMO + asesoría nutricional");
+    expect(diagnosticPack?.formula).toEqual([
+      "Dosaje de vitamina D",
+      "DMO (densitometría ósea)",
+      "Asesoría nutricional",
+    ]);
+  });
+
+  it("targets people from 45 with a first-degree relative's hip or vertebral fracture", () => {
+    expect(diagnosticPack?.indication).toBe(
+      "Ideal desde los 45 años con antecedentes de fractura de cadera o de vértebra en un familiar directo (por ejemplo, mamá)."
+    );
+  });
+
+  it("no longer mentions T-Score reading, menopause or low back pain", () => {
+    const copy = JSON.stringify(diagnosticPack);
+    expect(copy).not.toMatch(/T-Score|lectura|inicial|menopausia|dolor lumbar/i);
   });
 });

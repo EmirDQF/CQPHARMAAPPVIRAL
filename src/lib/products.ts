@@ -16,15 +16,11 @@ export const productPacks: ProductPack[] = [
   {
     id: "diagnostico-oseo",
     name: "Pack Diagnóstico Óseo",
-    tagline: "Densitometría + lectura de T-Score + asesoría nutricional inicial",
+    tagline: "Dosaje de vitamina D + DMO + asesoría nutricional",
     badges: ["Salud Ósea"],
-    formula: [
-      "Densitometría ósea computarizada",
-      "Lectura médica de T-Score",
-      "Asesoría nutricional inicial",
-    ],
+    formula: ["Dosaje de vitamina D", "DMO (densitometría ósea)", "Asesoría nutricional"],
     indication:
-      "Ideal desde los 45 años, con antecedentes familiares, menopausia o dolor lumbar persistente.",
+      "Ideal desde los 45 años con antecedentes de fractura de cadera o de vértebra en un familiar directo (por ejemplo, mamá).",
     priceNote: "Flujo de caja inmediato en consultorio",
   },
   {

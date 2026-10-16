@@ -8,7 +8,7 @@ const steps: EcosystemStep[] = [
   {
     number: 1,
     title: "Diagnóstico Computarizado",
-    description: "Densitometría ósea en consultorio con lectura médica de T-Score.",
+    description: "Densitometría ósea (DMO) y dosaje de vitamina D en consultorio.",
   },
   {
     number: 2,

@@ -9,7 +9,7 @@ export function ProductShopSection() {
           Packs Clínicos CQ Pharma
         </h2>
         <p className="text-muted max-w-2xl mx-auto">
-          Suplementación de alta absorción, prescrita según tu diagnóstico.
+          Diagnóstico en consultorio y suplementos que complementan el plan de tu médico.
         </p>
       </div>
 

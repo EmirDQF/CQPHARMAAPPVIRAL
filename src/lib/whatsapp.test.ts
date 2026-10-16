@@ -64,6 +64,14 @@ describe("with a valid Peruvian WhatsApp number", () => {
     expect(text).toContain("ART-XK7P2Q");
     expect(text).not.toMatch(/densitometr|reumatolog|2026-09-30|mañana|tarde|María|987654321/i);
   });
+  it("diagnostic pack message lists vitamin D testing and DMO, not the old T-Score reading", () => {
+    const pack = productPacks.find((item) => item.id === "diagnostico-oseo");
+    if (!pack) throw new Error("expected the diagnostic pack");
+    const text = prefilledText(buildProductPackWhatsAppLink(pack));
+    expect(text).toContain("Pack Diagnóstico Óseo");
+    expect(text).toContain("Dosaje de vitamina D + DMO + asesoría nutricional");
+    expect(text).not.toMatch(/T-Score|inicial/i);
+  });
 });
 
 describe("without a usable WhatsApp number (any environment)", () => {

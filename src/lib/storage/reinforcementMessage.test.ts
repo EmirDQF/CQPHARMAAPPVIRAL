@@ -7,7 +7,7 @@ import {
   getDailyPhrase,
 } from "./reinforcementMessage";
 
-const MIN_UNIQUE_PHRASES = 14;
+const MIN_UNIQUE_PHRASES = 50;
 const STREAKS = [0, 1, 2, 5, 10, 20, 45, 365];
 
 /** Mediodía de Lima (UTC-5) del día ISO indicado. */
@@ -101,5 +101,16 @@ describe("buildDailyReinforcementMessage", () => {
 
   it("keeps the one-argument signature used by DailyReinforcementBanner", () => {
     expect(buildDailyReinforcementMessage(4)).toContain(getDailyPhrase());
+  });
+});
+
+describe("'Otra frase'", () => {
+  const today = limaNoon("2026-10-09");
+
+  it("changes the phrase but keeps the streak motto", () => {
+    const first = buildDailyReinforcementMessage(3, today);
+    const next = buildDailyReinforcementMessage(3, today, { offset: 1 });
+    expect(next).not.toBe(first);
+    expect(next).toContain("3 días cuidando tu movilidad");
   });
 });

@@ -18,7 +18,7 @@ export function DexaVaultSection() {
       {entries.length > 0 && (
         <>
           <section
-            id="tendencia"
+            id="tendencia-dmo"
             className="rounded-card border border-line bg-surface shadow-soft px-6 py-6 scroll-mt-20"
           >
             <DexaTrendChart entries={entries} />

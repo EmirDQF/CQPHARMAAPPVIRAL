@@ -152,7 +152,7 @@ export function BoneSemaphoreWidget({ scan, onUploadClick }: BoneSemaphoreWidget
       )}
 
       <div className="flex flex-wrap gap-3 pt-1">
-        <a href="#tendencia" className={`${SECONDARY_LINK} border border-current bg-surface/70 text-sm hover:bg-surface`}>
+        <a href="#tendencia-dmo" className={`${SECONDARY_LINK} border border-current bg-surface/70 text-sm hover:bg-surface`}>
           <ChartLine aria-hidden="true" className="size-4" />
           Ver Gráfico Comparativo
         </a>

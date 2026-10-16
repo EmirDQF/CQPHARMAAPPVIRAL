@@ -37,14 +37,12 @@ import { calculateStreakDays, pillboxStore } from "@/lib/dashboard/pillbox";
 import { ClinicalRecordsManager } from "./ClinicalRecordsManager";
 import { ClinicalReportExport } from "./ClinicalReportExport";
 import { DailyReinforcementBanner } from "./DailyReinforcementBanner";
-import { DexaVaultSection } from "./DexaVaultSection";
+import { HealthDashboard } from "./health/HealthDashboard";
 import { MyDay } from "./myday/MyDay";
 import { InstallPwaBanner } from "./InstallPwaBanner";
 import { PatientProfileLauncher } from "./PatientProfileLauncher";
 import { RedFlagBanner } from "./RedFlagBanner";
 import { ReminderOffer } from "./ReminderOffer";
-import { RestockAlert } from "./RestockAlert";
-import { TreatmentTracker } from "./TreatmentTracker";
 
 type TabId = "hoy" | "salud" | "aprender" | "jugar" | "reumatologo";
 
@@ -64,7 +62,7 @@ const TABS: TabDefinition[] = [
 ];
 
 /** Estas pestañas traen su propio h1 visible; el resto anuncia la vista para lectores de pantalla. */
-const TABS_WITH_OWN_HEADING: ReadonlySet<TabId> = new Set(["hoy", "aprender", "jugar"]);
+const TABS_WITH_OWN_HEADING: ReadonlySet<TabId> = new Set(["hoy", "salud", "aprender", "jugar"]);
 
 export function AppShell() {
   const [activeTab, setActiveTab] = useState<TabId>("hoy");
@@ -161,13 +159,7 @@ export function AppShell() {
           </>
         )}
 
-        {activeTab === "salud" && (
-          <>
-            <DexaVaultSection />
-            <TreatmentTracker />
-            <RestockAlert />
-          </>
-        )}
+        {activeTab === "salud" && <HealthDashboard onNavigate={setActiveTab} />}
 
         {activeTab === "aprender" && <LearnHub />}
 

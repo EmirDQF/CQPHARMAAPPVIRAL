@@ -1,3 +1,4 @@
+import { CheckCircle2 } from "lucide-react";
 import type { ProductPack } from "@/lib/products";
 import { buildProductPackWhatsAppLink } from "@/lib/whatsapp";
 import { WhatsAppCta } from "@/components/ui/WhatsAppCta";
@@ -15,7 +16,7 @@ export function ProductCard({ pack }: ProductCardProps) {
         {pack.badges.map((badge) => (
           <span
             key={badge}
-            className="text-xs font-semibold rounded-full bg-pastel-mint text-pastel-mint-ink px-3 py-1"
+            className="text-base font-semibold rounded-full bg-pastel-mint text-pastel-mint-ink px-3 py-1"
           >
             {badge}
           </span>
@@ -23,16 +24,14 @@ export function ProductCard({ pack }: ProductCardProps) {
       </div>
 
       <div>
-        <h3 className="text-lg font-bold">{pack.name}</h3>
+        <h3 className="text-xl font-black text-clinic">{pack.name}</h3>
         <p className="text-lg text-muted">{pack.tagline}</p>
       </div>
 
-      <ul className="text-sm text-muted flex flex-col gap-1">
+      <ul className="text-lg flex flex-col gap-2">
         {pack.formula.map((item) => (
-          <li key={item} className="flex gap-2">
-            <span className="text-clinic" aria-hidden="true">
-              •
-            </span>
+          <li key={item} className="flex items-start gap-2">
+            <CheckCircle2 aria-hidden="true" className="mt-1 size-5 shrink-0 text-pastel-mint-edge" />
             <span>{item}</span>
           </li>
         ))}

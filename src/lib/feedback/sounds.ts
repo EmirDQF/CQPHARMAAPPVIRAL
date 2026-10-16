@@ -6,7 +6,17 @@ import { feedbackPreferencesStore, type FeedbackPreferences } from "./preference
  * suaves y alegres, para premiar cada paso sin molestar. Se apagan en
  * Ajustes → "Vibración, sonidos y celebraciones".
  */
-export type SoundName = "tap" | "success" | "complete" | "celebrate" | "gentle";
+export type SoundName =
+  | "tap"
+  | "success"
+  | "complete"
+  | "celebrate"
+  | "gentle"
+  | "correct"
+  | "softError"
+  | "fanfare"
+  | "streak"
+  | "chest";
 
 interface Note {
   /** Frecuencia en Hz. */
@@ -36,6 +46,11 @@ const F4 = 349.23;
 const C6 = 1046.5;
 const E6 = 1318.51;
 const G6 = 1567.98;
+const G4 = 392;
+const D5 = 587.33;
+const A5 = 880;
+const D4 = 293.66;
+const B4 = 493.88;
 
 export const SOUNDS: Readonly<Record<SoundName, readonly Note[]>> = {
   /** Toque de botón: un "pop" breve y apenas audible. */
@@ -55,6 +70,30 @@ export const SOUNDS: Readonly<Record<SoundName, readonly Note[]>> = {
   ],
   /** Deshacer o respuesta a revisar: dos notas que bajan, sin dramatismo. */
   gentle: [note(A4, 0, 0.12, 0.1, "sine"), note(F4, 0.1, 0.2, 0.1, "sine")],
+  /** Respuesta correcta en un juego: acorde mayor que sube (Do-Mi-Sol-Do). */
+  correct: [note(C5, 0, 0.12), note(E5, 0.06, 0.14), note(G5, 0.12, 0.16), note(C6, 0.18, 0.28, 0.12)],
+  /** Respuesta a revisar: un "hmm" grave y corto, amable, nunca un zumbido de castigo. */
+  softError: [note(B4, 0, 0.14, 0.08, "sine"), note(G4, 0.12, 0.26, 0.08, "sine")],
+  /** Recompensa (lección o juego completo): fanfarria breve de ~1.5 s. */
+  fanfare: [
+    note(G4, 0, 0.14, 0.12),
+    note(C5, 0.14, 0.14, 0.12),
+    note(E5, 0.28, 0.14, 0.12),
+    note(G5, 0.42, 0.3, 0.13),
+    note(E5, 0.74, 0.12, 0.11),
+    note(G5, 0.86, 0.6, 0.14),
+    note(C6, 0.86, 0.6, 0.11),
+    note(E6, 0.86, 0.6, 0.06, "sine"),
+  ],
+  /** La racha avanza: tres notas brillantes que suben. */
+  streak: [note(D5, 0, 0.1, 0.12), note(G5, 0.08, 0.1, 0.12), note(D5 * 2, 0.16, 0.3, 0.1, "sine")],
+  /** Cofre del día: un destello suave que se abre. */
+  chest: [
+    note(D4, 0, 0.12, 0.1, "sine"),
+    note(A4, 0.1, 0.12, 0.1, "sine"),
+    note(A5, 0.2, 0.18, 0.1),
+    note(E6, 0.32, 0.36, 0.06, "sine"),
+  ],
 };
 
 const ATTACK_SECONDS = 0.008;

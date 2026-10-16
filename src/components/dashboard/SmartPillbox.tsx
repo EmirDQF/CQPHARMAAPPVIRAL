@@ -4,6 +4,7 @@ import { BellRing, CheckCircle2, Clock, Moon, Pill, Sun, type LucideIcon } from 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { GameButton } from "@/components/ui/GameButton";
+import { playSound } from "@/lib/feedback/sounds";
 import { WeekStrip } from "@/components/dashboard/WeekStrip";
 import { buildWeekAdherence } from "@/lib/dashboard/weekAdherence";
 import { DOSE_SCHEDULE } from "@/lib/clinical/constants";
@@ -162,8 +163,14 @@ export function SmartPillbox(props: SmartPillboxProps) {
             isTaken={takenDoseIds.includes(dose.id)}
             isPending={pendingIds.includes(dose.id)}
             onTake={() => onTake(dose.id)}
-            onUndo={() => onUndo(dose.id)}
-            onConfirm={() => onConfirm(dose.id)}
+            onUndo={() => {
+              playSound("gentle");
+              onUndo(dose.id);
+            }}
+            onConfirm={() => {
+              playSound("success");
+              onConfirm(dose.id);
+            }}
             now={now}
           />
         ))}

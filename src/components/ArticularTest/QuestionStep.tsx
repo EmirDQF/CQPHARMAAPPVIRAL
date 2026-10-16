@@ -1,3 +1,4 @@
+import { playSound } from "@/lib/feedback/sounds";
 import type { ScoredQuestion } from "@/lib/types";
 
 interface QuestionStepProps {
@@ -26,7 +27,10 @@ export function QuestionStep({
               type="button"
               role="radio"
               aria-checked={isSelected}
-              onClick={() => onSelect(option.value)}
+              onClick={() => {
+                playSound("tap");
+                onSelect(option.value);
+              }}
               className={`w-full text-left px-4 py-3 rounded-xl border-2 transition-colors ${
                 isSelected
                   ? "border-brand bg-pastel-mint text-pastel-mint-ink"

@@ -1,5 +1,6 @@
 "use client";
 
+import { SoundToggle } from "@/components/ui/SoundToggle";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { BrandMark } from "@/components/brand/BrandMark";
 import Link from "next/link";
@@ -103,6 +104,7 @@ export function AppShell() {
             <BrandMark />
           </p>
           <div className="flex items-center gap-2">
+            <SoundToggle />
             <ThemeToggle />
             <PatientProfileLauncher />
             <Link

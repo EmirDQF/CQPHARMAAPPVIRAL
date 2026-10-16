@@ -49,11 +49,40 @@ describe("playSound", () => {
     expect(playSound("tap", deps({ getContext: broken }))).toBe(false);
   });
 
-  it("mantiene todos los sonidos cortos y a volumen bajo", () => {
-    Object.values(SOUNDS).flat().forEach((item) => {
-      expect(item.start + item.duration).toBeLessThanOrEqual(0.8);
-      expect(item.volume).toBeLessThanOrEqual(0.2);
+  it("mantiene los sonidos cortos (salvo la fanfarria) y a volumen bajo", () => {
+    Object.entries(SOUNDS)
+      .filter(([name]) => name !== "fanfare")
+      .flatMap(([, notes]) => notes)
+      .forEach((item) => {
+        expect(item.start + item.duration).toBeLessThanOrEqual(0.8);
+        expect(item.volume).toBeLessThanOrEqual(0.2);
+      });
+  });
+
+  it("incluye toque, acierto, error suave, fanfarria, racha y cofre", () => {
+    for (const name of ["tap", "correct", "softError", "fanfare", "streak", "chest"] as const) {
+      expect(SOUNDS[name].length, name).toBeGreaterThan(0);
+    }
+  });
+
+  it("el acierto es un acorde ascendente", () => {
+    const frequencies = SOUNDS.correct.map((item) => item.frequency);
+    expect(frequencies).toEqual([...frequencies].sort((a, b) => a - b));
+  });
+
+  it("el error suave es grave, breve y nunca punitivo (sin ondas ásperas)", () => {
+    SOUNDS.softError.forEach((item) => {
+      expect(item.wave).toBe("sine");
+      expect(item.volume).toBeLessThanOrEqual(0.12);
+      expect(item.start + item.duration).toBeLessThanOrEqual(0.5);
     });
+  });
+
+  it("la fanfarria dura cerca de 1.5 s y no sube el volumen", () => {
+    const end = Math.max(...SOUNDS.fanfare.map((item) => item.start + item.duration));
+    expect(end).toBeGreaterThanOrEqual(1.3);
+    expect(end).toBeLessThanOrEqual(1.7);
+    SOUNDS.fanfare.forEach((item) => expect(item.volume).toBeLessThanOrEqual(0.2));
   });
 });
 

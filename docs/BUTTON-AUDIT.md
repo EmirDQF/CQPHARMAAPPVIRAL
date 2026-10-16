@@ -1,6 +1,6 @@
 # Auditoría de interactividad (G8, 2026-10-11)
 
-Prueba automática: `e2e/interactivity.spec.ts` (Playwright, 375 px). Falla si en `/`, `/acceso`, `/citas`, `/blog`, `/privacidad`, `/app`, `/app/ajustes` o `/app/reporte-medico` aparece:
+Prueba automática: `e2e/interactivity.spec.ts` (Playwright, 375 px). Falla si en `/`, `/acceso`, `/citas`, `/blog`, `/privacidad`, `/app`, `/app/ajustes`, `/app/reporte-medico` o en las pestañas de `/app` **Mi salud, Aprender, Jugar y Médico** (se abren antes de auditar) aparece:
 
 - un control visible **sin nombre accesible**;
 - un enlace a `#`, vacío o `javascript:`, o un enlace interno que no responda < 400;
@@ -100,9 +100,11 @@ Los controles que solo aparecen tras una acción (hojas inferiores de misión, v
 | `/app` | botón: 🔒 bufanda | Acción en la página (verificada por E2E: cambia la vista, abre diálogo, guarda o comparte) | Deshabilitado con motivo visible (aria-describedby) |
 | `/app` | botón: 🔒 lentes | Acción en la página (verificada por E2E: cambia la vista, abre diálogo, guarda o comparte) | Deshabilitado con motivo visible (aria-describedby) |
 | `/app` | botón: Mi día | Acción en la página (verificada por E2E: cambia la vista, abre diálogo, guarda o comparte) | OK |
-| `/app` | botón: Pastillero | Acción en la página (verificada por E2E: cambia la vista, abre diálogo, guarda o comparte) | OK |
-| `/app` | botón: Progreso | Acción en la página (verificada por E2E: cambia la vista, abre diálogo, guarda o comparte) | OK |
-| `/app` | botón: Logros | Acción en la página (verificada por E2E: cambia la vista, abre diálogo, guarda o comparte) | OK |
+| `/app` | botón: Mi salud | Abre el panel "Mi salud" | OK |
+| `/app` | botón: Aprender | Abre "Aprender" | OK |
+| `/app` | botón: Jugar | Abre "Jugar" (mini-juegos, cofre y logros) | OK |
+| `/app` | botón: Sonidos (cabecera) | Silencia/activa los sonidos (mismo interruptor que Ajustes), `aria-pressed` | OK |
+| `/app` | botón: ✨ Otra frase | Cambia la frase del día con transición suave y sonido de toque | OK |
 | `/app` | botón: Médico | Acción en la página (verificada por E2E: cambia la vista, abre diálogo, guarda o comparte) | OK |
 | `/app/ajustes` | enlace: ← Volver a Mi Panel | Navega a /app | OK |
 | `/app/ajustes` | input: Aviso al conectarte a Wi-FiSi quedan misiones, Artiko te lo dice al co | Campo (checkbox): edita el valor | OK |
@@ -123,3 +125,31 @@ Los controles que solo aparecen tras una acción (hojas inferiores de misión, v
 | `/app/reporte-medico` | enlace: Agendar densitometría | Navega a /citas | OK |
 | `/app/reporte-medico` | botón: 7 días | Acción en la página (verificada por E2E: cambia la vista, abre diálogo, guarda o comparte) | OK |
 | `/app/reporte-medico` | botón: 30 días | Acción en la página (verificada por E2E: cambia la vista, abre diálogo, guarda o comparte) | OK |
+
+## Pantallas nuevas (2026-10-16): Mi salud, Aprender y Jugar
+
+Auditadas por `e2e/interactivity.spec.ts` (vistas `/app › Mi salud`, `› Aprender`, `› Jugar`, `› Médico`: 13/13 en verde) y por los flujos de `e2e/learn-and-play.spec.ts`. Los controles que aparecen tras una acción se cubren en `HealthDashboard.test.tsx`, `LearnHub.test.tsx` y `GamesHub.test.tsx`.
+
+| Pantalla | Elemento | Acción real | Estado |
+|---|---|---|---|
+| Mi salud | Tu siguiente paso (una sola acción) | Agendar evaluación → `/citas` (bandera roja) · Ir a Mi día · Ir al chequeo · Registrar resultado (desplaza a la Bóveda DEXA) · Ir a Aprender · Ver mis logros | OK |
+| Mi salud | Anillos de constancia (7 y 30 días, racha, nivel) | Informativos (`role="img"` con texto completo); no son botones | OK |
+| Mi salud | Bóveda DEXA, 7/30 días, cita, tratamiento | Controles existentes, ya auditados | OK |
+| Aprender | Lecciones · Señales · Glosario | Conmutador de sección (`aria-pressed`) | OK |
+| Aprender | Tarjeta de lección | Abre la hoja de la lección | OK |
+| Lección | 🩺 Preguntar a mi médico | Muestra/oculta 3 preguntas (`aria-expanded`) | OK |
+| Lección | Terminé la lección ✅ | Guarda la lección del día, suma XP hasta el tope y abre la recompensa | OK |
+| Lección | Cerrar | Cierra la hoja y devuelve el foco | OK |
+| Glosario | Busca una palabra | Filtra sin tildes ni mayúsculas; anuncia el número de resultados | OK |
+| Jugar | Abrir el cofre | Abre el cofre del día (dato + frase, sonido de cofre); una vez al día | OK |
+| Jugar | Tarjeta de juego (6) | Empieza la partida (sin reloj) | OK |
+| Juego | ← Salir del juego | Vuelve a la lista de juegos | OK |
+| Mito/Escudo/Quiz | Opción de respuesta | Marca la respuesta, muestra explicación y fuente, sonido de acierto o de "casi" | OK |
+| Mito/Escudo/Quiz | Siguiente / Ver resultado | Siguiente carta / resultado | OK |
+| Arma tu plato | Alimento | Lo pone en el plato (deshabilitado con el plato lleno o ya elegido: el plato visible es el motivo) | OK |
+| Casa segura | Punto "?" de la ilustración (10) | Revela riesgo o ejemplo seguro con su explicación | OK |
+| Casa segura | Terminar por ahora / Ver resultado | Resultado con lo encontrado | OK |
+| Memoria | Carta tapada | La da vuelta; dos distintas quedan a la vista hasta el siguiente toque (sin temporizador) | OK |
+| Resultado | Terminar y sumar XP ⭐ | Guarda mejor marca, suma XP (tope diario) y abre la recompensa con fanfarria e insignias nuevas | OK |
+| Resultado | Jugar de nuevo | Nueva partida con otras cartas | OK |
+| Recompensa | Seguir | Cierra el modal | OK |

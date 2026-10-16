@@ -10,6 +10,22 @@ import { expect, test, type Page } from "@playwright/test";
  * - Foco visible al tabular. Inventario: docs/BUTTON-AUDIT.md.
  */
 const ROUTES = ["/", "/acceso", "/citas", "/blog", "/privacidad", "/app", "/app/ajustes", "/app/reporte-medico"] as const;
+/** Pestañas de /app que no se ven al cargar: se abren antes de auditar sus controles. */
+const APP_TABS = ["Mi salud", "Aprender", "Jugar", "Médico"] as const;
+
+interface View {
+  route: string;
+  tab?: string;
+}
+
+const VIEWS: View[] = [...ROUTES.map((route) => ({ route })), ...APP_TABS.map((tab) => ({ route: "/app", tab }))];
+
+async function openView(page: Page, { route, tab }: View): Promise<void> {
+  await page.goto(route, { waitUntil: "networkidle" });
+  if (!tab) return;
+  await page.getByRole("navigation", { name: "Navegación principal" }).getByRole("button", { name: tab }).click();
+  await page.waitForTimeout(EFFECT_WAIT_MS);
+}
 const INTERACTIVE = "a[href], button, [role='button'], input:not([type='hidden']), select, textarea, summary";
 const EFFECT_WAIT_MS = 600;
 const TAB_STOPS_CHECKED = 15;
@@ -92,11 +108,12 @@ async function hadEffect(page: Page, control: ControlInfo, route: string): Promi
   return navigated || mutations > 0 || movedFocus || scrolled || (await popup) || (await dialog);
 }
 
-for (const route of ROUTES) {
+for (const view of VIEWS) {
+  const route = view.tab ? `${view.route} › ${view.tab}` : view.route;
   test(`${route}: sin elementos interactivos muertos`, async ({ page, request }) => {
     test.setTimeout(300_000);
     await instrument(page);
-    await page.goto(route, { waitUntil: "networkidle" });
+    await openView(page, view);
     const controls = await listControls(page);
     expect(controls.length).toBeGreaterThan(0);
 
@@ -118,10 +135,10 @@ for (const route of ROUTES) {
     for (const [position, button] of buttons.entries()) {
       // Cada botón en una página recién cargada; se ubica por nombre y ocurrencia (la posición cambia al hidratar).
       const occurrence = buttons.slice(0, position).filter((other) => other.name === button.name).length;
-      await page.goto(route, { waitUntil: "networkidle" });
+      await openView(page, view);
       const fresh = (await listControls(page)).filter((control) => isClickable(control) && control.name === button.name)[occurrence];
       if (!fresh) continue;
-      expect(await hadEffect(page, fresh, route), `${route} · botón "${button.name}" no hace nada`).toBe(true);
+      expect(await hadEffect(page, fresh, view.route), `${route} · botón "${button.name}" no hace nada`).toBe(true);
     }
   });
 }

@@ -2,6 +2,7 @@ import { z } from "zod";
 import { findForbiddenPhrases } from "../clinical/forbiddenCopy";
 import { ARTIKO_ACCESSORIES } from "../mascot/mascot";
 import { ACTIVITY_CATEGORIES } from "../activities/schemas";
+import { LEARNING_KEY } from "./progress";
 
 /**
  * Insignias y accesorios cosméticos de Artiko. Se ganan solo con constancia
@@ -18,11 +19,22 @@ export const gameRuleSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("categoryDays"), category: z.enum(ACTIVITY_CATEGORIES), total: countSchema }),
   /** Reto "Semana constante": se gana una vez por semana de Lima (lun–dom). */
   z.object({ type: z.literal("weeklyChallenge") }),
+  /** Lecciones o juegos distintos completados alguna vez (nunca por acertar más). */
+  z.object({ type: z.literal("learningCount"), kind: z.enum(["lesson", "game"]), total: countSchema }),
+  /** Completar todas estas lecciones o juegos ("lesson:<id>" / "game:<id>"), en cualquier orden. */
+  z.object({ type: z.literal("learningSet"), keys: z.array(z.string().regex(LEARNING_KEY)).min(1) }),
 ]);
 export type GameRule = z.infer<typeof gameRuleSchema>;
 
-const copy = (max: number) =>
-  z.string().trim().min(1).max(max).refine((text) => findForbiddenPhrases(text).length === 0, { message: "Frase prohibida" });
+/**
+ * Insignias educativas pueden nombrar un nutriente ("Guardián de la Vitamina D"),
+ * pero nunca una marca o producto, una promesa de cura ni culpa.
+ */
+function isAllowedCopy(text: string): boolean {
+  return findForbiddenPhrases(text).every((finding) => finding.category === "producto-ingrediente" && !finding.id.startsWith("marca-"));
+}
+
+const copy = (max: number) => z.string().trim().min(1).max(max).refine(isAllowedCopy, { message: "Frase prohibida" });
 
 export const gameUnlockSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]{3,40}$/),
@@ -46,6 +58,12 @@ const RAW_UNLOCKS: readonly GameUnlock[] = [
   { id: "corazon-familiar", emoji: "💌", title: "Corazón familiar", description: "Animaste a alguien de tu familia a cuidarse.", rule: { type: "categoryDays", category: "social", total: 1 }, shareable: false },
   { id: "semana-constante", emoji: "🔥", title: "Semana constante", description: "Siete días activos en una misma semana. ¡Qué constancia!", rule: { type: "weeklyChallenge" }, shareable: true },
   { id: "diez-dias", emoji: "🏅", title: "Diez días activos", description: "Diez días acompañando tu cuidado, a tu ritmo.", rule: { type: "activeDays", total: 10 }, shareable: true },
+  { id: "guardian-vitamina-d", emoji: "🌞", title: "Guardián de la Vitamina D", description: "Aprendiste sobre vitamina D, calcio y el sol, y armaste tu plato.", rule: { type: "learningSet", keys: ["lesson:vitamina-d-y-calcio", "lesson:sol-con-cuidado", "game:arma-tu-plato"] }, shareable: false },
+  { id: "experto-densitometria", emoji: "🩻", title: "Experto en Densitometría", description: "Ya sabes qué es la DMO y cómo se lee el T-score.", rule: { type: "learningSet", keys: ["lesson:que-es-la-dmo", "lesson:como-leer-el-t-score"] }, shareable: false },
+  { id: "protector-articular", emoji: "🦵", title: "Protector Articular", description: "Conoces la diferencia entre artrosis y artritis y qué dice la rigidez de la mañana.", rule: { type: "learningSet", keys: ["lesson:artrosis-vs-artritis", "lesson:rigidez-matutina", "lesson:crujidos-articulares"] }, shareable: true },
+  { id: "hogar-seguro", emoji: "🏠", title: "Hogar sin tropiezos", description: "Aprendiste a cuidar tu casa contra las caídas.", rule: { type: "learningSet", keys: ["lesson:prevencion-de-caidas", "game:casa-segura"] }, shareable: true },
+  { id: "mente-curiosa", emoji: "📚", title: "Mente curiosa", description: "Cinco lecciones leídas. Artiko estrena su medalla del saber.", rule: { type: "learningCount", kind: "lesson", total: 5 }, accessory: "medal", shareable: true },
+  { id: "jugador-sabio", emoji: "🎮", title: "Jugador sabio", description: "Tres juegos distintos completados, a tu ritmo.", rule: { type: "learningCount", kind: "game", total: 3 }, shareable: true },
 ];
 
 export const GAME_UNLOCKS: readonly GameUnlock[] = z

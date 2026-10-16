@@ -3,7 +3,7 @@ import type { PainLogEntry, PillboxState } from "../dashboard/types";
 import type { ArtikoAccessory } from "../mascot/mascot";
 import { addDaysToIsoDate } from "../utils/date";
 import { computeGraceStreak, type StreakSummary } from "./graceStreak";
-import { learningDates, learningXpTotal } from "./learning";
+import { learnedKeys, learningDates, learningXpTotal } from "./learning";
 import type { GameProgress, UnlockedItem } from "./progress";
 import type { GameRule, GameUnlock } from "./unlocks";
 
@@ -115,6 +115,8 @@ export interface GameStats {
   goalDayCount: number;
   categoryDays: Readonly<Record<ActivityCategory, number>>;
   week: WeeklyChallenge;
+  /** Lecciones y juegos distintos completados alguna vez ("lesson:<id>", "game:<id>"). */
+  learned: ReadonlySet<string>;
 }
 
 function countCategoryDays(catalog: readonly Activity[], days: readonly DayRecord[]): Record<ActivityCategory, number> {
@@ -139,6 +141,7 @@ export function computeGameStats(catalog: readonly Activity[], sources: GameSour
     goalDayCount: days.filter((day) => day.ids.size >= dailyGoal).length,
     categoryDays: countCategoryDays(catalog, days),
     week: weeklyChallenge(days, today),
+    learned: learnedKeys(learning),
   };
 }
 
@@ -157,6 +160,10 @@ function qualifyingKey(unlock: GameUnlock, stats: GameStats): string | null {
       return stats.categoryDays[rule.category] >= rule.total ? unlock.id : null;
     case "weeklyChallenge":
       return stats.week.done ? `${unlock.id}:${stats.week.weekStart}` : null;
+    case "learningCount":
+      return [...stats.learned].filter((key) => key.startsWith(`${rule.kind}:`)).length >= rule.total ? unlock.id : null;
+    case "learningSet":
+      return rule.keys.every((key) => stats.learned.has(key)) ? unlock.id : null;
   }
 }
 

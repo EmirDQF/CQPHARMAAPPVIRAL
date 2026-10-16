@@ -36,6 +36,21 @@ export function LearningRewardModal({ reward, onClose }: LearningRewardModalProp
             +{reward.awardedXp} XP
           </p>
         )}
+        {reward.unlocked.length > 0 && (
+          <ul aria-label="Insignias nuevas" className="flex w-full flex-col gap-2">
+            {reward.unlocked.map((unlock) => (
+              <li key={unlock.id} className="animate-fade-in flex items-center gap-3 rounded-control border-2 border-gold-deep bg-gold px-4 py-3 text-left text-gold-ink">
+                <span aria-hidden="true" className="text-3xl">
+                  {unlock.emoji}
+                </span>
+                <span className="flex flex-col">
+                  <span className="text-lg font-black">Nueva insignia: {unlock.title}</span>
+                  <span className="text-base">{unlock.description}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
         <p className="text-lg">{WARM_MESSAGE}</p>
         {note && <p className="rounded-control bg-pastel-sky px-4 py-3 text-lg text-pastel-sky-ink">{note}</p>}
         <GameButton tone="vital" block onClick={onClose}>

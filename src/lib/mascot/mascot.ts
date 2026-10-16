@@ -23,13 +23,14 @@ export const ARTIKO_EMOTIONS = [
 export type ArtikoEmotion = (typeof ARTIKO_EMOTIONS)[number];
 
 /** Accesorios solo estéticos que se desbloquean con constancia (nunca con compras). */
-export const ARTIKO_ACCESSORIES = ["cap", "scarf", "glasses"] as const;
+export const ARTIKO_ACCESSORIES = ["cap", "scarf", "glasses", "medal"] as const;
 export type ArtikoAccessory = (typeof ARTIKO_ACCESSORIES)[number];
 
 export const ACCESSORY_NAMES: Readonly<Record<ArtikoAccessory, string>> = {
   cap: "gorra deportiva",
   scarf: "bufanda",
   glasses: "lentes",
+  medal: "medalla del saber",
 };
 
 const EMOTION_DESCRIPTIONS: Readonly<Record<ArtikoEmotion, string>> = {

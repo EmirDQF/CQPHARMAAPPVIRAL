@@ -101,3 +101,25 @@ describe("GamesHub", () => {
     expect(screen.getByText(/ocultamos los juegos que hablan de movimiento/)).toBeInTheDocument();
   });
 });
+
+describe("Cofre del día", () => {
+  it("opens once a day with the chest sound and shows a fact with its source", async () => {
+    render(<GamesHub />);
+    fireEvent.click(await screen.findByRole("button", { name: "Abrir el cofre" }));
+    expect(playSound).toHaveBeenCalledWith("chest");
+    expect(screen.getByText(/Referencia general: .*Consulta a tu médico/)).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Abrir el cofre" })).toBeNull();
+  });
+});
+
+describe("learning badges in the reward", () => {
+  it("shows a new badge with the fanfare when a game completes a set", () => {
+    gameProgressStore.write({ ...EMPTY_GAME_PROGRESS, learning: { "2020-01-01": ["lesson:prevencion-de-caidas"] } });
+    render(<GamesHub />);
+    fireEvent.click(screen.getByRole("button", { name: /Casa segura/ }));
+    fireEvent.click(screen.getByRole("button", { name: "Terminar por ahora" }));
+    fireEvent.click(screen.getByRole("button", { name: /Terminar y sumar XP/ }));
+    expect(screen.getByText(/Nueva insignia: Hogar sin tropiezos/)).toBeInTheDocument();
+    expect(playSound).toHaveBeenCalledWith("fanfare");
+  });
+});

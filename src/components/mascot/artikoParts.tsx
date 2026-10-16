@@ -244,6 +244,13 @@ export function Accessories({ items }: { items: readonly ArtikoAccessory[] }) {
           <path d="M58,33 q2,-2 4,0" />
         </g>
       )}
+      {items.includes("medal") && (
+        <g data-accessory="medal">
+          <path d="M51,66 L60,82 L69,66" fill="none" stroke="var(--color-sky-deep)" strokeWidth={3} strokeLinejoin="round" />
+          <circle cx={60} cy={87} r={7} fill="var(--color-gold)" {...STROKE} strokeWidth={1.8} />
+          <path d="M60,83 l1.2,2.6 2.8,0.3 -2.1,1.9 0.6,2.8 -2.5,-1.4 -2.5,1.4 0.6,-2.8 -2.1,-1.9 2.8,-0.3 z" fill="var(--color-gold-deep)" />
+        </g>
+      )}
       {items.includes("cap") && (
         <g data-accessory="cap">
           <path d="M33,24 Q60,-4 87,24 z" fill="var(--color-sky)" {...STROKE} strokeWidth={2} />

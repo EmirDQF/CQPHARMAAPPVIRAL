@@ -2,6 +2,7 @@
 
 import { useState, useSyncExternalStore, type ReactNode } from "react";
 import { useActiveRedFlags } from "@/components/dashboard/useActiveRedFlags";
+import { DailyChest } from "@/components/rewards/DailyChest";
 import { LearningRewardModal } from "@/components/rewards/LearningRewardModal";
 import { useLearningReward } from "@/hooks/useLearningReward";
 import { useMinuteClock } from "@/hooks/useMinuteClock";
@@ -88,6 +89,7 @@ export function GamesHub({ achievements }: GamesHubProps) {
           Mientras tu médico te evalúa, ocultamos los juegos que hablan de movimiento.
         </p>
       )}
+      <DailyChest hasRedFlag={hasRedFlag} />
       <ul className="grid gap-3">
         {games.map((game) => {
           const best = scores.best[game.id];

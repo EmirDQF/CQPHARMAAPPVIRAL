@@ -27,6 +27,8 @@ const gameProgressSchema = z.object({
   equipped: z.array(z.enum(ARTIKO_ACCESSORIES)).catch([]),
   /** Lecciones y juegos completados por día de Lima (cada uno cuenta una vez al día). */
   learning: z.record(z.string().regex(ISO_DATE), z.array(z.string().regex(LEARNING_KEY))).catch({}),
+  /** Último día de Lima en que se abrió el cofre del día. */
+  chestOpenedOn: z.string().regex(ISO_DATE).nullable().catch(null),
   /** Último día de Lima en que se abrió /app (bienvenida de retorno, pausa de avisos). */
   lastOpenedOn: z.string().regex(ISO_DATE).nullable().catch(null),
   /** Apertura anterior a `lastOpenedOn`: decide la bienvenida de retorno de hoy. */
@@ -41,6 +43,7 @@ export const EMPTY_GAME_PROGRESS: GameProgress = {
   celebratedKeys: [],
   equipped: [],
   learning: {},
+  chestOpenedOn: null,
   lastOpenedOn: null,
   previousOpenedOn: null,
 };

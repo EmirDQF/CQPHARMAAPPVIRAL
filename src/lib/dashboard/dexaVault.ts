@@ -8,6 +8,8 @@ import {
 } from "../clinical/constants";
 import {
   INTERPRETATION_NOTE,
+  isMenopauseUncertain,
+  MENOPAUSE_UNCERTAIN_NOTE,
   Z_SCORE_REQUIRED_LABEL,
   getBoneDensityInterpretation,
   type BoneDensityPatient,
@@ -163,7 +165,7 @@ export function buildBoneScanSummaryFromEntries(
       riskLevel: null,
       diagnosisLabel: Z_SCORE_REQUIRED_LABEL,
       diagnosisMessage: hasRedFlag ? RED_FLAG_DIAGNOSIS_MESSAGE : Z_SCORE_MESSAGE,
-      profileNote: null,
+      profileNote: isMenopauseUncertain(patient) ? MENOPAUSE_UNCERTAIN_NOTE : null,
       // Valor bajo sin etiqueta OMS: mismo control estrecho que la osteoporosis.
       nextControlMonths:
         worst <= WHO_T_SCORE_OSTEOPOROSIS_MAX ? CONTROL_MONTHS_OSTEOPOROSIS : CONTROL_MONTHS_DEFAULT,

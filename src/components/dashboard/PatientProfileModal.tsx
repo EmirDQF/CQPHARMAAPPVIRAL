@@ -11,7 +11,7 @@ import {
   savePatientProfile,
 } from "@/lib/dashboard/patientProfile";
 import { createConsentRecord, isConsentCurrent } from "@/lib/privacy/consent";
-import type { MenopausalStatus } from "@/lib/clinical/tScoreEligibility";
+import { MENOPAUSE_UNCERTAIN_NOTE, type MenopausalStatus } from "@/lib/clinical/tScoreEligibility";
 import type { Sex } from "@/lib/types";
 
 type FractureAnswer = "si" | "no";
@@ -27,9 +27,10 @@ const FRACTURE_OPTIONS: ChoiceOption<FractureAnswer>[] = [
 ];
 
 const MENOPAUSAL_OPTIONS: ChoiceOption<MenopausalStatus>[] = [
-  { value: "premenopausica", label: "Premenopáusica" },
-  { value: "posmenopausica", label: "Posmenopáusica" },
-  { value: "no-aplica", label: "No aplica / No sé" },
+  { value: "posmenopausica", label: "Sí, ya la pasé" },
+  { value: "premenopausica", label: "Aún no" },
+  { value: "no-segura", label: "No estoy segura" },
+  { value: "no-decir", label: "Prefiero no decirlo" },
 ];
 
 function toFractureAnswer(hasFractureHistory: boolean | null): FractureAnswer | null {
@@ -158,12 +159,17 @@ export function PatientProfileModal({ onClose }: PatientProfileModalProps) {
 
           {sex === "femenino" && (
             <ChoiceGroup
-              legend="Estado menopáusico (define cómo se interpreta tu densitometría)"
+              legend="¿Ya pasaste la menopausia? (define cómo se interpreta tu densitometría)"
               name="profile-menopausal-status"
               options={MENOPAUSAL_OPTIONS}
               value={menopausalStatus}
               onChange={setMenopausalStatus}
               stacked
+              hint={
+                menopausalStatus === "no-segura" || menopausalStatus === "no-decir"
+                  ? MENOPAUSE_UNCERTAIN_NOTE
+                  : undefined
+              }
             />
           )}
 

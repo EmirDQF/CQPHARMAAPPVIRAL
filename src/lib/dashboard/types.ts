@@ -44,7 +44,8 @@ export type BoneScanSummary =
   | (BoneScanSummaryBase & {
       interpretation: "z-score-required";
       riskLevel: null;
-      profileNote: null;
+      /** Solo para una mujer insegura sobre su menopausia: su médico lo confirmará. */
+      profileNote: string | null;
     });
 
 export interface PillboxState {

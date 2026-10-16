@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { MENOPAUSAL_STATUSES, type MenopausalStatus } from "../clinical/tScoreEligibility";
+import { menopausalStatusSchema, type MenopausalStatus } from "../clinical/tScoreEligibility";
 import { consentRecordSchema, type ConsentRecord } from "../privacy/consent";
 import { createPersistentStore } from "../storage/persistentStore";
 import type { Sex } from "../types";
@@ -55,7 +55,7 @@ const storedProfileSchema = z.object({
   sex: z.enum(["femenino", "masculino"]).nullable().catch(null),
   weightKg: z.number().positive().nullable().catch(null),
   hasFractureHistory: z.boolean().nullable().catch(null),
-  menopausalStatus: z.enum(MENOPAUSAL_STATUSES).nullable().catch(null),
+  menopausalStatus: menopausalStatusSchema.nullable().catch(null),
   allergies: z.string().catch(""),
   phone: z.string().catch(""),
   consent: consentRecordSchema.optional().catch(undefined),

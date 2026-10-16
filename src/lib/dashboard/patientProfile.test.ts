@@ -36,6 +36,13 @@ describe("normalizeStoredPatientProfile (artikare_patient_profile_v1)", () => {
     ).toBe(true);
   });
 
+  it("migrates a saved legacy no-aplica status to no-segura", () => {
+    expect(
+      normalizeStoredPatientProfile({ ...v1Profile, consent, menopausalStatus: "no-aplica" })
+        ?.menopausalStatus
+    ).toBe("no-segura");
+  });
+
   it("keeps a saved menopausal status", () => {
     expect(
       normalizeStoredPatientProfile({ ...v1Profile, consent, menopausalStatus: "posmenopausica" })

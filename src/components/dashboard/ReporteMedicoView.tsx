@@ -22,7 +22,8 @@ import { useClinicalStatus } from "./useActiveRedFlags";
 const MENOPAUSAL_STATUS_LABEL: Record<MenopausalStatus, string> = {
   premenopausica: "Premenopáusica",
   posmenopausica: "Posmenopáusica",
-  "no-aplica": "No aplica / No sabe",
+  "no-segura": "No está segura",
+  "no-decir": "Prefiere no decirlo",
 };
 
 const semaphoreDot: Record<RiskLevel, string> = {

@@ -131,6 +131,33 @@ describe("FirstRunFlow", () => {
     });
   });
 
+  it("offers four menopause answers in order and saves 'No estoy segura' with a kind note", () => {
+    render(<FirstRunFlow />);
+    click(/Toca para continuar/);
+    click("Empezar");
+    acceptConsent();
+    fireEvent.change(screen.getByLabelText("¿Cómo te llamo?"), { target: { value: "Ana" } });
+    click("Siguiente");
+    fireEvent.change(screen.getByLabelText("¿Cuántos años tienes?"), { target: { value: "52" } });
+    click("Siguiente");
+    fireEvent.click(screen.getByRole("radio", { name: "Femenino" }));
+    click("Siguiente");
+
+    expect(heading()).toBe("¿Ya pasaste la menopausia?");
+    expect(screen.getByText(/Paso \d+ de \d+/)).toBeInTheDocument();
+    expect(screen.getAllByRole("radio").map((radio) => radio.getAttribute("aria-label") ?? radio.closest("label")?.textContent?.trim())).toEqual([
+      "Sí, ya la pasé",
+      "Aún no",
+      "No estoy segura",
+      "Prefiero no decirlo",
+    ]);
+    fireEvent.click(screen.getByRole("radio", { name: "No estoy segura" }));
+    expect(screen.getByText("Tu médico confirmará esto contigo.")).toBeInTheDocument();
+    click("Siguiente");
+    click("Guardar y seguir");
+    expect(patientProfileStore.getSnapshot()).toMatchObject({ sex: "femenino", menopausalStatus: "no-segura" });
+  });
+
   it("goes back one question without losing what was typed", () => {
     render(<FirstRunFlow />);
     click(/Toca para continuar/);

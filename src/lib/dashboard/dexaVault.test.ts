@@ -182,14 +182,29 @@ describe("buildBoneScanSummaryFromEntries interpretation (B2)", () => {
     expect(summary?.profileNote).toBe("Completa tu perfil para una evaluación exacta.");
   });
 
-  it("assumes the WHO classification with a precaution for a woman ≥ 50 without menopausal status", () => {
+  it("assumes the WHO classification with a precaution for a woman ≥ 50 who never answered", () => {
     const summary = buildBoneScanSummaryFromEntries([osteoporosisScan], {
-      patient: { age: 58, sex: "femenino", menopausalStatus: "no-aplica" },
+      patient: { age: 58, sex: "femenino", menopausalStatus: null },
     });
     expect(summary?.interpretation).toBe("t-score-assumed");
     expect(summary?.riskLevel).toBe("alto");
     expect(summary?.profileNote).toMatch(/estado menopáusico/);
   });
+});
+
+describe("woman unsure about menopause", () => {
+  it.each(["no-segura", "no-decir"] as const)(
+    "%s shows no WHO traffic light and a kind note that the doctor will confirm",
+    (menopausalStatus) => {
+      const summary = buildBoneScanSummaryFromEntries([scan({ lumbarTScore: -2.8, femoralNeckTScore: -2.1 })], {
+        patient: { age: 58, sex: "femenino", menopausalStatus },
+      });
+      expect(summary?.interpretation).toBe("z-score-required");
+      expect(summary?.riskLevel).toBeNull();
+      expect(summary?.diagnosisLabel).toMatch(/consulte a su médico/i);
+      expect(summary?.profileNote).toBe("Tu médico confirmará esto contigo.");
+    }
+  );
 });
 
 describe("low bone density in a Z-score patient", () => {

@@ -3,7 +3,7 @@
 import { useState, type FormEvent, type ReactNode } from "react";
 import { ChoiceGroup, type ChoiceOption } from "@/components/ui/ChoiceGroup";
 import { GameButton } from "@/components/ui/GameButton";
-import type { MenopausalStatus } from "@/lib/clinical/tScoreEligibility";
+import { MENOPAUSE_UNCERTAIN_NOTE, type MenopausalStatus } from "@/lib/clinical/tScoreEligibility";
 import type { ArtikoEmotion } from "@/lib/mascot/mascot";
 import {
   EMPTY_PROFILE_DRAFT,
@@ -27,8 +27,13 @@ const SEX_OPTIONS: readonly ChoiceOption<SexChoice>[] = [
 const MENOPAUSAL_OPTIONS: readonly ChoiceOption<MenopausalStatus>[] = [
   { value: "posmenopausica", label: "Sí, ya la pasé" },
   { value: "premenopausica", label: "Aún no" },
-  { value: "no-aplica", label: "No sé / Prefiero no decirlo" },
+  { value: "no-segura", label: "No estoy segura" },
+  { value: "no-decir", label: "Prefiero no decirlo" },
 ];
+
+function isUnsureAnswer(status: MenopausalStatus | null): boolean {
+  return status === "no-segura" || status === "no-decir";
+}
 
 const FRACTURE_OPTIONS: readonly ChoiceOption<FractureChoice>[] = [
   { value: "si", label: "Sí" },
@@ -210,6 +215,7 @@ export function ProfileStep({ onSave, onQuestionChange }: ProfileStepProps) {
           value={answers.menopausalStatus}
           onChange={(menopausalStatus) => setAnswers({ ...answers, menopausalStatus })}
           stacked
+          hint={isUnsureAnswer(answers.menopausalStatus) ? MENOPAUSE_UNCERTAIN_NOTE : undefined}
         />
       );
       break;

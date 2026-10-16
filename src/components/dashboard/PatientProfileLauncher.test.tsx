@@ -27,7 +27,7 @@ describe("PatientProfileLauncher", () => {
     fireEvent.click(screen.getByRole("button", { name: "Editar mi perfil médico" }));
 
     expect(screen.getByRole("radio", { name: "Sí" })).toBeChecked();
-    expect(screen.getByRole("radio", { name: "Posmenopáusica" })).toBeChecked();
+    expect(screen.getByRole("radio", { name: "Sí, ya la pasé" })).toBeChecked();
     expect(screen.getByLabelText("Edad")).toHaveValue("63");
   });
 

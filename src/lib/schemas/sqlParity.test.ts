@@ -101,9 +101,11 @@ describe("paridad constantes clínicas ↔ SQL", () => {
   });
 
   it("los enums replican los valores del cliente", () => {
-    expect(sql).toContain(
-      `create type public.menopausal_status as enum (${sqlEnumList(MENOPAUSAL_STATUSES)})`
-    );
+    for (const status of MENOPAUSAL_STATUSES) {
+      const created = new RegExp(String.raw`create type public\.menopausal_status as enum \([^)]*'${status}'`);
+      const added = `alter type public.menopausal_status add value if not exists '${status}'`;
+      expect(created.test(sql) || sql.includes(added)).toBe(true);
+    }
     expect(sql).toContain(
       `create type public.stiffness_bucket as enum (${sqlEnumList(STIFFNESS_BUCKETS)})`
     );

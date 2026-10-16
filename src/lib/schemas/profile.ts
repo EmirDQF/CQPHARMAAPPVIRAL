@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { PATIENT_AGE_MAX, PATIENT_AGE_MIN } from "../clinical/constants";
-import { MENOPAUSAL_STATUSES } from "../clinical/tScoreEligibility";
+import { menopausalStatusSchema } from "../clinical/tScoreEligibility";
 import type { Sex } from "../types";
 import { hasAtMostDecimals, timestampSchema } from "./shared";
 
@@ -18,7 +18,7 @@ export const profileUpsertSchema = z.object({
   name: z.string().trim().max(PROFILE_TEXT_MAX.name),
   age: z.number().int().min(PATIENT_AGE_MIN).max(PATIENT_AGE_MAX).nullable(),
   sex: z.enum(SEXES).nullable(),
-  menopausal_status: z.enum(MENOPAUSAL_STATUSES).nullable(),
+  menopausal_status: menopausalStatusSchema.nullable(),
   /** null = sin responder (nunca se asume "No"). */
   has_fracture_history: z.boolean().nullable(),
   weight_kg: z

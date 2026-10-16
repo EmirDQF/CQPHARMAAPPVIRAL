@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { MENOPAUSAL_STATUSES } from "../clinical/tScoreEligibility";
+import { menopausalStatusSchema } from "../clinical/tScoreEligibility";
 import type { PainLogEntry } from "../dashboard/types";
 import { consentRecordSchema } from "../privacy/consent";
 import type { BottleStart } from "../repositories/bottles";
@@ -88,7 +88,7 @@ const valueSchemas = {
     sex: z.enum(SEXES).nullable(),
     weightKg: z.number().nullable(),
     hasFractureHistory: z.boolean().nullable(),
-    menopausalStatus: z.enum(MENOPAUSAL_STATUSES).nullable(),
+    menopausalStatus: menopausalStatusSchema.nullable(),
     allergies: z.string(),
     phone: z.string(),
     updatedAt: editedAt,

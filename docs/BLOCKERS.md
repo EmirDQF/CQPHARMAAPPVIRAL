@@ -24,6 +24,18 @@ Lo que sigue solo puede hacerlo el usuario.
 | G-D1 | Prueba en teléfono de los avisos por Wi-Fi | PENDIENTE: el APK debug con el plugin compila (`assembleDebug` OK, 2026-10-11), pero no había teléfono conectado (`adb devices` vacío). | Conectar el teléfono y seguir "Probar en el teléfono" en `docs/MOBILE.md`. |
 | G-C1 | Perfil incompleto y semáforo | DECISIÓN CLÍNICA: si falta edad o sexo, la app mantiene el comportamiento ya revisado (clasificación OMS preliminar + "Completa tu perfil para una evaluación exacta"). El encargo pedía caer a "consulte a su médico"; no se cambió sin el médico porque afecta el reporte y la bóveda. | El médico del proyecto decide; si elige "consulte a su médico", es un cambio de una línea en `getBoneDensityInterpretation` + tests. |
 
+## Superprompt (2026-10-16) — requieren al usuario
+
+| # | Ítem | Estado | Acción del usuario |
+|---|---|---|---|
+| S-C1 | Contenido médico **pendiente de validación del médico del proyecto** | Todo lleva `reviewStatus: "pendiente"` y `source` general: 25 fichas de Aprender (`src/lib/learn/lessons.ts`), 23 términos del glosario y 6 señales de alarma (`src/lib/learn/glossary.ts`), 79 ítems de los 6 mini-juegos (`src/lib/gamification/rheumaEducationData.ts`), 64 frases motivadoras (`src/lib/motivation/phrases.ts`), insignias de aprendizaje (`src/lib/gamification/unlocks.ts`), descargos (`LEARN_DISCLAIMER`) y el cofre del día. | Revisar y, al aprobar, cambiar `reviewStatus` a `"validado"`. |
+| S-C2 | Texto final del Pack Diagnóstico Óseo | Aplicado tal cual se pidió ("Dosaje de vitamina D + DMO + asesoría nutricional"; indicación desde los 45 años con fractura de cadera o vértebra en familiar directo). | Confirmar el texto y el precio. |
+| S-C3 | Copys de otros packs (revisión clínica) | Señalado por la revisión: "bioasimilable", "de alta pureza", "Apoya tu salud ósea" y el nombre "Hueso Fuerte 360" en `src/lib/products.ts` pueden leerse como promesa de calidad o beneficio. No se cambiaron (son copy comercial existente). | Decidir con el médico y el área legal. |
+| S-C4 | Semáforo con menopausia sin responder | "No estoy segura" y "Prefiero no decirlo" ya no asumen posmenopausia ("Tu médico confirmará esto contigo"). Una mujer ≥ 50 que **no respondió** sigue con OMS asumida + nota (ver G-C1). | El médico decide si también debe pasar a "consulte a su médico". |
+| S-L1 | Bonificación comercial ligada a recompensas | `REWARD_COMMERCIAL_ENABLED = false` (`src/lib/rewards/commercial.ts`); un test impide mencionar compras, descuentos o cupones en recompensas, juegos y cofre. | Decisión comercial y revisión legal antes de encenderla. |
+| S-D1 | Migración `20261016090000_menopausal_status_unsure.sql` | Agrega `no-segura` y `no-decir` al enum. Los valores `no-aplica` guardados se leen como `no-segura` (sin pérdida). | Aplicarla en Supabase **antes** de publicar esta versión (si no, el respaldo de un perfil con la opción nueva falla). |
+| S-M1 | Ver los cambios en el teléfono | La app va empaquetada (`CAP_MODE=bundled`). | `npm run mobile:bundle -- --install` con el Samsung en `adb devices`. |
+
 ## Google Play (2026-10-12) — requieren al usuario
 
 Detalle con evidencia en `docs/PLAY-CHECKLIST.md`; textos listos para copiar en `docs/PLAY-LISTING.md`.

@@ -15,6 +15,7 @@ Bloqueos que requieren al usuario: `docs/BLOCKERS.md` · Informe con los candado
 | 4 | Android / Google Play: entornos dev/release, cleartext solo debug, App Links, assetlinks, firma y `build:android` blindado | 95 % · falta dominio, huella de Play y ficha (usuario) | `0ffa8c5` `2f4319a` `3b10fbd` `60def24` `fd6ea4d` `8e9656c` `b6c21a6` |
 | 5 | iOS / App Store | 0 % · bloqueado sin macOS (BLOCKERS B1) | — |
 | 6 | Cumplimiento de tiendas (privacidad, datos de salud, borrado de cuenta) | 85 % · checklist con evidencia y borrador de la ficha listos; formularios, icono y gráfico de la ficha (usuario) | `bc5116e` `e82f47b` `3a53b1f` |
+| 8 | Experiencia profesional: pack y menopausia corregidos, 64 frases, sonidos, Aprender (25 fichas), 6 mini-juegos (79 ítems), insignias, cofre, panel Mi salud | 100 % código · validación médica pendiente (BLOCKERS S-C1) | `72e2493` `dab9100` `50f36ae` `ad6b1c0` `81244f4` `a6650c2` `2ee4646` `7b3c327` `c980fa2` |
 | 7 | Verificación y entrega | 100 % técnico · `npm run preflight`, E2E, BD, build | `22eefa8` `55a37d1` |
 
 ## Deuda técnica conocida (no bloquea)

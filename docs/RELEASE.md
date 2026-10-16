@@ -16,6 +16,20 @@
 | Revisiones V7 | clínica, a11y, React y código: sin CRITICAL reales; HIGH y MEDIUM corregidos en `47cae74` |
 | Secretos / `NEXT_PUBLIC_*` | Sin secretos versionados; keystore y `keystore.properties` ignorados |
 
+## Superprompt: contenido, Aprender, Jugar y recompensas (2026-10-16, rama `claude/superprompt`)
+
+| Candado | Resultado (salida real) |
+|---|---|
+| `npm run preflight` (tsc · eslint · vitest · verify-env) | OK · vitest 157 archivos · 1829/1829 · verify-env OK con 7 avisos (usa `--strict` en release) |
+| `npm run build` | OK |
+| `npm run test:e2e` (375 px) | Corrida completa: 37/40; los 3 fallos fueron 1 desborde real con letra "Muy grande" (corregido en `444f413`) y 2 timeouts de la auditoría de interactividad bajo carga paralela. Re-corrida de `daily-flow` + `interactivity` con 2 workers: 15/15. Nuevos: `learn-and-play.spec.ts` 5/5 |
+| `npm run mobile:bundle -- --guest-only` (`cap sync` + `assembleDebug`) | OK · BUILD SUCCESSFUL · `android/app/build/outputs/apk/debug/app-debug.apk` |
+| `npm audit --omit=dev` | 0 vulnerabilidades |
+| Revisiones (clínica, a11y, React, código) | Sin CRITICAL ni HIGH abiertos; corregidos en `b907aa5` y `26943cb` |
+| Capturas 375 px revisadas | Tarjeta del pack, menopausia con 4 opciones, Mi salud, Aprender, lección, recompensas de lección y de juego, Casa segura, Mito, Memoria, cofre, bandera roja (CTA arriba, Escudo Óseo oculto); movimiento reducido (pulso 2 s → 0.00001 s); sin desborde horizontal |
+
+Para verlo en el teléfono hay que reconstruir el APK (`docs/MOBILE.md`, `npm run mobile:bundle -- --install`).
+
 ## Android en el teléfono (2026-10-11, `b6c21a6`)
 
 Flujo diario en `docs/MOBILE.md`. Verificado en un Samsung físico por USB (`adb reverse`), con evidencia de logcat y del WebView (DevTools):

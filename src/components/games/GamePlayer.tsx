@@ -1,0 +1,54 @@
+"use client";
+
+import { useState, useSyncExternalStore } from "react";
+import { memoryDeck, mythCards, plateFoods, quizCards, shieldCards } from "@/lib/gamification/gameRounds";
+import { miniGameScoresStore, recordGameResult, type GameScore, type MiniGame } from "@/lib/gamification/miniGames";
+import { RHEUMA_EDUCATION } from "@/lib/gamification/rheumaEducationData";
+import { ChoiceRoundGame } from "./ChoiceRoundGame";
+import { GameResult } from "./GameResult";
+import { MemoryGame } from "./MemoryGame";
+import { PlateGame } from "./PlateGame";
+import { SafeHomeGame } from "./SafeHomeGame";
+
+interface GamePlayerProps {
+  game: MiniGame;
+  seed: number;
+  onExit: () => void;
+  onReplay: () => void;
+  onFinish: (score: GameScore) => void;
+}
+
+/** Arma la partida del juego elegido según su nivel y muestra el resultado al final. */
+export function GamePlayer({ game, seed, onExit, onReplay, onFinish }: GamePlayerProps) {
+  const scores = useSyncExternalStore(miniGameScoresStore.subscribe, miniGameScoresStore.getSnapshot, miniGameScoresStore.getServerSnapshot);
+  // El nivel se fija al empezar: subirlo a mitad de partida no cambia las cartas.
+  const [level] = useState(() => scores.level[game.id] ?? 1);
+  const [result, setResult] = useState<GameScore | null>(null);
+
+  function endRound(score: GameScore) {
+    recordGameResult(game.id, score);
+    setResult(score);
+  }
+
+  if (result) {
+    return <GameResult score={result} best={scores.best[game.id]} onReplay={onReplay} onFinish={() => onFinish(result)} />;
+  }
+
+  const common = { onExit, onRoundEnd: endRound };
+  switch (game.id) {
+    case "mito-o-realidad":
+      return <ChoiceRoundGame title={game.title} cards={mythCards(level, seed)} {...common} />;
+    case "escudo-oseo":
+      return <ChoiceRoundGame title={game.title} cards={shieldCards(level, seed)} {...common} />;
+    case "quiz-reumatologia":
+      return <ChoiceRoundGame title={`${game.title} · Nivel ${level}`} cards={quizCards(level, seed)} {...common} />;
+    case "arma-tu-plato":
+      return <PlateGame foods={plateFoods(seed)} {...common} />;
+    case "casa-segura":
+      return <SafeHomeGame spots={RHEUMA_EDUCATION.home} {...common} />;
+    case "memoria-articular": {
+      const deck = memoryDeck(level, seed);
+      return <MemoryGame pairs={deck.pairs} cards={deck.cards} {...common} />;
+    }
+  }
+}

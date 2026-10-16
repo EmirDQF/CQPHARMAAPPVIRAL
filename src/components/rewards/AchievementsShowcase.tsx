@@ -41,7 +41,7 @@ export function AchievementsShowcase({ rewards }: AchievementsShowcaseProps) {
   return (
     <div className="flex flex-col gap-5">
       <section aria-labelledby="mis-logros" className="flex flex-col gap-3">
-        <h1 id="mis-logros" className="text-[1.75rem] font-extrabold text-clinic">Mis logros</h1>
+        <h2 id="mis-logros" className="text-[1.75rem] font-extrabold text-clinic">Mis logros</h2>
         <p className="text-muted">
           Reconocen tu constancia: cada día que vuelves suma. Si haces una pausa, tus logros se quedan contigo.
         </p>
@@ -63,7 +63,7 @@ export function AchievementsShowcase({ rewards }: AchievementsShowcaseProps) {
       </section>
       {upcoming.length > 0 && (
         <section aria-labelledby="proximas-metas" className="flex flex-col gap-3">
-          <h2 id="proximas-metas" className="text-xl font-bold text-clinic">Próximas metas</h2>
+          <h3 id="proximas-metas" className="text-xl font-bold text-clinic">Próximas metas</h3>
           <ul className="flex flex-col gap-3">
             {upcoming.map((goal) => (
               <GoalRow key={goal.reward.id} goal={goal} />

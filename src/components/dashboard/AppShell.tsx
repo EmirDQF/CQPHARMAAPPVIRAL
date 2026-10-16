@@ -27,6 +27,7 @@ import { FirstRunFlow } from "@/components/onboarding/FirstRunFlow";
 import { ProfileCompletionOffer } from "@/components/onboarding/ProfileCompletionOffer";
 import { ActiveBreak } from "@/components/today/ActiveBreak";
 import { LearnHub } from "@/components/learn/LearnHub";
+import { GamesHub } from "@/components/games/GamesHub";
 import { patientProfileStore } from "@/lib/dashboard/patientProfile";
 import { needsOnboarding, onboardingStore } from "@/lib/onboarding/onboarding";
 import { AchievementsShowcase } from "@/components/rewards/AchievementsShowcase";
@@ -170,7 +171,7 @@ export function AppShell() {
 
         {activeTab === "aprender" && <LearnHub />}
 
-        {activeTab === "jugar" && <AchievementsShowcase rewards={rewards} />}
+        {activeTab === "jugar" && <GamesHub achievements={<AchievementsShowcase rewards={rewards} />} />}
 
         {activeTab === "reumatologo" && (
           <>

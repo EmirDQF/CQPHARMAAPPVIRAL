@@ -80,6 +80,21 @@ Huella pública de la clave (para `ANDROID_SHA256_FINGERPRINT`): `keytool -list 
 Ambos exigen `CAP_SERVER_URL` https pública y el keystore; la guardia de Gradle rechaza cualquier config con `localhost`, `http://` o cleartext.
 Quien reciba el `.apk` debe permitir "Instalar apps desconocidas" para su navegador o gestor de archivos. Ese `.apk` no se actualiza solo: para actualizaciones automáticas, publica en Play.
 
+## Carpeta de entrega del APK de pruebas (`npm run release:package`)
+
+Después de `npm run mobile:bundle -- --guest-only`, copia el APK a `release-assets/` (ignorado por git) como
+`artikare-v<VERSION>-debug.apk` con su `.sha256` y `RELEASE-NOTES-v<VERSION>.md`. Luego:
+
+- `npm run release:package` lee la versión de `package.json`, valida con `aapt dump badging` que el APK es esa
+  versión (`versionName`, `versionCode` y paquete) y que el SHA-256 coincide, y arma
+  `<Escritorio>/Artikare-APK/v<VERSION>/` con el APK, el `.sha256`, las notas y un `LEEME-v<VERSION>.txt`
+  (versión, build, fecha de Lima, cómo instalar y verificar, avisos). Escribe además `Artikare-APK/ULTIMA-VERSION.txt`.
+- Es idempotente: solo reemplaza los archivos con el mismo nombre. Otra carpeta: `-- --dest <ruta>`.
+- La lógica (nombres, lectura de aapt, LEEME) vive en `src/lib/release/releasePackage.ts`, con tests.
+- Publicar en GitHub: `gh release create v<VERSION> <apk> <sha256> --prerelease --title "Artikare v<VERSION> (pruebas)" --notes-file <notas>`
+  (si ya existe: `gh release upload v<VERSION> <apk> <sha256> --clobber`).
+- Es un APK **debug**: no sirve para Google Play (para Play, `npm run build:android` con tu keystore).
+
 ## Recordatorios de Artiko por contexto (G6)
 
 | Disparador | Dónde corre | Activado por defecto |

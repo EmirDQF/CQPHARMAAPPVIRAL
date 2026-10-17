@@ -1,3 +1,28 @@
+# Artikare
+
+Salud osteoarticular, densitometría ósea y suplementación clínica (CQ Pharma). Web/PWA con Next.js y app Android con Capacitor.
+
+## Descargar la app
+
+| | |
+|---|---|
+| Versión actual | **v0.2.0** (build / `versionCode` **200**) |
+| Tipo | APK de **pruebas** (depuración, firma debug): **no** es la versión de Google Play |
+| Android mínimo | 7.0 (`minSdk` 24) |
+| Release | [Artikare v0.2.0 (pruebas)](https://github.com/EmirDQF/CQPHARMAAPPVIRAL/releases/tag/v0.2.0) |
+| Descarga directa | [artikare-v0.2.0-debug.apk](https://github.com/EmirDQF/CQPHARMAAPPVIRAL/releases/download/v0.2.0/artikare-v0.2.0-debug.apk) (7,9 MB) |
+| SHA-256 | `b7ed0c874553d2ef706db9fcf6019627115c9b959cac966a194cc29926fd14ae` |
+
+> ⚠️ **Contenido médico pendiente de validación del médico del proyecto.** Es orientativo y no reemplaza la
+> evaluación ni el tratamiento indicado por tu médico. Compilado en modo invitado: el respaldo y las cuentas aún
+> no conectan.
+
+Verificar el archivo: `Get-FileHash -Algorithm SHA256 .rtikare-v0.2.0-debug.apk` (PowerShell) o
+`shasum -a 256 artikare-v0.2.0-debug.apk`. En la app, la versión se ve en **Ajustes → Acerca de**.
+Cambios: [`CHANGELOG.md`](CHANGELOG.md) · Estado y candados: [`docs/RELEASE.md`](docs/RELEASE.md) · Android: [`docs/MOBILE.md`](docs/MOBILE.md).
+
+---
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started

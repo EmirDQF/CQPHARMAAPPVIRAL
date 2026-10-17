@@ -22,7 +22,10 @@ Ajustes → "Acerca de" muestra "Artikare v0.2.0 (build 200)". Cambios: `CHANGEL
 | `artikare-v0.2.0-debug.apk` | 8 282 242 bytes · firmado con la clave **debug** (no sirve para Play) |
 | SHA-256 | `b7ed0c874553d2ef706db9fcf6019627115c9b959cac966a194cc29926fd14ae` |
 | Notas | `RELEASE-NOTES-v0.2.0.md` |
-| GitHub Release | Pendiente: `gh` sin `gh auth login` (BLOCKERS R1). Al publicarse: https://github.com/EmirDQF/CQPHARMAAPPVIRAL/releases/tag/v0.2.0 |
+| GitHub Release | Pre-release publicado el 2026-10-17: https://github.com/EmirDQF/CQPHARMAAPPVIRAL/releases/tag/v0.2.0 · descarga directa: https://github.com/EmirDQF/CQPHARMAAPPVIRAL/releases/download/v0.2.0/artikare-v0.2.0-debug.apk |
+| Carpeta de entrega | `npm run release:package` → `Escritorio/Artikare-APK/v0.2.0/` (APK, `.sha256`, notas, `LEEME-v0.2.0.txt`) + `ULTIMA-VERSION.txt`; valida con aapt `com.artikare.app` · `0.2.0` · `200` y el SHA-256 |
+| Candados de la entrega (2026-10-17) | `tsc` OK · `eslint` OK · vitest 160 archivos · 1855/1855 (incluye `releasePackage.test.ts`) · `verify:version` y `verify:version -- --built` OK |
+| APK vs. código | Compilado sobre `76ba60e`; después solo cambiaron docs, el script de empaquetado y el README (sin código de la app): no se recompiló |
 | Prueba en el Samsung | Pendiente: `adb devices` vacío (BLOCKERS R2) |
 
 Publicar (tras `gh auth login`, desde la raíz del repo):

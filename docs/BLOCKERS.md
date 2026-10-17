@@ -40,7 +40,7 @@ Lo que sigue solo puede hacerlo el usuario.
 
 | # | Ítem | Estado | Acción del usuario |
 |---|---|---|---|
-| R1 | Publicar el GitHub Release | ABIERTO: `gh` 2.102.0 instalado pero `gh auth status` → "You are not logged into any GitHub hosts". Código, tag `v0.2.0` y `main` ya están en GitHub; el APK y su `.sha256` están en `release-assets/` (ignorado por git). | `gh auth login` y luego el `gh release create` de `docs/RELEASE.md`, o subirlos a mano en GitHub → Releases → Draft a new release → tag `v0.2.0`. |
+| R1 | Publicar el GitHub Release | HECHO (2026-10-17): pre-release https://github.com/EmirDQF/CQPHARMAAPPVIRAL/releases/tag/v0.2.0 con el APK y su `.sha256`. | — |
 | R2 | Probar el APK v0.2.0 en el Samsung | ABIERTO: `adb devices` vacío al compilar. | Conectar por USB y `adb install -r release-assets/artikare-v0.2.0-debug.apk`; revisar Ajustes → Acerca de. |
 | R3 | Qué falta para producción (1.0.0) | Resumen | Validación médica del contenido (S-C1, G-C1, G-C2, S-C3, S-C4) · keystore respaldado y firma de Play App Signing (B4, B5; el APK v0.2.0 es **debug**) · dominio y API https si se usa modo remoto o respaldo (B3, `NEXT_PUBLIC_API_BASE_URL`) · migración de menopausia en Supabase antes de publicar (S-D1) · decisión de la bonificación comercial (S-L1) · cuenta y ficha de Google Play. |
 

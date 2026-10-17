@@ -1,4 +1,37 @@
-# RELEASE — estado de lanzamiento de Artikare (2026-10-11, código en `cfaeef9`)
+# RELEASE — estado de lanzamiento de Artikare (v0.2.0, 2026-10-17)
+
+## v0.2.0 (pruebas) — 2026-10-17 · commit `76ba60e` · tag `v0.2.0`
+
+Versión única en `package.json`; `android/app/build.gradle` calcula `versionName`/`versionCode`
+(`mayor×10000 + menor×100 + parche` = **200**) y `npm run verify:version` (dentro de `preflight`) lo vigila.
+Ajustes → "Acerca de" muestra "Artikare v0.2.0 (build 200)". Cambios: `CHANGELOG.md`.
+**Contenido médico pendiente de validación del médico del proyecto** (BLOCKERS S-C1).
+
+| Candado | Resultado (salida real, 2026-10-17) |
+|---|---|
+| `npm run preflight` (tsc · eslint · vitest · verify-env · verify:version) | OK · vitest 159 archivos · 1844/1844 · verify-env OK con 7 avisos · `verify-version: OK · v0.2.0 · versionCode 200` |
+| `npm run test:e2e` (375 px, `E2E_PORT=3217`, 2 workers) | 40 passed · 4 skipped (7.0 min, antes del cambio de versión); `settings.spec.ts` con la versión visible: 2/2 |
+| `npm run build` | OK |
+| `gradle clean` + `npm run mobile:bundle -- --guest-only` | BUILD SUCCESSFUL · APK nuevo (el anterior se borró con `clean`) |
+| `aapt dump badging` (build-tools 36.0.0) | `package: com.artikare.app` · `versionName 0.2.0` · `versionCode 200` · `sdkVersion 24` · `targetSdkVersion 36` |
+| `npm run verify:version -- --built` | OK (contrasta `output-metadata.json` del APK) |
+| Higiene del APK (599 archivos descomprimidos) | 0 coincidencias de `service_role`, `SUPABASE_SERVICE`, `sk_live`, `sk_test`, JWT, `re_…`, claves privadas, `storePassword`; sin `.env`, keystore ni `local.properties`. Solo nombres `NEXT_PUBLIC_*` previstos; API `https://sin-servidor.invalid` (modo invitado) |
+
+| Artefacto (en `release-assets/`, ignorado por git) | Valor |
+|---|---|
+| `artikare-v0.2.0-debug.apk` | 8 282 242 bytes · firmado con la clave **debug** (no sirve para Play) |
+| SHA-256 | `b7ed0c874553d2ef706db9fcf6019627115c9b959cac966a194cc29926fd14ae` |
+| Notas | `RELEASE-NOTES-v0.2.0.md` |
+| GitHub Release | Pendiente: `gh` sin `gh auth login` (BLOCKERS R1). Al publicarse: https://github.com/EmirDQF/CQPHARMAAPPVIRAL/releases/tag/v0.2.0 |
+| Prueba en el Samsung | Pendiente: `adb devices` vacío (BLOCKERS R2) |
+
+Publicar (tras `gh auth login`, desde la raíz del repo):
+
+```powershell
+gh release create v0.2.0 release-assets/artikare-v0.2.0-debug.apk release-assets/artikare-v0.2.0-debug.apk.sha256 --prerelease --title "Artikare v0.2.0 (pruebas)" --notes-file release-assets/RELEASE-NOTES-v0.2.0.md
+```
+
+## Estado anterior (2026-10-11, código en `cfaeef9`)
 
 ## Candados (salida real, 2026-10-11)
 

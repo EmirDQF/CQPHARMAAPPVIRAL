@@ -26,6 +26,14 @@ Bloqueos que requieren al usuario: `docs/BLOCKERS.md` · Informe con los candado
 - Monitoreo de fallos del job `daily-soft-delete-purge` (`cron.job_run_details`) por definir en producción.
 - `STREAK_BENEFIT_ENABLED` en `constants.ts` queda apagado a propósito (decisión de producto). Se eliminaron `STREAK_MILESTONES` (los hitos viven en `rewards/catalog.ts`) y `UNDO_WINDOW_MS` (deshacer no tiene límite de tiempo, WCAG 2.2.1).
 
+## Versiones
+
+| Versión | Fecha | Qué es | Estado |
+|---|---|---|---|
+| 0.1.0 | 2026-10-12 | Web + PWA + Android modo remoto | Histórico (`main` hasta `2b69f8d`) |
+| 0.2.0 | 2026-10-17 | Fase 8 completa, interfaz empaquetada en el APK, versión única (`versionCode` 200) | APK debug de pruebas; Release en GitHub pendiente de `gh auth login` (BLOCKERS R1) |
+| 1.0.0 | — | Primera subida a Google Play | Requiere validación médica, dominio, API https, firma de Play y migración S-D1 |
+
 SIGUIENTE: desplegar la web con dominio HTTPS y variables de producción → `npm run build:android` → primera subida a Google Play (pista interna) → huella de Play App Signing en `ANDROID_SHA256_FINGERPRINT`.
 
 - [x] Super prompt final (2026-10-12): primer arranque con Artiko, una bienvenida, consentimiento antes del perfil (Ley 29733), una pregunta por pantalla y modo invitado con oferta desde Hoy (`7a3ebdc`); paleta pastel clara con tinta oscura, botón sin relieve 3D, sin degradados, Artiko con colores fijos y prueba de que ningún pastel se parece al semáforo (`deb6292`); cabeceras de seguridad (`bc5116e`); barrido de frases prohibidas en todo el texto visible (`e82f47b`); objetivos de 48 px (`89462bc`); `docs/PLAY-CHECKLIST.md` y `docs/PLAY-LISTING.md` (`3a53b1f`). tsc OK, eslint 0, vitest 137 archivos · 1505/1505, E2E 31/31, `next build` OK, `npm audit --omit=dev` 0, Lighthouse móvil A11y 100 en `/`, `/app`, `/test`.

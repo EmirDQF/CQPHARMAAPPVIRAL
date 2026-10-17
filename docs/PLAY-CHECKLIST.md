@@ -9,7 +9,7 @@ Las reglas de Google Play cambian: los puntos ⚠️ se confirman en la consola 
 |---|---|---|
 | `appId` `com.artikare.app` igual en Capacitor, Gradle y código | ✅ | `capacitor.config.ts:17`, `android/app/build.gradle:31` (namespace) y `:34` (applicationId), `src/lib/native/appIdentity.ts:7` (lo verifica un test) |
 | `appId` definitivo | ⚠️ | No se puede cambiar tras publicar: confírmalo antes de la primera subida (`docs/BLOCKERS.md` B2) |
-| `versionCode` / `versionName` | ✅ | `android/app/build.gradle:37` (`1`) y `:38` (`"1.0"`). Sube `versionCode` en cada subida |
+| `versionCode` / `versionName` | ✅ | Salen de `package.json` (v0.2.0 → `200`, `mayor×10000 + menor×100 + parche`) en `android/app/build.gradle`; `npm run verify:version` impide números a mano. Sube la versión de `package.json` en cada subida |
 | `targetSdk` vigente que exige Play | ⚠️ | `android/variables.gradle`: `targetSdkVersion = 36`, `compileSdkVersion = 36`, `minSdkVersion = 24`. Confirma en la consola el nivel mínimo exigido hoy |
 
 ## 1.b App autosuficiente (no una web envuelta)

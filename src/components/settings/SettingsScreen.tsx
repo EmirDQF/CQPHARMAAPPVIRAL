@@ -5,6 +5,7 @@ import { useSyncExternalStore } from "react";
 import { useAuthStatus } from "@/hooks/useAuthStatus";
 import { consumeLocalDeletionDone } from "@/lib/privacy/arco";
 import { CONSENT_VERSION, PRIVACY_POLICY_PATH } from "@/lib/privacy/consent";
+import { AboutSection } from "./AboutSection";
 import { AccountDeletionSection } from "./AccountDeletionSection";
 import { DataExportSection } from "./DataExportSection";
 import { TextSizeSection } from "./TextSizeSection";
@@ -52,6 +53,7 @@ export function SettingsScreen() {
       <RectificationSection />
       <OppositionSection />
       <AccountDeletionSection authStatus={authStatus} />
+      <AboutSection />
 
       <p className="text-lg text-muted">
         <Link href={PRIVACY_POLICY_PATH} className="text-clinic font-semibold underline">

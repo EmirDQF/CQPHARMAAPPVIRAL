@@ -62,3 +62,8 @@ scripts/mirofish/out/
 /out-mobile/
 /.mobile-stash/
 /scripts/artiko/.out/
+
+# binarios de release: van como asset del GitHub Release, nunca en git
+*.apk
+*.aab
+/release-assets/

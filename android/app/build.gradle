@@ -43,6 +43,21 @@ tasks.matching { it.name == "preReleaseBuild" }.configureEach { task ->
     task.doFirst { assertReleaseCapacitorServer() }
 }
 
+// Versión única: package.json. Misma fórmula que src/lib/version/appVersion.ts;
+// scripts/verify-version.mjs falla si alguien escribe aquí un número a mano.
+def appVersionName = new groovy.json.JsonSlurper().parse(rootProject.file("../package.json")).version
+def appVersionCode = { String version ->
+    def match = version =~ /^(\d+)\.(\d+)\.(\d+)$/
+    if (!match.matches()) {
+        throw new GradleException("package.json: la versión \"${version}\" no es SemVer X.Y.Z.")
+    }
+    def (major, minor, patch) = (1..3).collect { match.group(it) as int }
+    if (minor > 99 || patch > 99) {
+        throw new GradleException("package.json: minor y patch deben ser <= 99 (versión ${version}).")
+    }
+    major * 10000 + minor * 100 + patch
+}(appVersionName)
+
 android {
     namespace = "com.artikare.app"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -50,8 +65,8 @@ android {
         applicationId "com.artikare.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode appVersionCode
+        versionName appVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         // Host de los App Links: el mismo servidor que cap sync horneó en el APK
         // (CAP_SERVER_URL de release). Sin sync todavía, "localhost": nunca un dominio inventado.

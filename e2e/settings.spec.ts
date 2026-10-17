@@ -1,4 +1,6 @@
 import { expect, test } from "@playwright/test";
+import packageJson from "../package.json";
+import { formatAppVersionLabel, versionCodeFor } from "../src/lib/version/appVersion";
 
 /** Ajustes (C5, 375 px): los derechos ARCO se ejercen en la app, con confirmación explícita. */
 
@@ -13,6 +15,9 @@ test("desde Mi Panel se llega a Ajustes y se ven los cuatro derechos", async ({ 
   for (const name of ["Descargar mis datos", "Corregir mis datos", "Retirar autorizaciones", "Borrar mi cuenta y mis datos"]) {
     await expect(page.getByRole("heading", { name })).toBeVisible();
   }
+  await expect(page.getByRole("region", { name: "Acerca de" })).toContainText(
+    formatAppVersionLabel(packageJson.version, String(versionCodeFor(packageJson.version)))
+  );
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth
   );

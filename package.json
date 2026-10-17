@@ -1,6 +1,6 @@
 {
   "name": "artikare",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -16,7 +16,8 @@
     "cap:sync": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/cap-sync.mjs",
     "verify-env": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/verify-env.ts",
     "verify:android-release": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/verify-android-release.ts",
-    "preflight": "npm run typecheck && npm run lint && npm test && npm run verify-env",
+    "verify:version": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/verify-version.mjs",
+    "preflight": "npm run typecheck && npm run lint && npm test && npm run verify-env && npm run verify:version",
     "build:android": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/build-android-release.mjs",
     "mobile:dev": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/mobile-dev.mjs",
     "mobile:install": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/mobile-install.mjs",
